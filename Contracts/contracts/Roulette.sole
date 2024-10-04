@@ -1,0 +1,132 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import 'hardhat/console.sol';
+import {Casino, ICasino} from './Casino.sol';
+
+contract Roulette {
+  address public owner;
+  address public mainContractAddress;
+
+  enum SpecialTile {
+    Even, // Represents an "Even" bet
+    Odd, // Represents an "Odd" bet
+    Red, // Represents a "Red" bet
+    Black, // Represents a "Black" bet
+    Low, // Represents a "1-18" (Low) bet
+    High, // Represents a "19-36" (High) bet
+    Column1, // Represents a "1st Column" (2 to 1) bet
+    Column2, // Represents a "2nd Column" (2 to 1) bet
+    Column3, // Represents a "3rd Column" (2 to 1) bet
+    Dozen1, // Represents a "1st Dozen" (1-12) bet
+    Dozen2, // Represents a "2nd Dozen" (13-24) bet
+    Dozen3 // Represents a "3rd Dozen" (25-36) bet
+  }
+
+  uint8[] private multipliers = [
+    2, // Even
+    2, // Odd
+    2, // Red
+    2, // Black
+    2, // Low
+    2, // High
+    3, // Column1
+    3, // Column2
+    3, // Column3
+    3, // Dozen1
+    3, // Dozen2
+    3 // Dozen3
+  ];
+
+  uint8[] private reds = [];
+  uint8[] private blacks = [];
+
+  uint8 constant SPECIAL_TILE_OFFSET = 100;
+
+  struct Bet {
+    uint256 amount;
+    uint8 betType;
+  }
+
+  event GameFinished(address indexed player);
+
+  constructor(address _mainContractAddress) {
+    owner = msg.sender;
+    mainContractAddress = _mainContractAddress;
+  }
+
+  function getRandomNumber() public view returns (uint8) {
+        // Generate a pseudo-random number using block variables
+        uint256 randomHash = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp, 
+                    block.prevrandao, 
+                    msg.sender 
+                )
+            )
+        );
+        // Use modulo operator to get a number between 0 and 36
+        return uint8(randomHash % 37); // 0 to 36 inclusive
+    }
+
+  function getMultiplier(uint8 betType) internal view returns (uint256 multiplier) {
+    require(betType <= 36 || (betType >= 100 && betType <= 111), 'not proper bet type');
+    uint256 multiplier;
+    if (betType < 100) {
+      multiplier = 2;
+    } else {
+      multiplier = multipliers[betType - SPECIAL_TILE_OFFSET];
+    }
+
+
+  }
+
+  function checkBet(Bet bet) returns (uint256 payout) {
+    require(betType <= 36 || (betType >= 100 && betType <= 111), 'not proper bet type');
+
+        if (betType < 100) {
+      payout = 2;
+    } else {
+      multiplier = multipliers[betType - SPECIAL_TILE_OFFSET];
+    }
+
+  }
+
+  function bet(Bet[] calldata bets) public {
+    // check if bets are higher than 0
+    uint256 sum;
+    uint256 maxPayout;
+    for (uint8 i; i < bets.length; i++) {
+      require(bets[i].amount > 0, 'Too small bet amount');
+      sum += bets[i].amount;
+      maxPayout += bets[i].amount * getMultiplier(bets[i].betType);
+    }
+
+    // calculate max price
+    require(
+      ICasino(mainContractAddress).getCasinoBalance() > maxPayout,
+      'Not enough funds in casino'
+    );
+
+    // calculate if totalBet is
+    require(
+      ICasino(mainContractAddress).getBalanceOf(msg.sender) >= sum,
+      'You have not enough funds'
+    );
+
+    // get random number between 0 and 36
+    uint8 rand = getRandomNumber();
+
+
+    uint256 payout;
+
+
+    for (uint8 i; i < bets.length; i++) {
+      check(bets[i])
+    }
+    
+
+    // ICasino(mainContractAddress).getFromAddressBalance(msg.sender, amount);
+  }
+}

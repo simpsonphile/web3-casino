@@ -1,0 +1,15 @@
+{
+  "name": "contract-hooks",
+  "version": "0.0.1",
+  "scripts": {
+    "generate": "npx wagmi generate"
+  },
+  "dependencies": {
+    "@wagmi/cli": "^2.1.15",
+    "tslib": "^2.3.0"
+  },
+  "type": "module",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "private": true
+}

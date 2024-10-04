@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import 'hardhat/console.sol';
+import {Casino, ICasino} from './Casino.sol';
+
+// contract handles tables (unilimited just add id)
+// every table has players, order, dealer hand
+
+contract Blackjack {
+  mapping(uint8 => Table) private tables;
+
+  // currently used tables by players
+  mapping(address => uint8) private PlayerTables;
+
+  struct Table {
+    uint8 id;
+    Game currentGame;
+    address[] players;
+  }
+
+  struct PlayerInGame {
+    address id;
+    uint8[] hand;
+    uint256 betAmount;
+  }
+  
+  struct Game {
+    uint256 timestamp;
+    uint8[] dealerHand;
+    PlayerInGame[]: players;
+    address turn;
+    uint8[52 * 6] deck;
+    uint8 deckTopIndex;
+    GameStatus status;
+  }
+
+  function joinTable (uint8 tableId) public {
+    // find table
+
+    Table storage table = tables[tableId];
+
+    // check if there is still space in table
+    // check if player is not in table
+    // player can be only in one table at the same time
+  }
+
+  function hit ()  public {
+    // check if player is siting in table
+
+    // check if its player turn 
+
+    // give card
+  }
+
+  function stand () public [
+    
+  ]
+
+}

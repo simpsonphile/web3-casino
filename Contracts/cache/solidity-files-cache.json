@@ -1,0 +1,197 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Applications/MAMP/htdocs/private/office-3d/Contracts/contracts/Blackjack.sol": {
+      "lastModificationDate": 1731572845424,
+      "contentHash": "ee75a62e1c6ceacdb35a54b2442ce843",
+      "sourceName": "contracts/Blackjack.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol",
+        "./Casino.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Blackjack"
+      ]
+    },
+    "/Applications/MAMP/htdocs/private/office-3d/Contracts/contracts/Casino.sol": {
+      "lastModificationDate": 1731572845422,
+      "contentHash": "bb12a3de207203a59536a2004d6c1a51",
+      "sourceName": "contracts/Casino.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Casino",
+        "ICasino"
+      ]
+    },
+    "/Applications/MAMP/htdocs/private/office-3d/Contracts/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1731660766263,
+      "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
+      ]
+    },
+    "/Applications/MAMP/htdocs/private/office-3d/Contracts/contracts/Slots.sol": {
+      "lastModificationDate": 1731572845423,
+      "contentHash": "d9dfffee33f6f62c902a14444f637741",
+      "sourceName": "contracts/Slots.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol",
+        "./Casino.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Slots"
+      ]
+    },
+    "/Applications/MAMP/htdocs/private/office-3d/Contracts/contracts/Plinko.sol": {
+      "lastModificationDate": 1731572845422,
+      "contentHash": "235ac5a69a2aa79b1a8b084a4fca17d1",
+      "sourceName": "contracts/Plinko.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol",
+        "./Casino.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Plinko"
+      ]
+    }
+  }
+}
