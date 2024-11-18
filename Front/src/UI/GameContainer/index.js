@@ -42,7 +42,6 @@ const GameContainer = () => {
         repo,
         onAtmClick: () => setIsAtmOpen(true),
         onAtmExit: () => setIsAtmOpen(false),
-        onAtmMode
       });
       setGameInstance(game);
     };
