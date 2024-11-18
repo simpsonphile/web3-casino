@@ -15,6 +15,9 @@ class Controls {
     this.onWheelProps = onWheel;
 
     this._key_map = {};
+
+    this.init();
+    this.startPolling();
   }
 
   getKeyMap() {
@@ -26,12 +29,11 @@ class Controls {
   init() {
     document.addEventListener("keydown", (event) => {
       this._key_map[event.code] = true;
-      this?.onKeyDownProps?.(this.getKeyMap());
     });
 
     document.addEventListener("keyup", (event) => {
       this._key_map[event.code] = false;
-      this?.onKeyUpProps?.(event.code, this.getKeyMap());
+      this?.onKeyUpProps?.(event.code);
     });
 
     document.addEventListener("mousemove", (event) => {
@@ -53,6 +55,19 @@ class Controls {
 
       this.onWheelProps(event.deltaY > 0 ? "up" : "down");
     });
+  }
+
+  startPolling() {
+    if (this.pollingInterval) return;
+
+    this.pollingInterval = setInterval(() => {
+      this?.onKeyDownProps?.(this.getKeyMap());
+    }, 16);
+  }
+
+  stopPolling() {
+    clearInterval(this.pollingInterval);
+    this.pollingInterval = null;
   }
 
   setControlsEnabled(state) {

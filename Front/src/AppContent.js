@@ -3,8 +3,6 @@ import Header from "./UI/Header";
 import GameContainer from "./UI/GameContainer";
 import Auth from "./UI/Auth";
 
-window.addEventListener("keydown", (e) => console.log(e.code));
-
 const AppContent = () => {
   return (
     <div className="App">

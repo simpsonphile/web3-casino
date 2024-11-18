@@ -19,6 +19,25 @@ class PlayableCharacter {
         z: rotation.z,
       });
     this._onAnimation = onAnimation;
+
+    this.targetRotation = this.model.rotation.y;
+    this.currentRotation = this.model.rotation.y;
+    this.rotationSpeed = 5;
+  }
+
+  update(delta) {
+    const rotationDelta = this.targetRotation - this.currentRotation;
+    if (Math.abs(rotationDelta) >= Math.PI) {
+      const sign = rotationDelta > 0 ? 1 : -1;
+      this.currentRotation += sign * 2 * Math.PI;
+    }
+
+    this.currentRotation = THREE.MathUtils.lerp(
+      this.currentRotation,
+      this.targetRotation,
+      Math.min(1, this.rotationSpeed * delta)
+    );
+    this.model.rotation.y = this.currentRotation;
   }
 
   rotateBy(x, y) {
@@ -31,10 +50,9 @@ class PlayableCharacter {
     dir.multiplyScalar(10000);
     // make sure its always on the same height
     dir.y = 2;
-    this.model.model.lookAt(dir);
-    // make sure camera is behind model
+    this.targetRotation = Math.atan2(dir.x, dir.z);
     this._thirdPersonCamera.positionCameraBehindPlayer();
-    this._onRotation(this.model.model.rotation);
+    this._onRotation(this.model.rotation);
   }
 
   setRun() {
@@ -48,8 +66,9 @@ class PlayableCharacter {
     dir.multiplyScalar(10000);
     dir.y = 2;
 
-    this.model.model.lookAt(dir);
-    this._onRotation(this.model.model.rotation);
+    // this.model.lookAt(dir);
+    this.targetRotation = Math.atan2(dir.x, dir.z);
+    this._onRotation(this.model.rotation);
   }
 
   rotateLeft() {
@@ -93,16 +112,16 @@ class PlayableCharacter {
 
   runGoAnimation() {
     if (this._isRunning) {
-      this.model.runningAnimation();
+      this.model.runRunAnimation();
       this._onAnimation("Run");
     } else {
-      this.model.walkAnimation();
+      this.model.runWalkAnimation();
       this._onAnimation("Walk");
     }
   }
 
   getSpeed() {
-    return this._isRunning ? 0.3 : 0.1;
+    return this._isRunning ? 0.075 : 0.025;
   }
 
   goForward() {
@@ -135,17 +154,17 @@ class PlayableCharacter {
   }
 
   moveBy(vec) {
-    this.model.updatePositionByVector(vec);
-    this._onMovement(this.model.model.position);
+    this.model.position.add(vec);
+    this._onMovement(this.model.position);
   }
 
   moveTo(vec) {
-    this.model.setPosition(vec);
-    this._onMovement(this.model.model.position);
+    this.model.position.copy(vec);
+    this._onMovement(this.model.position);
   }
 
   beIdle() {
-    this.model.idleAnimation();
+    this.model.runIdleAnimation();
     this._onAnimation("Idle");
   }
 }

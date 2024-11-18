@@ -136,8 +136,11 @@ class Game {
   }
 
   async initPlayer() {
+    const model = new BusinessMan();
+    window.scene.add(model);
+
     this.player = new PlayableCharacter({
-      model: new BusinessMan(),
+      model,
       thirdPersonCamera: this.thirdPersonCamera,
       onMovement: (position) => {
         this._repo.get("players").updatePosition(position);
@@ -154,9 +157,7 @@ class Game {
       },
     });
 
-    this.they = [];
-
-    this.thirdPersonCamera.target = this.player.model.model;
+    this.thirdPersonCamera.target = this.player.model;
     window.player = this.player;
   }
 
@@ -189,9 +190,12 @@ class Game {
   }
 
   update() {
-    this.player.model.updateMixer(this.clock.getDelta());
+    const delta = this.clock.getDelta();
+    this.player.update(delta);
+    this.player.model.updateMixer(delta);
+    this.players.update(delta);
     this.neonsManager.update(this.clock.getElapsedTime());
-    this.camerasManager.update(this.clock.getDelta());
+    this.camerasManager.update(delta);
   }
 
   animate() {
@@ -243,9 +247,7 @@ class Game {
           this.interactionTooltip.loadText("Wanna join?", pos);
         }
 
-        const targetPos = new THREE.Vector3().copy(
-          this.player.model.model.position
-        );
+        const targetPos = new THREE.Vector3().copy(this.player.model.position);
         targetPos.y = 2;
 
         this.interactionTooltip.textMesh.lookAt(targetPos);
@@ -266,9 +268,7 @@ class Game {
         this.interactionTooltip.loadText("use?", pos);
       }
 
-      const targetPos = new THREE.Vector3().copy(
-        this.player.model.model.position
-      );
+      const targetPos = new THREE.Vector3().copy(this.player.model.position);
       targetPos.y = 2;
 
       this.interactionTooltip.textMesh.lookAt(targetPos);
@@ -388,7 +388,7 @@ class Game {
       onKeyDown: (keys) => {
         this.commandManager.executeDown(keys);
       },
-      onKeyUp: (key, keys) => {
+      onKeyUp: (key) => {
         this.commandManager.executeUp(key);
       },
       onMouseMove: (event) => {
@@ -425,7 +425,6 @@ class Game {
         }
       },
     });
-    this.controls.init();
 
     this.pointerLock = new PointerLock({
       domElement: this.renderer.domElement,
@@ -455,9 +454,9 @@ class Game {
     this.initThirdPersonCamera();
     this.initAudioListener();
     this.initZoomCamera();
-    this.initRenderer();
     this.initPlayer();
     this.initClient();
+    this.initRenderer();
     this.initBlackjack();
     this.initCasino();
     this.initNeons();

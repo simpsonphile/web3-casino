@@ -8,12 +8,18 @@ class Players {
     this.playersGroup.name = "players_group";
   }
 
+  update(delta) {
+    Object.values(this.players).forEach((player) => {
+      player.updateMixer(delta);
+    });
+  }
+
   createNewPlayer(id, nickname, position) {
     const newPlayer = new BusinessMan({ nickname });
-    newPlayer.setPosition(position);
+    newPlayer.position.copy(position);
     this.players[id] = newPlayer;
 
-    this.playersGroup.add(newPlayer.model);
+    this.playersGroup.add(newPlayer);
   }
 
   createNewPlayers(players) {
@@ -35,8 +41,8 @@ class Players {
         const player = this.players[id];
         if (!player) return;
 
-        player.model.position.set(position.x, position.y, position.z);
-        player.model.rotation.set(rotation.x, rotation.y, rotation.z);
+        player.position.copy(position);
+        player.rotation.y = rotation.y;
 
         this.updatePlayerAnimation(id, animation);
       }
@@ -48,14 +54,14 @@ class Players {
 
     switch (animation) {
       case "Run":
-        player.runAnimation();
+        player.runRunAnimation();
         break;
       case "Walk":
-        player.walkAnimation();
+        player.runWalkAnimation();
         break;
       case "Idle":
       default:
-        player.idleAnimation();
+        player.runIdleAnimation();
         break;
     }
   }
