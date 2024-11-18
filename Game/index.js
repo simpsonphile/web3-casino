@@ -377,9 +377,6 @@ class Game {
         console.log("player stand");
       }
     );
-    this.commandManager.addCommand("atm", "exit", keys.atm.exit, () => {
-      this.onAtmExit();
-    });
   }
 
   initRaycaster() {

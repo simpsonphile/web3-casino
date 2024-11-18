@@ -2,18 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 import ChatButton from "./Button";
 import { Button, Input } from "@chakra-ui/react";
+import { useKeyConfigContext } from "../../context/KeyConfigContext";
 
-const Chat = ({ onSend, messages, keyConfig }) => {
+const Chat = ({ onSend, messages }) => {
+  const { keyConfig } = useKeyConfigContext();
   const [isVisible, setIsVisible] = useState(false);
-  const [isWriting, setIsWriting] = useState(false);
   const textRef = useRef(document.createElement("input"));
-
-  const onBlur = () => setIsWriting(false);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (
-        !isWriting &&
         !!keyConfig &&
         keyConfig.get().navigation.showChat.includes(event.code)
       ) {
@@ -21,7 +19,6 @@ const Chat = ({ onSend, messages, keyConfig }) => {
         if (!isVisible) {
           setTimeout(() => {
             textRef.current.focus();
-            setIsWriting(true);
           }, 50);
         }
       }
@@ -29,7 +26,7 @@ const Chat = ({ onSend, messages, keyConfig }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isWriting, isVisible]);
+  }, [isVisible]);
 
   if (!isVisible) return <ChatButton onClick={setIsVisible} />;
 
@@ -42,7 +39,7 @@ const Chat = ({ onSend, messages, keyConfig }) => {
             <ChatMessage key={id} {...message} />
           ))}
       </div>
-      <ChatInput textRef={textRef} onSend={onSend} onBlur={onBlur} />
+      <ChatInput textRef={textRef} onSend={onSend} />
     </div>
   );
 };

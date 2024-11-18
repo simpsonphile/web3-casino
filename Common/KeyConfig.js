@@ -14,9 +14,13 @@ const getDefaultKeyConfig = () => ({
   },
   atm: {
     exit: ["KeyE"],
+    withdraw: ["KeyW"],
+    deposit: ["KeyD"],
+    delete: ["Backspace"],
+    accept: ["Enter"],
   },
   navigation: {
-    showChat: ["KeyC"],
+    showChat: ["Backquote"],
   },
   zoom: {
     exit: ["KeyE"],

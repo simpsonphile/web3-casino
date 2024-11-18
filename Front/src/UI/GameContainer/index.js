@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import Game from "@Game";
 import Menu from "../Menu";
-import KeyConfig from "@Common/KeyConfig";
 import Chat from "../Chat";
 import RemoteChat from "@Common/Remote/Chat";
 import Remote from "@Common/Remote";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
 import styles from "./index.module.scss";
-import Deposit from "../Deposit";
+import { useKeyConfigContext } from "../../context/KeyConfigContext";
+import AtmModal from "../AtmModal";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
   const [gameInstance, setGameInstance] = useState();
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
-  const [keyConfig, setKeyConfig] = useState(null);
   const [repo, setRepo] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [isAtmOpen, setIsAtmOpen] = useState(false);
+  const { keyConfig } = useKeyConfigContext();
 
   useEffect(() => {
     const repo = new Remote({ address });
@@ -34,20 +34,15 @@ const GameContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (!keyConfig) {
-      setKeyConfig(new KeyConfig());
-    }
-  }, [keyConfig]);
-
-  useEffect(() => {
     if (!!gameInstance || !keyConfig || !repo) return;
     const initGame = async () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
         keyConfig: keyConfig,
         repo,
-        onAtmClick: () => setIsDepositOpen(true),
-        onAtmExit: () => setIsDepositOpen(false),
+        onAtmClick: () => setIsAtmOpen(true),
+        onAtmExit: () => setIsAtmOpen(false),
+        onAtmMode
       });
       setGameInstance(game);
     };
@@ -85,7 +80,6 @@ const GameContainer = () => {
         <Menu
           isGameInit={isGameInit}
           onResumeClick={onResumeClick}
-          keyConfig={keyConfig}
           onKeyConfigUpdate={() => {
             if (isGameInit) {
               gameInstance?.addCommands.bind(gameInstance)?.();
@@ -97,14 +91,13 @@ const GameContainer = () => {
       <Footer>
         {!!repo && (
           <Chat
-            keyConfig={keyConfig}
             onSend={repo.get("chat").sendMessage.bind(repo.get("chat"))}
             messages={messages}
           />
         )}
       </Footer>
 
-      <Deposit isOpen={isDepositOpen} />
+      <AtmModal isOpen={isAtmOpen} setIsOpen={setIsAtmOpen} />
     </div>
   );
 };

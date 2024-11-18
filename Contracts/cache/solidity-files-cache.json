@@ -79,42 +79,6 @@
         "ICasino"
       ]
     },
-    "/Applications/MAMP/htdocs/private/office-3d/Contracts/node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1731660766263,
-      "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
-      "sourceName": "hardhat/console.sol",
-      "solcConfig": {
-        "version": "0.8.24",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.4.22 <0.9.0"
-      ],
-      "artifacts": [
-        "console"
-      ]
-    },
     "/Applications/MAMP/htdocs/private/office-3d/Contracts/contracts/Slots.sol": {
       "lastModificationDate": 1731572845423,
       "contentHash": "d9dfffee33f6f62c902a14444f637741",
@@ -191,6 +155,42 @@
       ],
       "artifacts": [
         "Plinko"
+      ]
+    },
+    "/Applications/MAMP/htdocs/private/office-3d/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1731766311862,
+      "contentHash": "681c532e816169606d13a5fe8b475074",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }

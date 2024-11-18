@@ -80,7 +80,7 @@ class CamerasManager {
       return;
     }
 
-    this.transitionProgress += delta * 30;
+    this.transitionProgress += delta * 80;
     this.transitionProgress = Math.min(this.transitionProgress, 1);
 
     const newPos = this.activeCamera.position.lerpVectors(

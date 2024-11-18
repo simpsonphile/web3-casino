@@ -16,7 +16,9 @@ const Modal = ({
   children,
   title,
   footerChildren,
-  triggerChildren,
+  hasCloseInHeader = true,
+  hasCloseInFooter = true,
+  ...rest
 }) => {
   if (!isOpen) return null;
   return (
@@ -32,6 +34,7 @@ const Modal = ({
         alignContent: "center",
         justifyContent: "center",
       }}
+      {...rest}
     >
       <DialogRoot
         centered
@@ -41,13 +44,15 @@ const Modal = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogCloseTrigger>x</DialogCloseTrigger>
+            {hasCloseInHeader && <DialogCloseTrigger>x</DialogCloseTrigger>}
           </DialogHeader>
           <DialogBody>{children}</DialogBody>
           <DialogFooter>
-            <DialogCloseTrigger>
-              <Button variant="ghost">Close</Button>
-            </DialogCloseTrigger>
+            {hasCloseInFooter && (
+              <DialogCloseTrigger>
+                <Button variant="ghost">Close</Button>
+              </DialogCloseTrigger>
+            )}
             {footerChildren}
           </DialogFooter>
         </DialogContent>

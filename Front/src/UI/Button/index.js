@@ -13,7 +13,7 @@ const Button = ({
   ...rest
 }) => {
   const onClick = () => {
-    onClickProps();
+    onClickProps?.();
 
     if (isPlaySoundOnClick) {
       playSound();
