@@ -7,7 +7,7 @@ class Player extends Schema {
     super();
     this.nickname = nickname;
     this.rotation = new Position(0, 0, 0);
-    this.animation = "idle";
+    this.animation = "Idle";
     this.setPosition(position);
   }
 

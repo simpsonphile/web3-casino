@@ -65,21 +65,9 @@ class Players {
   }
 
   updatePlayerAnimation(id, animation) {
-    // todo we have more animations (dynamicaly)
     const player = this.players[id];
 
-    switch (animation) {
-      case "Run":
-        player.runRunAnimation();
-        break;
-      case "Walk":
-        player.runWalkAnimation();
-        break;
-      case "Idle":
-      default:
-        player.runIdleAnimation();
-        break;
-    }
+    player[`run${animation}Animation`]();
   }
 }
 
