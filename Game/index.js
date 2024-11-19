@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import "./Extensions";
+
 import Controls from "./Controls";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
@@ -21,6 +23,7 @@ import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
 import Blackjack from "./Modes/Blackjack";
 import RemoteBlackjack from "@Common/Remote/Blackjack";
+import UIRenderer from "./UIRenderer";
 
 class Game {
   constructor({
@@ -47,10 +50,21 @@ class Game {
     this.hideTooltip = hideTooltip;
   }
 
+  initUIRenderer() {
+    this.uiRenderer = new UIRenderer();
+    window.uiRenderer = this.uiRenderer;
+  }
+
+  initUIScene() {
+    this.uiScene = new THREE.Scene();
+    window.uiScene = this.uiScene;
+  }
+
   initClient() {
     // rename
     this.players = new Players();
     window.scene.add(this.players.playersGroup);
+    window.uiScene.add(this.players.nicknamesGroup);
     this._repo.add("players", RemotePlayers, {
       onMainPlayerData: (room, data) => {
         const { position } = data;
@@ -66,6 +80,7 @@ class Game {
         this.players.createNewPlayers(players);
       },
       onPlayerData: (room, players) => this.players.updatePlayers(players),
+      onPlayersUpdate: (players) => setPlayers(),
     });
 
     this._repo.get("players").connect();
@@ -201,6 +216,7 @@ class Game {
 
     this.update();
     this.render();
+    this.uiRenderer.render(this.uiScene, this.camerasManager.getActiveCamera());
     this.stats.end();
   }
 
@@ -413,6 +429,7 @@ class Game {
 
   async init() {
     this.initScene();
+    this.initUIScene();
     await this.initModels();
     await this.initSounds();
 
@@ -427,6 +444,7 @@ class Game {
     this.initPlayer();
     this.initClient();
     this.initRenderer();
+    this.initUIRenderer();
     this.initBlackjack();
     this.initCasino();
     this.initNeons();
