@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import styles from "./index.module.scss";
 import { useKeyConfigContext } from "../../context/KeyConfigContext";
 import AtmModal from "../AtmModal";
+import GameTooltip from "../GameTooltip";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -19,6 +20,8 @@ const GameContainer = () => {
   const [messages, setMessages] = useState([]);
   const [isAtmOpen, setIsAtmOpen] = useState(false);
   const { keyConfig } = useKeyConfigContext();
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipText, setTooltipText] = useState("elo");
 
   useEffect(() => {
     const repo = new Remote({ address });
@@ -42,6 +45,14 @@ const GameContainer = () => {
         repo,
         onAtmClick: () => setIsAtmOpen(true),
         onAtmExit: () => setIsAtmOpen(false),
+        showTooltip: (text) => {
+          setTooltipVisible(true);
+          setTooltipText(text);
+        },
+        hideTooltip: () => {
+          setTooltipVisible(false);
+          setTooltipText("");
+        },
       });
       setGameInstance(game);
     };
@@ -97,6 +108,8 @@ const GameContainer = () => {
       </Footer>
 
       <AtmModal isOpen={isAtmOpen} setIsOpen={setIsAtmOpen} />
+
+      {tooltipVisible && <GameTooltip>{tooltipText}</GameTooltip>}
     </div>
   );
 };

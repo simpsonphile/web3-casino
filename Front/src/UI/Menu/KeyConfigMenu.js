@@ -93,7 +93,9 @@ const KeyConfigMenu = ({ setCurrentMenu, keyConfig, onKeyConfigUpdate }) => {
         }))}
       />
       <HStack>
-        <Button onClick={() => setCurrentMenu("main")}>Back</Button>
+        <Button variant="subtle" onClick={() => setCurrentMenu("main")}>
+          Back
+        </Button>
         <Button onClick={resetKeys}>Reset to default</Button>
       </HStack>
     </div>

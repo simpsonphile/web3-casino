@@ -6,7 +6,6 @@ import BusinessMan from "./Models/BusinessMan";
 import ThirdPersonCamera from "./ThirdPersonCamera";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
-import FontLoader from "./Loaders/FontLoader";
 import Casino from "./Casino";
 import PointerLock from "./PointerLock";
 import Collisions from "./Collisions";
@@ -14,7 +13,6 @@ import CommandManager from "./CommandManager";
 import Neons from "./Neons";
 import Raycaster from "./Raycaster";
 import InteractionHandler from "./InteractionHandler";
-import Tooltip from "./Tooltip";
 import CamerasManager from "./CamerasManager";
 import ZoomCamera from "./ZoomCamera";
 
@@ -25,7 +23,15 @@ import Blackjack from "./Modes/Blackjack";
 import RemoteBlackjack from "@Common/Remote/Blackjack";
 
 class Game {
-  constructor({ onPause, keyConfig, repo, onAtmClick, onAtmExit }) {
+  constructor({
+    onPause,
+    keyConfig,
+    repo,
+    onAtmClick,
+    onAtmExit,
+    showTooltip,
+    hideTooltip,
+  }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.clock = new THREE.Clock();
@@ -36,6 +42,9 @@ class Game {
 
     this.onAtmClick = onAtmClick;
     this.onAtmExit = onAtmExit;
+
+    this.showTooltip = showTooltip;
+    this.hideTooltip = hideTooltip;
   }
 
   initClient() {
@@ -107,13 +116,6 @@ class Game {
     window.sounds = this.sounds.soundBuffers;
   }
 
-  async initFonts() {
-    this.fonts = new FontLoader();
-    await this.fonts.load();
-
-    window.fonts = this.fonts.get();
-  }
-
   initCasino() {
     this.casino = new Casino();
   }
@@ -144,10 +146,6 @@ class Game {
       thirdPersonCamera: this.thirdPersonCamera,
       onMovement: (position) => {
         this._repo.get("players").updatePosition(position);
-
-        if (!this.interactionTooltip.textMesh) return;
-
-        this.interactionTooltip.textMesh.lookAt(position);
       },
       onRotation: (rotation) => {
         this._repo.get("players").updateRotation(rotation);
@@ -218,10 +216,6 @@ class Game {
     });
   }
 
-  initInteractionHandlerTooltip() {
-    this.interactionTooltip = new Tooltip(this.scene);
-  }
-
   initBlackjack() {
     this._repo.add("blackjack_1", RemoteBlackjack, { id: "blackjack_1" });
     this.blackjack = new Blackjack();
@@ -234,23 +228,10 @@ class Game {
       "blackjack_table",
       "mouseOver",
       (data) => {
-        const pos = new THREE.Vector3()
-          .copy(data.object.parent.position)
-          .add(new THREE.Vector3(0, 1, 0));
-
-        if (data.distance > 4) return;
+        if (data.distance > 6) return;
         if (!this.commandManager.checkIfModeEnabled("movement")) return;
 
-        if (this.interactionTooltip.checkIfLoaded()) {
-          this.interactionTooltip.updatePosition(pos);
-        } else {
-          this.interactionTooltip.loadText("Wanna join?", pos);
-        }
-
-        const targetPos = new THREE.Vector3().copy(this.player.model.position);
-        targetPos.y = 2;
-
-        this.interactionTooltip.textMesh.lookAt(targetPos);
+        this.showTooltip("use?");
       }
     );
 
@@ -259,26 +240,17 @@ class Game {
         .copy(data.object.position)
         .add(new THREE.Vector3(0, 3, 0));
 
-      if (data.distance > 4) return;
+      if (data.distance > 5) return;
       if (!this.commandManager.checkIfModeEnabled("movement")) return;
 
-      if (this.interactionTooltip.checkIfLoaded()) {
-        this.interactionTooltip.updatePosition(pos);
-      } else {
-        this.interactionTooltip.loadText("use?", pos);
-      }
-
-      const targetPos = new THREE.Vector3().copy(this.player.model.position);
-      targetPos.y = 2;
-
-      this.interactionTooltip.textMesh.lookAt(targetPos);
+      this.showTooltip("use?");
     });
 
     this.interactionHandler.registerInteraction(
       "blackjack_table",
       "mouseClick",
       (data) => {
-        if (data.distance > 4) return;
+        if (data.distance > 6) return;
 
         const obj = data.object.parent;
         this.camerasManager.getCamera("zoom").setTarget(obj.position);
@@ -291,7 +263,7 @@ class Game {
     );
 
     this.interactionHandler.registerInteraction("atm", "mouseClick", (data) => {
-      if (data.distance > 9) return;
+      if (data.distance > 5) return;
 
       const obj = data.object;
       this.camerasManager.getCamera("zoom").setTarget(obj.position);
@@ -403,7 +375,7 @@ class Game {
             intersect
           );
         } else {
-          this.interactionTooltip.removeText();
+          this.hideTooltip();
         }
       },
       onMouseClick: (event) => {
@@ -415,7 +387,7 @@ class Game {
           "mouseClick",
           intersect
         );
-        this.interactionTooltip.removeText();
+        this.hideTooltip();
       },
       onWheel: (dir) => {
         if (dir === "up") {
@@ -443,11 +415,9 @@ class Game {
     this.initScene();
     await this.initModels();
     await this.initSounds();
-    await this.initFonts();
 
     this.initCollisions();
     this.initStats();
-    this.initInteractionHandlerTooltip();
     this.initInteractionHandler();
 
     this.initCamerasManager();
