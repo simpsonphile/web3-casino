@@ -156,11 +156,13 @@ class PlayableCharacter {
   moveBy(vec) {
     this.model.position.add(vec);
     this._onMovement(this.model.position);
+    this._thirdPersonCamera.positionCameraBehindPlayer();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
     this._onMovement(this.model.position);
+    this._thirdPersonCamera.positionCameraBehindPlayer();
   }
 
   beIdle() {
