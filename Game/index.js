@@ -80,7 +80,6 @@ class Game {
         this.players.createNewPlayers(players);
       },
       onPlayerData: (room, players) => this.players.updatePlayers(players),
-      onPlayersUpdate: (players) => setPlayers(),
     });
 
     this._repo.get("players").connect();
