@@ -25,6 +25,8 @@ class RemotePlayers {
       address: this.address,
     });
 
+    this.sessionId = this._room.sessionId;
+
     this._room.onMessage(SERVER_MESSAGES.PLAYERS_DATA, (data) => {
       if (this.isFirstPlayersData) {
         this._onFirstPlayersData(this._room, data);

@@ -10,6 +10,8 @@ import styles from "./index.module.scss";
 import { useKeyConfigContext } from "../../context/KeyConfigContext";
 import AtmModal from "../AtmModal";
 import GameTooltip from "../GameTooltip";
+import BlackjackUI from "../../BlackjackUI";
+import { useBlackjackUIContext } from "../../context/BlackjackUIContext";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -21,7 +23,13 @@ const GameContainer = () => {
   const [isAtmOpen, setIsAtmOpen] = useState(false);
   const { keyConfig } = useKeyConfigContext();
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipText, setTooltipText] = useState("elo");
+  const [tooltipText, setTooltipText] = useState("");
+  const {
+    isVisible: isBlackjackUIVisible,
+    setIsVisible: setIsBlackjackUIVisible,
+    step: blackjackUIStep,
+    setStep: setBlackjackUIStep,
+  } = useBlackjackUIContext();
 
   useEffect(() => {
     const repo = new Remote({ address });
@@ -53,6 +61,9 @@ const GameContainer = () => {
           setTooltipVisible(false);
           setTooltipText("");
         },
+        showBlackjackUI: () => setIsBlackjackUIVisible(true),
+        hideBlackjackUI: () => setIsBlackjackUIVisible(false),
+        changeBlackjackUIStep: (step) => setBlackjackUIStep(step),
       });
       setGameInstance(game);
     };
@@ -110,6 +121,8 @@ const GameContainer = () => {
       <AtmModal isOpen={isAtmOpen} setIsOpen={setIsAtmOpen} />
 
       {tooltipVisible && <GameTooltip>{tooltipText}</GameTooltip>}
+
+      {isBlackjackUIVisible && <BlackjackUI step={blackjackUIStep} />}
     </div>
   );
 };

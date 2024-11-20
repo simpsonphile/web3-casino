@@ -25,6 +25,11 @@ class PlayableCharacter {
     this.rotationSpeed = 5;
   }
 
+  switchCameraMode(mode) {
+    this._thirdPersonCamera.switchMode(mode);
+    this._thirdPersonCamera.positionCamera();
+  }
+
   update(delta) {
     const rotationDelta = this.targetRotation - this.currentRotation;
     if (Math.abs(rotationDelta) >= Math.PI) {
@@ -51,7 +56,7 @@ class PlayableCharacter {
     // make sure its always on the same height
     dir.y = 2;
     this.targetRotation = Math.atan2(dir.x, dir.z);
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
     this._onRotation(this.model.rotation);
   }
 
@@ -129,40 +134,40 @@ class PlayableCharacter {
 
     this.moveBy(this.getForwardVector().multiplyScalar(this.getSpeed()));
     this.rotateForward();
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   goBackward() {
     this.runGoAnimation();
     this.moveBy(this.getBackwardVector().multiplyScalar(this.getSpeed()));
     this.rotateBackward();
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   goLeft() {
     this.runGoAnimation();
     this.moveBy(this.getLeftVector().multiplyScalar(this.getSpeed()));
     this.rotateLeft();
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   goRight() {
     this.runGoAnimation();
     this.moveBy(this.getRightVector().multiplyScalar(this.getSpeed()));
     this.rotateRight();
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   moveBy(vec) {
     this.model.position.add(vec);
     this._onMovement(this.model.position);
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
     this._onMovement(this.model.position);
-    this._thirdPersonCamera.positionCameraBehindPlayer();
+    this._thirdPersonCamera.positionCamera();
   }
 
   beIdle() {

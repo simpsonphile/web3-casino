@@ -21,9 +21,10 @@ import ZoomCamera from "./ZoomCamera";
 import RendererComposer from "./RendererComposer";
 import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
-import Blackjack from "./Modes/Blackjack";
+import Blackjack from "./Modes/Blackjack/BlackjackView";
 import RemoteBlackjack from "@Common/Remote/Blackjack";
 import UIRenderer from "./UIRenderer";
+import BlackjackController from "./Modes/Blackjack/BlackjackController";
 
 class Game {
   constructor({
@@ -34,6 +35,9 @@ class Game {
     onAtmExit,
     showTooltip,
     hideTooltip,
+    showBlackjackUI,
+    hideBlackjackUI,
+    changeBlackjackUIStep,
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -48,6 +52,10 @@ class Game {
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
+
+    this.showBlackjackUI = showBlackjackUI;
+    this.hideBlackjackUI = hideBlackjackUI;
+    this.changeBlackjackUIStep = changeBlackjackUIStep;
   }
 
   initUIRenderer() {
@@ -233,7 +241,15 @@ class Game {
 
   initBlackjack() {
     this._repo.add("blackjack_1", RemoteBlackjack, { id: "blackjack_1" });
-    this.blackjack = new Blackjack();
+    this._repo.add("blackjack_2", RemoteBlackjack, { id: "blackjack_2" });
+    this._repo.add("blackjack_3", RemoteBlackjack, { id: "blackjack_3" });
+
+    this.blackjackController = new BlackjackController({
+      showBlackjackUI: this.showBlackjackUI,
+      hideBlackjackUI: this.hideBlackjackUI,
+      changeBlackjackUIStep: this.changeBlackjackUIStep,
+    });
+    window.blackjackController = this.blackjackController;
   }
 
   initInteractionHandler() {
@@ -246,7 +262,7 @@ class Game {
         if (data.distance > 6) return;
         if (!this.commandManager.checkIfModeEnabled("movement")) return;
 
-        this.showTooltip("use?");
+        this.showTooltip("wanna join blackjack game?");
       }
     );
 
@@ -265,15 +281,34 @@ class Game {
       "blackjack_table",
       "mouseClick",
       (data) => {
+        if (this.commandManager.getMode().includes("blackjack")) return;
         if (data.distance > 6) return;
 
         const obj = data.object.parent;
-        this.camerasManager.getCamera("zoom").setTarget(obj.position);
-        this.camerasManager.setActiveCamera("zoom", true, () => {
-          this.commandManager.setMode(["zoom", "blackjack"]);
-          this.interactionHandler.setState(false);
-          this.blackjack.join({ object3d: obj, roomId: "blackjack_1" });
+        this.commandManager.setMode(["blackjack"]);
+        this.interactionHandler.setState(false);
+
+        const sessionId = this._repo.get("blackjack_1").sessionId;
+
+        this.blackjackController.join({
+          object3d: obj,
+          roomId: "blackjack_1", // todo from data
+          playerId: sessionId,
         });
+
+        const seatPosition = this.blackjack.getPlayerSeatPosition(sessionId);
+
+        this.player.switchCameraMode("first-person");
+        this.player.moveTo(seatPosition);
+
+        this.blackjack.giveCardToDealer("spade_7");
+        this.blackjack.giveCardToDealer("spade_8");
+        this.blackjack.giveCardToDealer("spade_9");
+        this.blackjack.giveCardToDealer("spade_10");
+
+        this.blackjack.giveCardToPlayer(sessionId, "wine_ace");
+        this.blackjack.giveCardToPlayer(sessionId, "heart_ace");
+        this.blackjack.giveCardToPlayer(sessionId, "wine_ace");
       }
     );
 
@@ -336,16 +371,17 @@ class Game {
       this.player.setRun.bind(this.player),
       this.player.setWalk.bind(this.player)
     );
-    this.commandManager.addCommand("zoom", "scrollIn", ["wheelDown"], () => {
-      this.camerasManager.getCamera("zoom").zoomBy(0.02);
-    });
-    this.commandManager.addCommand("zoom", "scrollOut", ["wheelUp"], () => {
-      this.camerasManager.getCamera("zoom").zoomBy(-0.02);
-    });
+    // this.commandManager.addCommand("zoom", "scrollIn", ["wheelDown"], () => {
+    //   this.camerasManager.getCamera("zoom").zoomBy(0.06);
+    // });
+    // this.commandManager.addCommand("zoom", "scrollOut", ["wheelUp"], () => {
+    //   this.camerasManager.getCamera("zoom").zoomBy(-0.06);
+    // });
     this.commandManager.addCommand("zoom", "exit", keys.zoom.exit, () => {
       this.camerasManager.setActiveCamera("thirdPerson", true, () => {
         this.commandManager.setMode("movement");
         this.interactionHandler.setState(true);
+        this.player.switchCameraMode("third-person");
       });
     });
     this.commandManager.addCommand(
@@ -353,7 +389,11 @@ class Game {
       "hit",
       keys.blackjack.hit,
       () => {
-        console.log("player hit");
+        console.log("hit");
+        this.blackjack.giveChipsToPlayer(
+          this._repo.get("players").sessionId,
+          2537
+        );
       }
     );
     this.commandManager.addCommand(
@@ -362,6 +402,14 @@ class Game {
       keys.blackjack.stand,
       () => {
         console.log("player stand");
+      }
+    );
+    this.commandManager.addCommand(
+      "blackjack",
+      "exit",
+      keys.blackjack.exit,
+      () => {
+        this.blackjack.leave(this._repo.get("players").sessionId);
       }
     );
   }

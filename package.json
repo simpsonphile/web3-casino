@@ -26,8 +26,10 @@
     "dat.gui": "^0.7.9",
     "ethers": "^6.13.4",
     "express": "^4.21.1",
+    "gltfpack": "^0.22.0",
     "html-webpack-plugin": "^5.6.3",
     "jsonwebtoken": "^9.0.2",
+    "meshoptimizer": "^0.22.0",
     "mongoose": "^8.8.1",
     "path": "^0.12.7",
     "react": "^18.3.1",
@@ -46,7 +48,8 @@
     "server:dev": "node Server",
     "contracts:deploy": "npm --prefix ./Contracts run deploy",
     "contracts:start": "npm --prefix ./Contracts run start",
-    "contract-hooks:generate": "npm --prefix ./Contract-hooks run generate"
+    "contract-hooks:generate": "npm --prefix ./Contract-hooks run generate",
+    "optimize-model": "gltfpack -i Front/public/game-assets/models/world.glb -o Front/public/game-assets/models/world-optimized.glb -cc -kn -ke"
   },
   "eslintConfig": {
     "extends": [
