@@ -11,6 +11,19 @@ const getDefaultKeyConfig = () => ({
   blackjack: {
     hit: ["KeyH"],
     stand: ["KeyS"],
+    double: ["KeyD"],
+    halfBet: ["KeyR"],
+    doubleBet: ["Digit0"],
+    add1: ["Digit1"],
+    add2: ["Digit2"],
+    add5: ["Digit3"],
+    add10: ["Digit4"],
+    add25: ["Digit5"],
+    add50: ["Digit6"],
+    add100: ["Digit7"],
+    add500: ["Digit8"],
+    accept: ["Enter"],
+
     exit: ["KeyE"],
   },
   atm: {
