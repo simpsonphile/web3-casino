@@ -1,4 +1,4 @@
-import { chipColorNominalsMap } from "../../constants";
+import { chipColorNominalsMap } from "@Common/constants";
 
 export const getChipsForBet = (bet) => {
   const chips = [];
@@ -13,4 +13,17 @@ export const getChipsForBet = (bet) => {
   }
 
   return chips;
+};
+
+export const groupChips = (chips) => {
+  const groups = {};
+
+  chips.forEach((str) => {
+    if (!groups[str]) {
+      groups[str] = [];
+    }
+    groups[str].push(str);
+  });
+
+  return Object.values(groups);
 };

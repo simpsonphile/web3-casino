@@ -21,10 +21,11 @@ import ZoomCamera from "./ZoomCamera";
 import RendererComposer from "./RendererComposer";
 import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
-import Blackjack from "./Modes/Blackjack/BlackjackView";
 import RemoteBlackjack from "@Common/Remote/Blackjack";
 import UIRenderer from "./UIRenderer";
 import BlackjackController from "./Modes/Blackjack/BlackjackController";
+import BlackjackCommands from "./Modes/Blackjack/BlackjackCommands";
+import CasualMan from "./Models/CasualMan";
 
 class Game {
   constructor({
@@ -37,13 +38,14 @@ class Game {
     hideTooltip,
     showBlackjackUI,
     hideBlackjackUI,
-    changeBlackjackUIStep,
+    updateBlackjackUI,
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.clock = new THREE.Clock();
     this._onPause = onPause;
     this.keyConfig = keyConfig;
+    window.keyConfig = keyConfig;
     this._repo = repo;
     window.repo = this._repo;
 
@@ -55,7 +57,7 @@ class Game {
 
     this.showBlackjackUI = showBlackjackUI;
     this.hideBlackjackUI = hideBlackjackUI;
-    this.changeBlackjackUIStep = changeBlackjackUIStep;
+    this.updateBlackjackUI = updateBlackjackUI;
   }
 
   initUIRenderer() {
@@ -160,7 +162,7 @@ class Game {
   }
 
   async initPlayer() {
-    const model = new BusinessMan();
+    const model = new CasualMan();
     window.scene.add(model);
 
     this.player = new PlayableCharacter({
@@ -214,6 +216,7 @@ class Game {
     this.player.update(delta);
     this.player.model.updateMixer(delta);
     this.players.update(delta);
+    window.npcs.forEach((npc) => npc.updateMixer(delta)); // todo
     this.neonsManager.update(this.clock.getElapsedTime());
     this.camerasManager.update(delta);
   }
@@ -247,8 +250,11 @@ class Game {
     this.blackjackController = new BlackjackController({
       showBlackjackUI: this.showBlackjackUI,
       hideBlackjackUI: this.hideBlackjackUI,
-      changeBlackjackUIStep: this.changeBlackjackUIStep,
+      updateBlackjackUI: this.updateBlackjackUI,
     });
+
+    new BlackjackCommands(this.blackjackController);
+
     window.blackjackController = this.blackjackController;
   }
 
@@ -294,21 +300,11 @@ class Game {
           object3d: obj,
           roomId: "blackjack_1", // todo from data
           playerId: sessionId,
+          afterJoin: (seatPosition) => {
+            this.player.switchCameraMode("first-person");
+            this.player.moveTo(seatPosition);
+          },
         });
-
-        const seatPosition = this.blackjack.getPlayerSeatPosition(sessionId);
-
-        this.player.switchCameraMode("first-person");
-        this.player.moveTo(seatPosition);
-
-        this.blackjack.giveCardToDealer("spade_7");
-        this.blackjack.giveCardToDealer("spade_8");
-        this.blackjack.giveCardToDealer("spade_9");
-        this.blackjack.giveCardToDealer("spade_10");
-
-        this.blackjack.giveCardToPlayer(sessionId, "wine_ace");
-        this.blackjack.giveCardToPlayer(sessionId, "heart_ace");
-        this.blackjack.giveCardToPlayer(sessionId, "wine_ace");
       }
     );
 
@@ -327,6 +323,7 @@ class Game {
 
   initCommandsManager() {
     this.commandManager = new CommandManager();
+    window.commandManager = this.commandManager;
 
     window.camerasManager.setOnCameraTransitioning(() => {
       this.commandManager.setMode("cameraTransition");
@@ -384,34 +381,6 @@ class Game {
         this.player.switchCameraMode("third-person");
       });
     });
-    this.commandManager.addCommand(
-      "blackjack",
-      "hit",
-      keys.blackjack.hit,
-      () => {
-        console.log("hit");
-        this.blackjack.giveChipsToPlayer(
-          this._repo.get("players").sessionId,
-          2537
-        );
-      }
-    );
-    this.commandManager.addCommand(
-      "blackjack",
-      "stand",
-      keys.blackjack.stand,
-      () => {
-        console.log("player stand");
-      }
-    );
-    this.commandManager.addCommand(
-      "blackjack",
-      "exit",
-      keys.blackjack.exit,
-      () => {
-        this.blackjack.leave(this._repo.get("players").sessionId);
-      }
-    );
   }
 
   initRaycaster() {
@@ -492,12 +461,12 @@ class Game {
     this.initClient();
     this.initRenderer();
     this.initUIRenderer();
-    this.initBlackjack();
     this.initCasino();
     this.initNeons();
 
     this.initCommandsManager();
     this.addCommands();
+    this.initBlackjack();
 
     this.initOnScreenResize();
     this.initControls();

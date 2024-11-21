@@ -4,11 +4,20 @@ import { BlackjackGamePlayerData, BlackjackPlayer } from "../entities/index.js";
 class BlackjackState extends Schema {
   constructor() {
     super();
+    this.step = "wait";
     this.players = new MapSchema();
     this.order = new ArraySchema();
-    this.turn = null;
+    this.createNewGame();
+  }
+
+  createNewGame() {
+    this.turn = this.order[0];
     this.dealerHand = new ArraySchema();
     this.currentGame = new MapSchema();
+  }
+
+  changeStep(step) {
+    this.step = step;
   }
 
   getNickname(id) {
@@ -20,7 +29,6 @@ class BlackjackState extends Schema {
   }
 
   addPlayer(id, nickname) {
-    console.log(id, nickname);
     this.players[id] = new BlackjackPlayer(nickname);
     this.order.push(id);
   }
@@ -36,32 +44,72 @@ class BlackjackState extends Schema {
     this.deleteFromOrder(id);
   }
 
-  startNewGame() {
-    const newGame = new MapSchema();
-
-    for (let [id, player] of this.players.entries()) {
-      newGame.addPlayer(id);
-    }
-
-    this.currentGame = newGame;
-  }
-
   addCard(id, card) {
     this.currentGame[id].cards.push(card);
+  }
+
+  addDealerCard(card) {
+    this.dealerHand.push(card);
+  }
+
+  getDealerCards() {
+    return this.dealerHand;
+  }
+
+  getPlayerCards(id) {
+    return this.currentGame[id].cards;
   }
 
   setBet(id, bet) {
     this.currentGame[id].bet = bet;
   }
 
+  setPlayerState(id, state) {
+    this.currentGame[id].state = state;
+  }
+
+  doubleBet(id) {
+    this.currentGame[id].bet *= 2;
+  }
+
+  getBet(id) {
+    return this.currentGame[id].bet;
+  }
+
+  getPlayerState(id) {
+    return this.currentGame[id].state;
+  }
+
+  isAllBet() {
+    for (let [id] of this.currentGame) {
+      if (this.getBet(id) === 0) return false;
+    }
+
+    return true;
+  }
+
+  isAllHit() {
+    for (let [id] of this.currentGame) {
+      if (this.getPlayerState(id) === "hit") return false;
+    }
+
+    return true;
+  }
+
   nextTurn() {
     const index = this.order.indexOf(this.turn);
+    const nextIndex = index + 1;
+
+    if (nextIndex > this.turn.length - 1) {
+      this.step = "finish";
+    }
 
     this.turn = this.order[(index + 1) % this.order.length];
   }
 }
 
 defineTypes(BlackjackState, {
+  step: "string",
   players: { map: BlackjackPlayer },
   order: ["string"],
   turn: "string",

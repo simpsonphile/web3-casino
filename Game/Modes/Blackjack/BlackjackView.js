@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import Card from "../../Models/Card";
 import Chip from "../../Models/Chip";
-import { getChipsForBet } from "./helpers";
+import { getChipsForBet, groupChips } from "./helpers";
 
 class BlackjackView {
   constructor({ object3d }) {
@@ -9,12 +9,16 @@ class BlackjackView {
     this.group = new THREE.Group();
 
     this.players = {};
+    this.playersOrder = [];
 
+    this.dealerHand = [];
     this.dealerMeshGroup = new THREE.Group();
 
     this.group.add(this.dealerMeshGroup);
 
     window.scene.add(this.group);
+
+    this._prepareSlots();
   }
 
   createPlayer(id) {
@@ -25,10 +29,15 @@ class BlackjackView {
       meshGroup,
     };
 
+    if (!this.playersOrder.includes(id)) {
+      this.playersOrder.push(id);
+    }
+
     this.group.add(meshGroup);
   }
 
   cleanPlayerMeshGroup(id) {
+    console.log(this.players, id);
     const { meshGroup } = this.players[id];
 
     this.group.remove(meshGroup);
@@ -48,6 +57,7 @@ class BlackjackView {
     this.group.remove(this.dealerMeshGroup);
     this.dealerMeshGroup = new THREE.Group();
     this.group.add(this.dealerMeshGroup);
+    this.dealerHand = [];
   }
 
   _calcRelativeSlotPos(slot) {
@@ -56,10 +66,10 @@ class BlackjackView {
 
   _prepareSlots() {
     const slots = [
-      new THREE.Vector3(0.5, 0.1, -1),
-      new THREE.Vector3(0.5, 0.1, -0.33),
-      new THREE.Vector3(0.5, 0.1, 0.33),
-      new THREE.Vector3(0.5, 0.1, 1),
+      new THREE.Vector3(0.5, 0.01, -1),
+      new THREE.Vector3(0.5, 0.01, -0.33),
+      new THREE.Vector3(0.5, 0.01, 0.33),
+      new THREE.Vector3(0.5, 0.01, 1),
     ];
 
     const cardSlots = slots.map((slot) => slot);
@@ -78,7 +88,7 @@ class BlackjackView {
       return pos;
     });
 
-    const dealerSlot = new THREE.Vector3(-0.5, 0.1, 0);
+    const dealerSlot = new THREE.Vector3(0, 0.01, 0);
 
     this.cardSlots = cardSlots.map((slot) => this._calcRelativeSlotPos(slot));
 
@@ -89,16 +99,9 @@ class BlackjackView {
     this.dealerSlot = this._calcRelativeSlotPos(dealerSlot);
   }
 
-  init({ object3d }) {
-    this.object3d = object3d;
-    this.playersOrder.push(playerId);
-    this.createPlayer(playerId);
-
-    this._prepareSlots();
-  }
-
   giveCardToDealer(cardName) {
-    const pos = this.relativeDealerSlot;
+    console.log("give card to dealer", cardName);
+    const pos = this.dealerSlot;
 
     const card = new Card({ name: cardName });
 
@@ -113,7 +116,7 @@ class BlackjackView {
   giveCardToPlayer(id, cardName) {
     const { hand, meshGroup } = this.players[id];
     const index = this.playersOrder.indexOf(id);
-    const pos = this.relativeSlots[index];
+    const pos = this.cardSlots[index];
 
     const card = new Card({ name: cardName });
     card.position.copy(pos);
@@ -125,20 +128,27 @@ class BlackjackView {
   }
 
   giveChipsToPlayer(id, newBet) {
+    console.log(id, this.players[id]);
     const { bet, meshGroup } = this.players[id];
     const chipsCount = getChipsForBet(bet).length;
     const index = this.playersOrder.indexOf(id);
-    const pos = this.relativeChipSlots[index];
+    const pos = this.chipSlots[index];
 
     // get array o chips from bet
     const chips = getChipsForBet(newBet);
+    // every color on own stack
+    const stacksOfChips = groupChips(chips);
     // map it to chips
-    chips.forEach((name, i) => {
-      const chip = new Chip({ name });
-      chip.position.copy(pos);
-      chip.position.y += (chipsCount + i) * 0.0033;
+    console.log(chips, stacksOfChips);
+    stacksOfChips.forEach((group, i) => {
+      group.forEach((name, j) => {
+        const chip = new Chip({ name });
+        chip.position.copy(pos);
+        chip.position.y += (chipsCount + j) * 0.0033;
+        chip.position.z += i * 0.04;
 
-      meshGroup.add(chip);
+        meshGroup.add(chip);
+      });
     });
 
     this.updatePlayerBet(id, newBet);
@@ -150,7 +160,8 @@ class BlackjackView {
 
   getPlayerSeatPosition(id) {
     const index = this.playersOrder.indexOf(id);
-    const pos = this.relativeSeats[index];
+    console.log(this.seatSlots, index);
+    const pos = this.seatSlots[index];
     pos.y = 0;
 
     return pos;

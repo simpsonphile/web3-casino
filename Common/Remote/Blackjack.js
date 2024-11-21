@@ -8,33 +8,52 @@ class RemoteBlackjack {
   }
 
   async connect({
+    onJoin,
+    onNewPlayer,
     onNewGame,
     onStepChange,
     onTurnChange,
     onPlayerHandUpdate,
     onPlayerBetUpdate,
+    onPlayerStateUpdate,
     onDealerHandUpdate,
+    onEndGameResults,
   }) {
     this._room = await this._client.joinOrCreate(this.id, {
       address: this.address,
     });
-
-    this._room.onMessage(SERVER_MESSAGES.STEP_CHANGE, (data) =>
+    this.sessionId = this._room.sessionId;
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_STATE, (data) =>
+      onJoin(data)
+    );
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_NEW_PLAYER, (data) =>
+      onNewPlayer(data)
+    );
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_NEW_GAME, (data) =>
+      onNewGame(data)
+    );
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_STEP_CHANGE, (data) =>
       onStepChange(data)
     );
-    this._room.onMessage(SERVER_MESSAGES.TURN_CHANGE, (data) =>
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_TURN_CHANGE, (data) =>
       onTurnChange(data)
     );
-    this._room.onMessage(SERVER_MESSAGES.NEW_GAME, (data) => onNewGame(data));
-    this._room.onMessage(SERVER_MESSAGES.PLAYER_HAND_UPDATE, (data) =>
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_PLAYER_HAND_UPDATE, (data) =>
       onPlayerHandUpdate(data)
     );
-    this._room.onMessage(SERVER_MESSAGES.PLAYER_BET_UPDATE, (data) =>
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_PLAYER_BET_UPDATE, (data) =>
       onPlayerBetUpdate(data)
     );
-    this._room.onMessage(SERVER_MESSAGES.DEALER_HAND_UPDATE, (data) =>
+    this._room.onMessage(
+      SERVER_MESSAGES.BLACKJACK_PLAYER_STATE_UPDATE,
+      (data) => onPlayerStateUpdate(data)
+    );
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_DEALER_HAND_UPDATE, (data) =>
       onDealerHandUpdate(data)
     );
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_END_GAME_RESULTS, (data) => {
+      onEndGameResults(data);
+    });
   }
 
   disconnect() {
@@ -42,19 +61,20 @@ class RemoteBlackjack {
   }
 
   bet(bet) {
-    this._room.send(CLIENT_MESSAGES.BET, bet);
+    this._room.send(CLIENT_MESSAGES.BLACKJACK_BET, bet);
   }
 
   hit() {
-    this._room.send(CLIENT_MESSAGES.HIT);
+    console.log("remote hit");
+    this._room.send(CLIENT_MESSAGES.BLACKJACK_HIT);
   }
 
   stand() {
-    this._room.send(CLIENT_MESSAGES.BET);
+    this._room.send(CLIENT_MESSAGES.BLACKJACK_STAND);
   }
 
   double() {
-    this._room.send(CLIENT_MESSAGES.DOUBLE);
+    this._room.send(CLIENT_MESSAGES.BLACKJACK_DOUBLE);
   }
 }
 
