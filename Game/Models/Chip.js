@@ -1,4 +1,4 @@
-import { chipNamesMap } from "../constants";
+import { chipNamesMap } from "@Common/constants";
 import * as THREE from "three";
 
 class Chip extends THREE.Object3D {

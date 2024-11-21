@@ -1,4 +1,4 @@
-import { cardNamesMap } from "../constants";
+import { cardNamesMap } from "@Common/constants";
 import * as THREE from "three";
 
 class Card extends THREE.Object3D {
