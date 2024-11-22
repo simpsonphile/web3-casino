@@ -4,7 +4,6 @@ import "./Extensions";
 import Controls from "./Controls";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
-import BusinessMan from "./Models/BusinessMan";
 import ThirdPersonCamera from "./ThirdPersonCamera";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
