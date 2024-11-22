@@ -38,7 +38,7 @@ class ChatState extends Schema {
   }
 
   removeUser(id) {
-    delete this.users[id];
+    delete this.users[id]; // todo .remove
   }
 }
 

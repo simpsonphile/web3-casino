@@ -12,7 +12,7 @@ class GameState extends Schema {
   }
 
   removePlayer(id) {
-    delete this.players[id];
+    delete this.players[id]; // todo .remove
   }
 
   updatePosition(id, pos) {

@@ -12,7 +12,7 @@ class SharedState {
   }
 
   removePlayer(sessionId) {
-    delete this.players[sessionId];
+    delete this.players[sessionId]; // todo .remove
   }
 
   getPlayer(sessionId) {
