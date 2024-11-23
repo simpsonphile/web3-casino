@@ -15,5 +15,6 @@ export class StartGameCommand extends Command {
       this.state.currentGame
     );
     this.room.broadcast(SERVER_MESSAGES.BLACKJACK_STEP_CHANGE, this.state.step);
+    this.room.broadcast(SERVER_MESSAGES.BLACKJACK_TURN_CHANGE, this.state.turn);
   }
 }

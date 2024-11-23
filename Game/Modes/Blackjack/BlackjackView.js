@@ -37,7 +37,6 @@ class BlackjackView {
   }
 
   cleanPlayerMeshGroup(id) {
-    console.log(this.players, id);
     const { meshGroup } = this.players[id];
 
     this.group.remove(meshGroup);
@@ -48,16 +47,18 @@ class BlackjackView {
     this.createPlayer(id);
   }
 
-  resetTable() {
-    // loop players and reset
-    this.playersOrder.forEach((id) => {
-      this.resetPlayer(id);
-    });
-
+  resetDealer() {
+    this.dealerHand = [];
     this.group.remove(this.dealerMeshGroup);
     this.dealerMeshGroup = new THREE.Group();
     this.group.add(this.dealerMeshGroup);
-    this.dealerHand = [];
+  }
+
+  resetTable() {
+    this.playersOrder.forEach((id) => {
+      this.resetPlayer(id);
+    });
+    this.resetDealer();
   }
 
   _calcRelativeSlotPos(slot) {
@@ -66,10 +67,10 @@ class BlackjackView {
 
   _prepareSlots() {
     const slots = [
-      new THREE.Vector3(0.5, 0.01, -1),
-      new THREE.Vector3(0.5, 0.01, -0.33),
-      new THREE.Vector3(0.5, 0.01, 0.33),
-      new THREE.Vector3(0.5, 0.01, 1),
+      new THREE.Vector3(0.5, 0.01, -0.9),
+      new THREE.Vector3(0.5, 0.01, -0.3),
+      new THREE.Vector3(0.5, 0.01, 0.3),
+      new THREE.Vector3(0.5, 0.01, 0.9),
     ];
 
     const cardSlots = slots.map((slot) => slot);
@@ -100,7 +101,6 @@ class BlackjackView {
   }
 
   giveCardToDealer(cardName) {
-    console.log("give card to dealer", cardName);
     const pos = this.dealerSlot;
 
     const card = new Card({ name: cardName });
@@ -128,23 +128,21 @@ class BlackjackView {
   }
 
   giveChipsToPlayer(id, newBet) {
-    console.log(id, this.players[id]);
     const { bet, meshGroup } = this.players[id];
-    const chipsCount = getChipsForBet(bet).length;
     const index = this.playersOrder.indexOf(id);
     const pos = this.chipSlots[index];
 
-    // get array o chips from bet
+    if (bet > 0) pos.x += 0.04;
+    newBet -= bet;
+
     const chips = getChipsForBet(newBet);
-    // every color on own stack
     const stacksOfChips = groupChips(chips);
-    // map it to chips
-    console.log(chips, stacksOfChips);
+
     stacksOfChips.forEach((group, i) => {
       group.forEach((name, j) => {
         const chip = new Chip({ name });
         chip.position.copy(pos);
-        chip.position.y += (chipsCount + j) * 0.0033;
+        chip.position.y += j * 0.0033;
         chip.position.z += i * 0.04;
 
         meshGroup.add(chip);
@@ -160,14 +158,13 @@ class BlackjackView {
 
   getPlayerSeatPosition(id) {
     const index = this.playersOrder.indexOf(id);
-    console.log(this.seatSlots, index);
     const pos = this.seatSlots[index];
     pos.y = 0;
 
     return pos;
   }
 
-  leave(id) {
+  deletePlayer(id) {
     const index = this.playersOrder.indexOf(id);
     this.playersOrder.splice(index, 1);
 

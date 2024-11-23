@@ -15,11 +15,11 @@ class Casino {
       }
 
       if (child.name.includes("blackjack_npc_position")) {
+        //todo move to proper place
         const npc = new BusinessMan();
         npc.position.copy(child.position);
         window.scene.add(npc);
         npc.runIdleAnimation();
-        console.log(npc);
         npc.rotation.y -= Math.PI / 2;
         window.npcs.push(npc);
       }

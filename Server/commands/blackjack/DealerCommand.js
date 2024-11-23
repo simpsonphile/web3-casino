@@ -20,7 +20,7 @@ export class DealerCommand extends Command {
       if (type === "win") {
         this.state.setPlayerState(id, "win");
       } else if (type === "lose") {
-        this.state.setPlayerState(id, "win");
+        this.state.setPlayerState(id, "lose");
       } else if (type === "check") {
         const state =
           countCardPoints(this.state.getPlayerCards(id)) >=
@@ -32,11 +32,9 @@ export class DealerCommand extends Command {
     }
   }
 
-  checkCondition(id) {
-    const cards = this.state.getDealerCards(id);
-    console.log(cards);
+  checkCondition() {
+    const cards = this.state.getDealerCards();
     const points = countCardPoints(cards);
-    console.log(points);
 
     if (points < 17) {
       this.pickCard = true;
@@ -52,18 +50,28 @@ export class DealerCommand extends Command {
     }
   }
 
-  execute() {
-    if (this.state.step === "dealer") {
-      this.pickCard = true;
-      while (this.pickCard) {
+  async dealCardWithDelay() {
+    return new Promise((resolve) =>
+      this.clock.setTimeout(() => {
         this.dealCard();
         this.checkCondition();
-      }
+        resolve();
+      }, this.cardIndex * 300)
+    );
+  }
 
-      this.room.broadcast(
-        SERVER_MESSAGES.BLACKJACK_END_GAME_RESULTS,
-        this.state.currentGame
-      );
+  async execute() {
+    this.cardIndex = 0;
+    if (this.state.step !== "dealer") return;
+    this.pickCard = true;
+    while (this.pickCard) {
+      await this.dealCardWithDelay();
+      this.cardIndex++;
     }
+
+    this.room.broadcast(
+      SERVER_MESSAGES.BLACKJACK_END_GAME_RESULTS,
+      this.state.currentGame
+    );
   }
 }

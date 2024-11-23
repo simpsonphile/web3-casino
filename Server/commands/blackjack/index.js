@@ -5,6 +5,7 @@ import { UpdateStepCommand } from "./UpdateStepCommand.js";
 import { HitCommand } from "./HitCommand.js";
 import { StandCommand } from "./StandCommand.js";
 import { DealerCommand } from "./DealerCommand.js";
+import { JoinCommand } from "./JoinCommand.js";
 
 export {
   BetCommand,
@@ -14,4 +15,5 @@ export {
   HitCommand,
   StandCommand,
   DealerCommand,
+  JoinCommand,
 };

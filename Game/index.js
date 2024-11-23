@@ -35,9 +35,7 @@ class Game {
     onAtmExit,
     showTooltip,
     hideTooltip,
-    showBlackjackUI,
-    hideBlackjackUI,
-    updateBlackjackUI,
+    dispatchBlackjackUI,
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -53,10 +51,7 @@ class Game {
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
-
-    this.showBlackjackUI = showBlackjackUI;
-    this.hideBlackjackUI = hideBlackjackUI;
-    this.updateBlackjackUI = updateBlackjackUI;
+    this.dispatchBlackjackUI = dispatchBlackjackUI;
   }
 
   initUIRenderer() {
@@ -247,9 +242,7 @@ class Game {
     this._repo.add("blackjack_3", RemoteBlackjack, { id: "blackjack_3" });
 
     this.blackjackController = new BlackjackController({
-      showBlackjackUI: this.showBlackjackUI,
-      hideBlackjackUI: this.hideBlackjackUI,
-      updateBlackjackUI: this.updateBlackjackUI,
+      dispatchBlackjackUI: this.dispatchBlackjackUI,
     });
 
     new BlackjackCommands(this.blackjackController);

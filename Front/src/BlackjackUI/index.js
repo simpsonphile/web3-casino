@@ -4,9 +4,12 @@ import HitScreen from "./HitScreen";
 import ResultScreen from "./ResultScreen";
 import styles from "./index.module.scss";
 import { useBlackjackUIContext } from "../context/BlackjackUIContext";
+import NewPlayerJoined from "./NewPlayerJoined";
+import { Box } from "@chakra-ui/react";
 
 const BlackjackUI = () => {
-  const { isVisible, step } = useBlackjackUIContext();
+  const { state } = useBlackjackUIContext();
+  const { isVisible, step } = state;
 
   if (!isVisible) return null;
 
@@ -25,7 +28,12 @@ const BlackjackUI = () => {
     }
   };
 
-  return <div className={styles.BlackjackUI}>{content()}</div>;
+  return (
+    <Box gap={4} className={styles.BlackjackUI}>
+      {content()}
+      <NewPlayerJoined />
+    </Box>
+  );
 };
 
 export default BlackjackUI;

@@ -16,7 +16,6 @@ class BlackjackCommands {
         this.keys.blackjack[`add${bet}`],
         null,
         () => {
-          console.log(bet);
           this.blackjackController.addToPendingBet(bet);
         }
       );
@@ -24,7 +23,6 @@ class BlackjackCommands {
   }
 
   addCommands() {
-    console.log(this.keys, window.commandManager);
     window.commandManager.addCommand(
       "blackjack",
       "hit",

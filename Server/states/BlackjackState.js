@@ -35,16 +35,25 @@ class BlackjackState extends Schema {
 
   deleteFromOrder(id) {
     const index = this.order.indexOf(id);
+    if (index === -1) return;
 
     this.order.splice(index, 1);
   }
 
   removePlayer(id) {
-    delete this.players[id];
+    if (this.players.has(id)) {
+      delete this.players[id];
+    }
+
+    if (this.currentGame.has(id)) {
+      delete this.currentGame[id];
+    }
+
     this.deleteFromOrder(id);
   }
 
   addCard(id, card) {
+    if (!this.currentGame.has(id)) return;
     this.currentGame[id].cards.push(card);
   }
 
@@ -57,26 +66,32 @@ class BlackjackState extends Schema {
   }
 
   getPlayerCards(id) {
+    if (!this.currentGame.has(id)) return;
     return this.currentGame[id].cards;
   }
 
   setBet(id, bet) {
+    if (!this.currentGame.has(id)) return;
     this.currentGame[id].bet = bet;
   }
 
   setPlayerState(id, state) {
+    if (!this.currentGame.has(id)) return;
     this.currentGame[id].state = state;
   }
 
   doubleBet(id) {
+    if (!this.currentGame.has(id)) return;
     this.currentGame[id].bet *= 2;
   }
 
   getBet(id) {
+    if (!this.currentGame.has(id)) return;
     return this.currentGame[id].bet;
   }
 
   getPlayerState(id) {
+    if (!this.currentGame.has(id)) return;
     return this.currentGame[id].state;
   }
 
@@ -97,14 +112,23 @@ class BlackjackState extends Schema {
   }
 
   nextTurn() {
-    const index = this.order.indexOf(this.turn);
-    const nextIndex = index + 1;
+    if (this.order.length === 0) return;
 
-    if (nextIndex > this.turn.length - 1) {
-      this.step = "finish";
+    const currentIndex = this.order.indexOf(this.turn);
+    let nextIndex = currentIndex + 1;
+    let id = this.order[nextIndex];
+
+    while (!this.currentGame.has(id)) {
+      if (nextIndex > this.order.length - 1) {
+        this.step = "finish";
+        return;
+      }
+
+      nextIndex++;
+      id = this.order[nextIndex];
     }
 
-    this.turn = this.order[(index + 1) % this.order.length];
+    this.turn = id;
   }
 }
 

@@ -24,8 +24,7 @@ const GameContainer = () => {
   const { keyConfig } = useKeyConfigContext();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
-  const { setIsVisible: setIsBlackjackUIVisible, update: updateBlackjackUI } =
-    useBlackjackUIContext();
+  const { dispatch: dispatchBlackjackUI } = useBlackjackUIContext();
 
   useEffect(() => {
     const repo = new Remote({ address });
@@ -57,9 +56,7 @@ const GameContainer = () => {
           setTooltipVisible(false);
           setTooltipText("");
         },
-        showBlackjackUI: () => setIsBlackjackUIVisible(true),
-        hideBlackjackUI: () => setIsBlackjackUIVisible(false),
-        updateBlackjackUI: (step, data) => updateBlackjackUI(step, data),
+        dispatchBlackjackUI: dispatchBlackjackUI,
       });
       setGameInstance(game);
     };

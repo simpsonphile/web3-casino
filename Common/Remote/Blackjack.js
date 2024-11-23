@@ -18,6 +18,10 @@ class RemoteBlackjack {
     onPlayerStateUpdate,
     onDealerHandUpdate,
     onEndGameResults,
+    onBetAccepted,
+    onHitAccepted,
+    onStandAccepted,
+    onDeletePlayer,
   }) {
     this._room = await this._client.joinOrCreate(this.id, {
       address: this.address,
@@ -54,6 +58,18 @@ class RemoteBlackjack {
     this._room.onMessage(SERVER_MESSAGES.BLACKJACK_END_GAME_RESULTS, (data) => {
       onEndGameResults(data);
     });
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_BET_ACCEPTED, (data) => {
+      onBetAccepted(data);
+    });
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_HIT_ACCEPTED, (data) => {
+      onHitAccepted(data);
+    });
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_STAND_ACCEPTED, (data) => {
+      onStandAccepted(data);
+    });
+    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_DELETE_PLAYER, (data) => {
+      onDeletePlayer(data);
+    });
   }
 
   disconnect() {
@@ -65,7 +81,6 @@ class RemoteBlackjack {
   }
 
   hit() {
-    console.log("remote hit");
     this._room.send(CLIENT_MESSAGES.BLACKJACK_HIT);
   }
 

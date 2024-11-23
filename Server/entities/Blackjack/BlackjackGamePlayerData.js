@@ -5,7 +5,7 @@ class BlackjackGamePlayerData extends Schema {
     super();
     this.cards = new ArraySchema();
     this.bet = 0;
-    this.state = "hit"; // hit, stand, won, won-early, lose
+    this.state = "hit";
   }
 }
 

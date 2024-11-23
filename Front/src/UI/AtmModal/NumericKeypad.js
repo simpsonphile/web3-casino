@@ -19,7 +19,6 @@ const NumericKeypad = ({ value, onChange, onEnter, max }) => {
 
       if (typeof x === "number") {
         onChange((prev) => {
-          console.log(prev + x, max);
           if (prev === "0") return x + "";
 
           if (Number(prev + x) > Number(max)) return parseInt(max).toString();
