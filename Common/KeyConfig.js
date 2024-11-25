@@ -26,6 +26,9 @@ const getDefaultKeyConfig = () => ({
 
     exit: ["KeyE"],
   },
+  slotMachine: {
+    exit: ["KeyE"],
+  },
   atm: {
     exit: ["KeyE"],
     withdraw: ["KeyW"],
