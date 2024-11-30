@@ -127,14 +127,22 @@ class BlackjackView {
     this.dealerSlot = this._calcRelativeSlotPos(dealerSlot);
   }
 
-  giveCardToDealer(cardName) {
-    const pos = this.dealerSlot;
-
+  createCard(cardName, pos, index) {
     const card = new Card({ name: cardName });
 
     card.position.copy(pos);
-    card.position.z += this.dealerHand.length * 0.02;
-    card.position.y += this.dealerHand.length * 0.0001;
+    card.position.z += index * 0.02;
+    card.position.y += index * 0.0001;
+
+    return card;
+  }
+
+  giveCardToDealer(cardName) {
+    const card = this.createCard(
+      cardName,
+      this.dealerSlot,
+      this.dealerHand.length
+    );
 
     this.dealerHand.push(cardName);
     this.dealerMeshGroup.add(card);
@@ -145,10 +153,7 @@ class BlackjackView {
     const index = this.playersOrder.indexOf(id);
     const pos = this.cardSlots[index];
 
-    const card = new Card({ name: cardName });
-    card.position.copy(pos);
-    card.position.z += hand.length * 0.02;
-    card.position.y += hand.length * 0.0001;
+    const card = this.createCard(cardName, pos, hand.length);
 
     hand.push(cardName);
     meshGroup.add(card);
