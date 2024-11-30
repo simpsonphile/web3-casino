@@ -8,6 +8,8 @@ const DATABASE_UPDATE_FREQ = 1000 * 10;
 
 class GameRoom extends AuthRoom {
   onCreate(options) {
+    this.id = options.id;
+
     this.setState(new GameState());
 
     this.onMessage(CLIENT_MESSAGES.PLAYER_MOVE, (client, position) => {

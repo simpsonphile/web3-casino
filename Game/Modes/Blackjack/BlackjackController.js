@@ -1,5 +1,3 @@
-import BlackjackView from "./BlackjackView";
-
 const betSound = new Audio("game-assets/sounds/chip-drop.mp3");
 const betAccept = new Audio("game-assets/sounds/all-in-chips.mp3");
 const cardDrop = new Audio("game-assets/sounds/card-drop.mp3");
@@ -12,22 +10,32 @@ const playSound = (sound) => {
 };
 
 class BlackjackController {
-  constructor({ dispatchBlackjackUI }) {
+  constructor({ dispatchBlackjackUI, views }) {
     this.dispatchBlackjackUI = dispatchBlackjackUI;
 
-    this.view = null;
     this.roomId = null;
 
     this.currentTurn = null;
     this.currentStep = null;
+    this.views = views;
 
     this.pendingBet = 0;
   }
 
-  join({ object3d, roomId, afterJoin }) {
+  getRemote() {
+    return window.repo.get("blackjack");
+  }
+
+  getCurrentView() {
+    return this.views[this.currentViewName];
+  }
+
+  join({ objectName, roomId, afterJoin }) {
+    this.currentViewName = objectName;
     this._afterJoin = afterJoin;
     this.roomId = roomId;
-    window.repo.get(roomId).connect({
+    this.getRemote().connect({
+      id: roomId,
       onJoin: this.onJoin.bind(this),
       onNewPlayer: this.onNewPlayer.bind(this),
       onNewGame: this.onNewGame.bind(this),
@@ -44,8 +52,6 @@ class BlackjackController {
       onDeletePlayer: this.onDeletePlayer.bind(this),
     });
 
-    this.view = new BlackjackView({ object3d });
-
     this.dispatchBlackjackUI({ type: "setVisible", payload: true });
     this.dispatchBlackjackUI({ type: "setStep", payload: "wait" });
   }
@@ -54,34 +60,38 @@ class BlackjackController {
     const { [this.sessionId]: you, ...them } = data.currentGame;
 
     Object.entries(them).forEach(([id, player]) => {
-      this.view.createPlayer(id);
-      player.cards.map((card) => this.view.giveCardToPlayer(id, card));
-      this.view.giveChipsToPlayer(id, player.bet);
+      this.getCurrentView().createPlayer(id);
+      player.cards.map((card) =>
+        this.getCurrentView().giveCardToPlayer(id, card)
+      );
+      this.getCurrentView().giveChipsToPlayer(id, player.bet);
     });
 
     data.dealerHand.forEach((card) => this.onDealerHandUpdate(card));
   }
 
   onJoin(data) {
-    this.sessionId = window.repo.get(this.roomId).sessionId;
+    this.sessionId = this.getRemote().sessionId;
 
     this.buildCurrentTable(data);
 
-    this.view.createPlayer(this.sessionId);
+    this.getCurrentView().createPlayer(this.sessionId);
 
     this.dispatchBlackjackUI({ type: "setVisible", payload: true });
     this.dispatchBlackjackUI({ type: "setId", payload: this.sessionId });
 
-    this._afterJoin(this.view.getPlayerSeatPosition(this.sessionId));
+    this._afterJoin(
+      this.getCurrentView().getPlayerSeatPosition(this.sessionId)
+    );
   }
 
   onNewPlayer({ id, nickname }) {
-    this.view.createPlayer(id);
+    this.getCurrentView().createPlayer(id);
     this.dispatchBlackjackUI({ type: "newPlayerJoined", payload: nickname });
   }
 
   onNewGame() {
-    this.view.resetTable();
+    this.getCurrentView().resetTable();
     this.dispatchBlackjackUI({ type: "reset" });
     this.dispatchBlackjackUI({ type: "setVisible", payload: true });
     this.dispatchBlackjackUI({ type: "setBet", payload: this.pendingBet });
@@ -99,7 +109,7 @@ class BlackjackController {
   }
 
   onPlayerHandUpdate({ id, card }) {
-    this.view.giveCardToPlayer(id, card);
+    this.getCurrentView().giveCardToPlayer(id, card);
     playSound(cardDrop);
 
     if (id === this.sessionId) {
@@ -108,7 +118,7 @@ class BlackjackController {
   }
 
   onPlayerBetUpdate({ id, bet }) {
-    this.view.giveChipsToPlayer(id, bet);
+    this.getCurrentView().giveChipsToPlayer(id, bet);
   }
 
   onPlayerStateUpdate({ id, state }) {
@@ -118,7 +128,7 @@ class BlackjackController {
   }
 
   onDealerHandUpdate(card) {
-    this.view.giveCardToDealer(card);
+    this.getCurrentView().giveCardToDealer(card);
     this.dispatchBlackjackUI({ type: "addDealerCard", payload: card });
     playSound(cardDrop);
   }
@@ -150,7 +160,7 @@ class BlackjackController {
   }
 
   onDeletePlayer(id) {
-    this.view.deletePlayer(id);
+    this.getCurrentView().deletePlayer(id);
   }
 
   setPendingBet(bet) {
@@ -176,22 +186,22 @@ class BlackjackController {
   }
 
   bet() {
-    window.repo.get(this.roomId).bet(this.pendingBet);
+    this.getRemote().bet(this.pendingBet);
   }
 
   hit() {
-    window.repo.get(this.roomId).hit();
+    this.getRemote().hit();
   }
   stand() {
-    window.repo.get(this.roomId).stand();
+    this.getRemote().stand();
   }
   double() {
-    window.repo.get(this.roomId).double();
+    this.getRemote().double();
   }
 
   leave() {
-    this.view.deletePlayer(window.repo.get(this.roomId).sessionId);
-    window.repo.get(this.roomId).disconnect();
+    this.getCurrentView().deletePlayer(this.getRemote().sessionId);
+    this.getRemote().disconnect();
     this.dispatchBlackjackUI({ type: "setVisible", payload: false });
   }
 }

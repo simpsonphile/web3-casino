@@ -20,17 +20,15 @@ import ZoomCamera from "./ZoomCamera";
 import RendererComposer from "./RendererComposer";
 import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
-import RemoteBlackjack from "@Common/Remote/Blackjack";
 import UIRenderer from "./UIRenderer";
-import BlackjackController from "./Modes/Blackjack/BlackjackController";
-import BlackjackCommands from "./Modes/Blackjack/BlackjackCommands";
 import CasualMan from "./Models/CasualMan";
-import BlackjackInteraction from "./Modes/Blackjack/BlackjackInteraction";
 import SlotMachineInteraction from "./Modes/SlotMachine/SlotMachineInteraction";
-import ATMInteraction from "./Modes/ATM/ATMInteraction";
 import SlotMachineCommands from "./Modes/SlotMachine/SlotMachineCommands";
 import MovementCommands from "./Modes/Movement/MovementCommands";
 import ZoomCommands from "./Modes/Zoom/ZoomCommands";
+import SlotMachineController from "./Modes/SlotMachine/SlotMachineController";
+import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
+import ATMMode from "./Modes/ATM/ATMMode";
 
 class Game {
   constructor({
@@ -216,9 +214,9 @@ class Game {
     this.player.update(delta);
     this.player.model.updateMixer(delta);
     this.players.update(delta);
-    window.npcs.forEach((npc) => npc.updateMixer(delta)); // todo
     this.neonsManager.update(this.clock.getElapsedTime());
     this.camerasManager.update(delta);
+    this.slotMachineController.update(delta);
   }
 
   animate() {
@@ -243,25 +241,32 @@ class Game {
   }
 
   initBlackjack() {
-    this._repo.add("blackjack_1", RemoteBlackjack, { id: "blackjack_1" });
-    this._repo.add("blackjack_2", RemoteBlackjack, { id: "blackjack_2" });
-    this._repo.add("blackjack_3", RemoteBlackjack, { id: "blackjack_3" });
-
-    this.blackjackController = new BlackjackController({
+    new BlackjackMode({
+      game: this,
       dispatchBlackjackUI: this.dispatchBlackjackUI,
-    });
+    }).init();
+  }
 
-    new BlackjackCommands(this.blackjackController);
+  initATM() {
+    new ATMMode({
+      game: this,
+      onAtmClick: this.onAtmClick,
+      onAtmExit: this.onAtmExit,
+    }).init();
+  }
 
-    window.blackjackController = this.blackjackController;
+  initSlotMachine() {
+    this.slotMachineController = new SlotMachineController();
+
+    window.slotMachineController = this.slotMachineController;
+
+    new SlotMachineCommands(this.slotMachineController);
   }
 
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
     window.interactionHandler = this.interactionHandler;
-    this.blackjackInteraction = new BlackjackInteraction(this);
     this.slotMachineInteraction = new SlotMachineInteraction(this);
-    this.ATMInteraction = new ATMInteraction(this);
   }
 
   initCommandsManager() {
@@ -276,8 +281,8 @@ class Game {
   addCommands() {
     this.commandManager.resetCommands();
 
+    // todo move to modes
     new ZoomCommands();
-    new SlotMachineCommands();
     new MovementCommands();
   }
 
@@ -364,7 +369,9 @@ class Game {
 
     this.initCommandsManager();
     this.addCommands();
+    this.initATM();
     this.initBlackjack();
+    this.initSlotMachine();
 
     this.initOnScreenResize();
     this.initControls();

@@ -1,13 +1,13 @@
 import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../../Server/messageTypes";
 
 class RemoteBlackjack {
-  constructor({ client, address, id }) {
+  constructor({ client, address }) {
     this._client = client;
     this.address = address;
-    this.id = id;
   }
 
   async connect({
+    id,
     onJoin,
     onNewPlayer,
     onNewGame,
@@ -23,8 +23,9 @@ class RemoteBlackjack {
     onStandAccepted,
     onDeletePlayer,
   }) {
-    this._room = await this._client.joinOrCreate(this.id, {
+    this._room = await this._client.joinOrCreate("blackjack", {
       address: this.address,
+      id,
     });
     this.sessionId = this._room.sessionId;
     this._room.onMessage(SERVER_MESSAGES.BLACKJACK_STATE, (data) =>

@@ -1,6 +1,7 @@
 class BlackjackInteraction {
-  constructor(game) {
+  constructor({ game, controller }) {
     this.game = game;
+    this.controller = controller;
     this.registerInteractions();
   }
 
@@ -11,19 +12,24 @@ class BlackjackInteraction {
     this.game.showTooltip("wanna join blackjack game?");
   }
 
+  getObj(obj) {
+    if (obj?.userData?.name?.includes("blackjack_table")) return obj;
+    return this.getObj(obj.parent);
+  }
+
   onClick(data) {
     if (this.game.commandManager.getMode().includes("blackjack")) return;
     if (data.distance > 6) return;
 
-    const obj = data.object.parent;
+    const obj = this.getObj(data.object);
+    const roomId = obj.userData.blackjack_table_id;
     this.game.commandManager.setMode(["blackjack"]);
     this.game.interactionHandler.setState(false);
 
-    const sessionId = this.game._repo.get("blackjack_1").sessionId;
-
-    this.game.blackjackController.join({
-      object3d: obj,
-      roomId: "blackjack_1", // todo from data
+    const sessionId = window.repo.get("blackjack").sessionId;
+    this.controller.join({
+      objectName: obj.name,
+      roomId: roomId,
       playerId: sessionId,
       afterJoin: (seatPosition) => {
         this.game.player.switchCameraMode("first-person");

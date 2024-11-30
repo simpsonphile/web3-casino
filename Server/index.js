@@ -59,9 +59,7 @@ const gameServer = new Server({
 // Register the GameRoom
 gameServer.define("game_room", GameRoom);
 gameServer.define("chat_room", ChatRoom);
-gameServer.define("blackjack_1", BlackjackRoom);
-gameServer.define("blackjack_2", BlackjackRoom);
-gameServer.define("blackjack_3", BlackjackRoom);
+gameServer.define("blackjack", BlackjackRoom).filterBy(["id"]);
 
 // Start the server
 gameServer.listen(port);

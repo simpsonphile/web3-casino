@@ -2,10 +2,12 @@ import * as THREE from "three";
 import Card from "../../Models/Card";
 import Chip from "../../Models/Chip";
 import { getChipsForBet, groupChips } from "./helpers";
+import BusinessMan from "../../Models/BusinessMan";
 
 class BlackjackView {
-  constructor({ object3d }) {
+  constructor({ object3d, seatOffset }) {
     this.object3d = object3d;
+    this.seatOffset = seatOffset;
     this.group = new THREE.Group();
 
     this.players = {};
@@ -19,6 +21,7 @@ class BlackjackView {
     window.scene.add(this.group);
 
     this._prepareSlots();
+    this._prepareNpc();
   }
 
   createPlayer(id) {
@@ -65,27 +68,51 @@ class BlackjackView {
     return new THREE.Vector3().copy(slot).add(this.object3d.position);
   }
 
+  _prepareNpc() {
+    // todo
+    const npc = new BusinessMan();
+    npc.position.copy(this.object3d.position);
+
+    npc.runIdleAnimation();
+    npc.rotation.y -= Math.PI / 2;
+    this.group.add(npc);
+  }
+
   _prepareSlots() {
-    const slots = [
-      new THREE.Vector3(0.5, 0.01, -0.9),
-      new THREE.Vector3(0.5, 0.01, -0.3),
-      new THREE.Vector3(0.5, 0.01, 0.3),
-      new THREE.Vector3(0.5, 0.01, 0.9),
-    ];
+    const seatGap = 0.6;
+    const seatEdge = -0.9;
+    const seatsCount = 4;
+
+    const axis = this.seatOffset[0] !== 0 ? "x" : "z";
+    const dir = this.seatOffset[0] || this.seatOffset[2];
+
+    const slots = [...new Array(seatsCount)].map((_, i) => {
+      const v = new THREE.Vector3();
+      const seat = seatEdge + i * seatGap;
+      const seatOffsetFromCenter = 0.5 * dir;
+
+      if (axis === "x") {
+        v.copy(new THREE.Vector3(seatOffsetFromCenter, 0.01, seat));
+      } else if (axis === "z") {
+        v.copy(new THREE.Vector3(seat, 0.01, seatOffsetFromCenter));
+      }
+
+      return v;
+    });
 
     const cardSlots = slots.map((slot) => slot);
 
     const seatSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos.x += 1;
+      pos[axis] += dir;
       return pos;
     });
 
     const chipSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos.x += 0.1;
+      pos[axis] += 0.1 * dir;
       return pos;
     });
 

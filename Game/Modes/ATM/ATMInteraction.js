@@ -7,10 +7,6 @@ class ATMInteraction {
   }
 
   onMouseOver(data) {
-    const pos = new THREE.Vector3()
-      .copy(data.object.position)
-      .add(new THREE.Vector3(0, 3, 0));
-
     if (data.distance > 5) return;
     if (!this.game.commandManager.checkIfModeEnabled("movement")) return;
 
@@ -20,13 +16,18 @@ class ATMInteraction {
   onClick(data) {
     if (data.distance > 5) return;
 
-    const obj = data.object;
-    this.game.camerasManager.getCamera("zoom").setTarget(obj.position);
-    this.game.camerasManager.setActiveCamera("zoom", true, () => {
-      this.game.commandManager.setMode(["zoom", "atm"]);
-      this.game.interactionHandler.setState(false);
-      this.game.onAtmClick();
-    });
+    const obj = data.object.parent;
+
+    this.game.player.switchCameraMode("first-person");
+    const newPosition = new THREE.Vector3()
+      .copy(obj.position)
+      .add(new THREE.Vector3(-1.5, 0, 0));
+    newPosition.y = 0;
+    this.game.player.moveTo(newPosition);
+
+    this.game.commandManager.setMode(["atm"]);
+    this.game.interactionHandler.setState(false);
+    this.game.onAtmClick();
   }
 
   registerInteractions() {

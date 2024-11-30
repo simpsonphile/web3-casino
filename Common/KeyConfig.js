@@ -28,11 +28,12 @@ const getDefaultKeyConfig = () => ({
   },
   slotMachine: {
     exit: ["KeyE"],
+    spin: ["KeyS"],
   },
   atm: {
     exit: ["KeyE"],
-    withdraw: ["KeyW"],
-    deposit: ["KeyD"],
+    withdraw: ["KeyQ"],
+    deposit: ["KeyR"],
     delete: ["Backspace"],
     accept: ["Enter"],
   },
