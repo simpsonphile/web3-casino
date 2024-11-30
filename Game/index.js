@@ -29,6 +29,7 @@ import ZoomCommands from "./Modes/Zoom/ZoomCommands";
 import SlotMachineController from "./Modes/SlotMachine/SlotMachineController";
 import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
+import DeltaUpdater from "./DeltaUpdater";
 
 class Game {
   constructor({
@@ -43,7 +44,6 @@ class Game {
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.clock = new THREE.Clock();
     this._onPause = onPause;
     this.keyConfig = keyConfig;
     window.keyConfig = keyConfig;
@@ -209,14 +209,27 @@ class Game {
     this.neonsManager = new Neons();
   }
 
+  initUpdater() {
+    this.deltaUpdater = new DeltaUpdater();
+    window.deltaUpdater = this.deltaUpdater;
+  }
+
+  updateUpdater() {
+    // move these
+    this.deltaUpdater.add(this.player.update.bind(this.player));
+    this.deltaUpdater.add(this.players.update.bind(this.players));
+    this.deltaUpdater.add(
+      this.neonsManager.update.bind(this.neonsManager),
+      false
+    );
+    this.deltaUpdater.add(this.camerasManager.update.bind(this.camerasManager));
+    this.deltaUpdater.add(
+      this.slotMachineController.update.bind(this.slotMachineController)
+    );
+  }
+
   update() {
-    const delta = this.clock.getDelta();
-    this.player.update(delta);
-    this.player.model.updateMixer(delta);
-    this.players.update(delta);
-    this.neonsManager.update(this.clock.getElapsedTime());
-    this.camerasManager.update(delta);
-    this.slotMachineController.update(delta);
+    this.deltaUpdater.update();
   }
 
   animate() {
@@ -362,6 +375,7 @@ class Game {
     this.initZoomCamera();
     this.initPlayer();
     this.initClient();
+    this.initUpdater();
     this.initRenderer();
     this.initUIRenderer();
     this.initCasino();
@@ -378,6 +392,7 @@ class Game {
     this.initRaycaster();
 
     this.pointerLock.requestPointerLock();
+    this.updateUpdater();
   }
 }
 
