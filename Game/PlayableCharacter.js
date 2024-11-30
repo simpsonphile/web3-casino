@@ -1,16 +1,10 @@
 import * as THREE from "three";
 
 class PlayableCharacter {
-  constructor({
-    model,
-    thirdPersonCamera,
-    onMovement,
-    onRotation,
-    onAnimation,
-  }) {
+  constructor({ model, camera, onMovement, onRotation, onAnimation }) {
     this.model = model;
     this._isRunning = false;
-    this._thirdPersonCamera = thirdPersonCamera;
+    this._camera = camera;
     this._onMovement = onMovement;
     this._onRotation = (rotation) =>
       onRotation({
@@ -26,8 +20,8 @@ class PlayableCharacter {
   }
 
   switchCameraMode(mode) {
-    this._thirdPersonCamera.switchMode(mode);
-    this._thirdPersonCamera.positionCamera();
+    this._camera.switchMode(mode);
+    this._camera.positionCamera();
   }
 
   update(delta) {
@@ -43,20 +37,22 @@ class PlayableCharacter {
       Math.min(1, this.rotationSpeed * delta)
     );
     this.model.rotation.y = this.currentRotation;
+
+    this.model.updateMixer(delta);
   }
 
   rotateBy(x, y) {
     // first update camera rotation
-    this._thirdPersonCamera.updateCameraRotation(x, y);
+    this._camera.updateCameraRotation(x, y);
 
     // get camera direction
     const dir = new THREE.Vector3();
-    this._thirdPersonCamera.getWorldDirection(dir);
+    this._camera.getWorldDirection(dir);
     dir.multiplyScalar(10000);
     // make sure its always on the same height
     dir.y = 2;
     this.targetRotation = Math.atan2(dir.x, dir.z);
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
     this._onRotation(this.model.rotation);
   }
 
@@ -91,7 +87,7 @@ class PlayableCharacter {
 
   getForwardVector() {
     const dir = new THREE.Vector3();
-    this._thirdPersonCamera.getWorldDirection(dir);
+    this._camera.getWorldDirection(dir);
     dir.y = 0;
     dir.normalize();
     return dir;
@@ -134,40 +130,40 @@ class PlayableCharacter {
 
     this.moveBy(this.getForwardVector().multiplyScalar(this.getSpeed()));
     this.rotateForward();
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   goBackward() {
     this.runGoAnimation();
     this.moveBy(this.getBackwardVector().multiplyScalar(this.getSpeed()));
     this.rotateBackward();
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   goLeft() {
     this.runGoAnimation();
     this.moveBy(this.getLeftVector().multiplyScalar(this.getSpeed()));
     this.rotateLeft();
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   goRight() {
     this.runGoAnimation();
     this.moveBy(this.getRightVector().multiplyScalar(this.getSpeed()));
     this.rotateRight();
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   moveBy(vec) {
     this.model.position.add(vec);
     this._onMovement(this.model.position);
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
     this._onMovement(this.model.position);
-    this._thirdPersonCamera.positionCamera();
+    this._camera.positionCamera();
   }
 
   beIdle() {

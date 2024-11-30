@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const POSSIBLE_MODES = ["third-person", "first-person"];
+const POSSIBLE_MODES = ["third-person", "first-person", "top-down"];
 
 class ActorCamera extends THREE.PerspectiveCamera {
   constructor({ fov, aspect, near, far, target }) {
@@ -16,6 +16,7 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
     this.firstPersonOffset = new THREE.Vector3(0, 1.8, -0.2);
     this.thirdPersonOffset = new THREE.Vector3(0, 2, 4);
+    this.topDownOffset = new THREE.Vector3(0, 3.5, 0);
 
     this.mode = "third-person";
   }
@@ -49,12 +50,20 @@ class ActorCamera extends THREE.PerspectiveCamera {
       this.positionCameraBehindActor();
     } else if (this.mode === "first-person") {
       this.positionCameraFromActorEyes();
+    } else if (this.mode === "top-down") {
+      this.positionCameraAtTopOfActor();
     }
   }
 
   positionCameraBehindActor() {
     const cameraOffset = this.thirdPersonOffset.clone();
     cameraOffset.applyQuaternion(this.rotationQuat);
+    this.position.copy(this.target.position).add(cameraOffset);
+  }
+
+  positionCameraAtTopOfActor() {
+    const cameraOffset = this.topDownOffset.clone();
+    // cameraOffset.applyQuaternion(this.rotationQuat);
     this.position.copy(this.target.position).add(cameraOffset);
   }
 

@@ -4,7 +4,6 @@ import "./Extensions";
 import Controls from "./Controls";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
-import ThirdPersonCamera from "./ThirdPersonCamera";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
 import Casino from "./Casino";
@@ -30,6 +29,7 @@ import SlotMachineController from "./Modes/SlotMachine/SlotMachineController";
 import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
 import DeltaUpdater from "./DeltaUpdater";
+import ActorCamera from "./ActorCamera";
 
 class Game {
   constructor({
@@ -142,15 +142,15 @@ class Game {
     this.casino = new Casino();
   }
 
-  initThirdPersonCamera() {
-    this.thirdPersonCamera = new ThirdPersonCamera({
+  initActorCamera() {
+    this.actorCamera = new ActorCamera({
       fov: 70,
       aspect: this.width / this.height,
       near: 0.01,
       far: 1024,
     });
 
-    window.camerasManager.addCamera("thirdPerson", this.thirdPersonCamera);
+    window.camerasManager.addCamera("thirdPerson", this.actorCamera);
   }
 
   initAudioListener() {
@@ -165,7 +165,7 @@ class Game {
 
     this.player = new PlayableCharacter({
       model,
-      thirdPersonCamera: this.thirdPersonCamera,
+      camera: this.actorCamera,
       onMovement: (position) => {
         this._repo.get("players").updatePosition(position);
       },
@@ -177,7 +177,7 @@ class Game {
       },
     });
 
-    this.thirdPersonCamera.target = this.player.model;
+    this.actorCamera.target = this.player.model;
     window.player = this.player;
   }
 
@@ -370,7 +370,7 @@ class Game {
     this.initInteractionHandler();
 
     this.initCamerasManager();
-    this.initThirdPersonCamera();
+    this.initActorCamera();
     this.initAudioListener();
     this.initZoomCamera();
     this.initPlayer();
