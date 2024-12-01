@@ -1,5 +1,5 @@
 import { Schema, defineTypes } from "@colyseus/schema";
-import { Player } from "../entities/index.js";
+import { Player } from "./entities/index.js";
 
 class GameState extends Schema {
   constructor() {

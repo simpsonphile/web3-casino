@@ -1,7 +1,7 @@
-import User from "../database/models/User.js";
-import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../messageTypes.js";
-import GameState from "../states/GameState.js";
-import AuthRoom from "./AuthRoom.js";
+import User from "../../database/models/User.js";
+import { SERVER_MESSAGES, CLIENT_MESSAGES } from "./GameMessages.js";
+import GameState from "./GameState.js";
+import AuthRoom from "../../rooms/AuthRoom.js";
 
 const PLAYERS_BROADCAST_FREQ = 20;
 const DATABASE_UPDATE_FREQ = 1000 * 10;
