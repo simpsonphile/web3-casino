@@ -8,7 +8,6 @@ class BusinessMan extends Actor {
     const model = SkeletonUtils.clone(data.scene);
     const animations = data.animations;
     super({ model, animations });
-    this.rotation.y = Math.PI;
   }
 }
 
