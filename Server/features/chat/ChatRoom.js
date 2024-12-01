@@ -1,7 +1,7 @@
-import AuthRoom from "./AuthRoom.js";
-import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../messageTypes.js";
-import ChatState from "../states/ChatState.js";
-import User from "../database/models/User.js";
+import AuthRoom from "../../rooms/AuthRoom.js";
+import { SERVER_MESSAGES, CLIENT_MESSAGES } from "./ChatMessages.js";
+import ChatState from "./ChatState.js";
+import User from "../../database/models/User.js";
 
 class ChatRoom extends AuthRoom {
   onCreate(options) {

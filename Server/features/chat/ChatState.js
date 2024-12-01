@@ -1,5 +1,5 @@
 import { Schema, ArraySchema, defineTypes } from "@colyseus/schema";
-import { Message, ChatUser } from "../entities/index.js";
+import { Message, ChatUser } from "./entities/index.js";
 
 class ChatState extends Schema {
   constructor() {

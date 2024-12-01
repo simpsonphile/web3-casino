@@ -1,0 +1,9 @@
+export const SERVER_MESSAGES = {
+  NEW_MESSAGE: "NEW_MESSAGE",
+};
+
+export const CLIENT_MESSAGES = {
+  MESSAGE: "MESSAGE",
+};
+
+export default { SERVER_MESSAGES, CLIENT_MESSAGES };

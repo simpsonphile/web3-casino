@@ -1,7 +1,7 @@
 import http from "http";
 import express from "express";
 import GameRoom from "./rooms/GameRoom.js";
-import ChatRoom from "./rooms/ChatRoom.js";
+import ChatRoom from "./features/chat/ChatRoom.js";
 import BlackjackRoom from "./features/blackjack/BlackjackRoom.js";
 import { monitor } from "@colyseus/monitor";
 import colyseus from "colyseus";
