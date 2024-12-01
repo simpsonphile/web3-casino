@@ -167,8 +167,9 @@ class BlackjackView {
       group.forEach((name, j) => {
         const chip = new Chip({ name });
         const newPos = new THREE.Vector3().copy(pos);
-        newPos.z += i * 0.04;
+        newPos.z += i * 0.04 + (0.5 - Math.random()) * 0.005;
         newPos.y += j * 0.0033;
+        newPos.x += (0.5 - Math.random()) * 0.005;
         newPos.applyMatrix4(this.object3d.matrixWorld);
 
         chip.position.copy(newPos);
