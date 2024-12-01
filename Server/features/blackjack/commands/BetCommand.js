@@ -1,5 +1,5 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../../messageTypes.js";
+import { SERVER_MESSAGES } from "../BlackjackMessages.js";
 
 export class BetCommand extends Command {
   execute({ pendingBet, client }) {

@@ -1,7 +1,7 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../../messageTypes.js";
+import { SERVER_MESSAGES } from "../BlackjackMessages.js";
 
-import User from "../../database/models/User.js";
+import User from "../../../database/models/User.js";
 
 export class JoinCommand extends Command {
   async execute({ client, options }) {

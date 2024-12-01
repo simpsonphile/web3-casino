@@ -1,5 +1,5 @@
 import { ArraySchema, MapSchema, Schema, defineTypes } from "@colyseus/schema";
-import { BlackjackGamePlayerData, BlackjackPlayer } from "../entities/index.js";
+import { BlackjackGamePlayerData, BlackjackPlayer } from "./entities/index.js";
 
 class BlackjackState extends Schema {
   constructor() {

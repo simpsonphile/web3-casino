@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../../messageTypes.js";
-import { BlackjackGamePlayerData } from "../../entities/index.js";
+import { SERVER_MESSAGES } from "../BlackjackMessages.js";
+import { BlackjackGamePlayerData } from "../entities/index.js";
 export class StartGameCommand extends Command {
   execute() {
     this.state.createNewGame();

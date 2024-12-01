@@ -1,7 +1,7 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../../messageTypes.js";
-import { countCardPoints } from "../../../Common/utilis/countCardPoints.js";
-import { getRandomCard } from "../../../Common/utilis/getRandomCard.js";
+import { SERVER_MESSAGES } from "../BlackjackMessages.js";
+import { countCardPoints } from "../../../../Common/utilis/countCardPoints.js";
+import { getRandomCard } from "../../../../Common/utilis/getRandomCard.js";
 
 export class DealerCommand extends Command {
   dealCard() {

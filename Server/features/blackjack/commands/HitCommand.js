@@ -1,7 +1,7 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../../messageTypes.js";
-import { getRandomCard } from "../../../Common/utilis/getRandomCard.js";
-import { countCardPoints } from "../../../Common/utilis/countCardPoints.js";
+import { SERVER_MESSAGES } from "../BlackjackMessages.js";
+import { getRandomCard } from "../../../../Common/utilis/getRandomCard.js";
+import { countCardPoints } from "../../../../Common/utilis/countCardPoints.js";
 
 export class HitCommand extends Command {
   doubleBet(id) {

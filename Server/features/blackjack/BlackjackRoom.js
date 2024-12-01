@@ -1,6 +1,6 @@
-import AuthRoom from "./AuthRoom.js";
-import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../messageTypes.js";
-import BlackjackState from "../states/BlackjackState.js";
+import AuthRoom from "../../rooms/AuthRoom.js";
+import { SERVER_MESSAGES } from "./BlackjackMessages.js";
+import BlackjackState from "./BlackjackState.js";
 
 import { Dispatcher } from "@colyseus/command";
 
@@ -13,7 +13,7 @@ import {
   StandCommand,
   DealerCommand,
   JoinCommand,
-} from "../commands/blackjack/index.js";
+} from "./commands/index.js";
 
 class BlackjackRoom extends AuthRoom {
   onCreate() {
