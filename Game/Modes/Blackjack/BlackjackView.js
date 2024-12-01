@@ -5,9 +5,8 @@ import { getChipsForBet, groupChips } from "./helpers";
 import BusinessMan from "../../Models/BusinessMan";
 
 class BlackjackView {
-  constructor({ object3d, seatOffset }) {
+  constructor({ object3d }) {
     this.object3d = object3d;
-    this.seatOffset = seatOffset;
     this.group = new THREE.Group();
 
     this.players = {};
@@ -64,76 +63,70 @@ class BlackjackView {
     this.resetDealer();
   }
 
-  _calcRelativeSlotPos(slot) {
-    return new THREE.Vector3().copy(slot).add(this.object3d.position);
-  }
-
   _prepareNpc() {
-    // todo
-    const npc = new BusinessMan();
-    npc.position.copy(this.object3d.position);
+    this.npc = new BusinessMan();
 
-    npc.runIdleAnimation();
-    npc.rotation.y -= Math.PI / 2;
-    this.group.add(npc);
+    this.npc.rotateY(this.object3d.rotation.y - Math.PI / 2);
+    const v = new THREE.Vector3(1.5, 0, 0);
+    v.applyMatrix4(this.object3d.matrixWorld);
+    v.y = 0;
+    this.npc.position.copy(v);
+
+    this.npc.runIdleAnimation();
+    this.group.add(this.npc);
+
+    window.deltaUpdater.add(this.npc.updateMixer.bind(this.npc));
   }
 
   _prepareSlots() {
     const seatGap = 0.6;
-    const seatEdge = -0.9;
+    const seatEdge = 0.9;
     const seatsCount = 4;
-
-    const axis = this.seatOffset[0] !== 0 ? "x" : "z";
-    const dir = this.seatOffset[0] || this.seatOffset[2];
+    const seatOffsetFromCenter = -0.5;
 
     const slots = [...new Array(seatsCount)].map((_, i) => {
       const v = new THREE.Vector3();
-      const seat = seatEdge + i * seatGap;
-      const seatOffsetFromCenter = 0.5 * dir;
+      const seat = seatEdge - i * seatGap;
 
-      if (axis === "x") {
-        v.copy(new THREE.Vector3(seatOffsetFromCenter, 0.01, seat));
-      } else if (axis === "z") {
-        v.copy(new THREE.Vector3(seat, 0.01, seatOffsetFromCenter));
-      }
+      v.copy(new THREE.Vector3(seatOffsetFromCenter, 0.01, seat));
 
       return v;
     });
 
-    const cardSlots = slots.map((slot) => slot);
-
-    const seatSlots = slots.map((slot) => {
+    this.cardSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos[axis] += dir;
       return pos;
     });
 
-    const chipSlots = slots.map((slot) => {
+    this.seatSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos[axis] += 0.1 * dir;
+      pos.x -= 1;
+      pos.applyMatrix4(this.object3d.matrixWorld);
       return pos;
     });
 
-    const dealerSlot = new THREE.Vector3(0, 0.01, 0);
+    this.chipSlots = slots.map((slot) => {
+      const pos = new THREE.Vector3();
+      pos.copy(slot);
+      pos.x -= 0.1;
+      return pos;
+    });
 
-    this.cardSlots = cardSlots.map((slot) => this._calcRelativeSlotPos(slot));
-
-    this.seatSlots = seatSlots.map((slot) => this._calcRelativeSlotPos(slot));
-
-    this.chipSlots = chipSlots.map((slot) => this._calcRelativeSlotPos(slot));
-
-    this.dealerSlot = this._calcRelativeSlotPos(dealerSlot);
+    this.dealerSlot = new THREE.Vector3(0, 0.01, 0);
   }
 
   createCard(cardName, pos, index) {
+    const newPos = new THREE.Vector3().copy(pos);
+    newPos.z += index * 0.02;
+    newPos.y += index * 0.0001;
+    newPos.applyMatrix4(this.object3d.matrixWorld);
+
     const card = new Card({ name: cardName });
+    card.rotateY(this.object3d.rotation.y);
 
-    card.position.copy(pos);
-    card.position.z += index * 0.02;
-    card.position.y += index * 0.0001;
-
+    card.position.copy(newPos);
     return card;
   }
 
@@ -173,10 +166,11 @@ class BlackjackView {
     stacksOfChips.forEach((group, i) => {
       group.forEach((name, j) => {
         const chip = new Chip({ name });
-        chip.position.copy(pos);
-        chip.position.y += j * 0.0033;
-        chip.position.z += i * 0.04;
+        pos.z += i * 0.04;
+        pos.y += j * 0.0033;
+        pos.applyMatrix4(this.object3d.matrixWorld);
 
+        chip.position.copy(pos);
         meshGroup.add(chip);
       });
     });

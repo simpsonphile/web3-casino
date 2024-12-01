@@ -22,16 +22,14 @@ class SlotMachineInteraction {
     if (data.distance > 6) return;
 
     const obj = this.getObj(data.object);
-    const seatPos = obj.userData.seat.map((a) => a * 1.5);
+    const seatPos = new THREE.Vector3(0, 0, -1.5);
+    seatPos.applyMatrix4(obj.matrixWorld);
 
     this.game.commandManager.setMode(["slotMachine"]);
 
     this.game.player.switchCameraMode("first-person");
-    const newPosition = new THREE.Vector3()
-      .copy(obj.position)
-      .add(new THREE.Vector3(...seatPos));
-    newPosition.y = 0;
-    this.game.player.moveTo(newPosition);
+    seatPos.y = 0;
+    this.game.player.moveTo(seatPos);
     this.game.interactionHandler.setState(false);
     this.game.slotMachineController.join({ object3d: obj });
   }

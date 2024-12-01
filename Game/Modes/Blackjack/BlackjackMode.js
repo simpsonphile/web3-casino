@@ -31,19 +31,13 @@ class BlackjackMode {
   }
 
   initTables() {
-    // traverse and init Views in Map
     window.scene.traverse((child) => {
       if (!child.name.includes("blackjack_table")) return;
 
-      console.log(child.userData);
-
       this.blackjackViews[child.name] = new BlackjackView({
         object3d: child,
-        seatOffset: child.userData.seat,
       });
     });
-
-    // add this map to controller
   }
 }
 
