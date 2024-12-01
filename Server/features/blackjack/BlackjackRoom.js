@@ -1,5 +1,5 @@
 import AuthRoom from "../../rooms/AuthRoom.js";
-import { SERVER_MESSAGES } from "./BlackjackMessages.js";
+import { CLIENT_MESSAGES, SERVER_MESSAGES } from "./BlackjackMessages.js";
 import BlackjackState from "./BlackjackState.js";
 
 import { Dispatcher } from "@colyseus/command";
