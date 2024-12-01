@@ -166,11 +166,12 @@ class BlackjackView {
     stacksOfChips.forEach((group, i) => {
       group.forEach((name, j) => {
         const chip = new Chip({ name });
-        pos.z += i * 0.04;
-        pos.y += j * 0.0033;
-        pos.applyMatrix4(this.object3d.matrixWorld);
+        const newPos = new THREE.Vector3().copy(pos);
+        newPos.z += i * 0.04;
+        newPos.y += j * 0.0033;
+        newPos.applyMatrix4(this.object3d.matrixWorld);
 
-        chip.position.copy(pos);
+        chip.position.copy(newPos);
         meshGroup.add(chip);
       });
     });
