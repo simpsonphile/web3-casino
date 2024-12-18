@@ -66,13 +66,13 @@ class BlackjackView {
   _prepareNpc() {
     this.npc = new BusinessMan();
 
-    this.npc.rotateY(this.object3d.rotation.y - Math.PI / 2);
     const v = new THREE.Vector3(1.5, 0, 0);
     v.applyMatrix4(this.object3d.matrixWorld);
     v.y = 0;
     this.npc.position.copy(v);
 
     this.npc.runIdleAnimation();
+    this.npc.lookAtY(this.object3d.position);
     this.group.add(this.npc);
 
     window.deltaUpdater.add(this.npc.updateMixer.bind(this.npc));
@@ -119,8 +119,9 @@ class BlackjackView {
 
   createCard(cardName, pos, index) {
     const newPos = new THREE.Vector3().copy(pos);
-    newPos.z += index * 0.02;
+    newPos.z -= index * 0.02;
     newPos.y += index * 0.0001;
+    newPos.x += index * 0.02;
     newPos.applyMatrix4(this.object3d.matrixWorld);
 
     const card = new Card({ name: cardName });
