@@ -40,33 +40,25 @@ class Collisions {
   }
 
   // Method to check for collisions with the given object
-  check(obj, v) {
-    if (!(obj instanceof THREE.Object3D)) {
+  check(obj, v = new THREE.Vector3(0, 0, 0)) {
+    if (!(obj?.type === "Object3D")) {
       console.warn("Object to check is not an instance of THREE.Object3D");
       return false;
     }
 
-    // Create a bounding box for the object
     const objectBox = new THREE.Box3().setFromObject(obj);
-
-    // Calculate the future position
-    // const futurePosition = objectBox.getCenter(new THREE.Vector3()).add(v);
-
-    // Create a bounding box for the object's future position
     const futureBox = objectBox.clone().translate(v);
 
-    // Calculate segment coordinates for the object's center
     const center = futureBox.getCenter(new THREE.Vector3());
     const segmentKey = this.getSegmentCoordinates(center);
 
-    // Check the segment and neighboring segments for collisions
     const neighboringKeys = this.getNeighboringSegmentKeys(segmentKey);
     for (const key of neighboringKeys) {
       if (this.segments.has(key)) {
         const boxesInSegment = this.segments.get(key);
         for (const box of boxesInSegment) {
-          if (objectBox.intersectsBox(box)) {
-            return true; // Collision detected
+          if (futureBox.intersectsBox(box)) {
+            return box;
           }
         }
       }
