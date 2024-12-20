@@ -156,7 +156,7 @@ class BlackjackView {
   giveChipsToPlayer(id, newBet) {
     const { bet, meshGroup } = this.players[id];
     const index = this.playersOrder.indexOf(id);
-    const pos = this.chipSlots[index];
+    const pos = new THREE.Vector3().copy(this.chipSlots[index]);
 
     if (bet > 0) pos.x += 0.04;
     newBet -= bet;
