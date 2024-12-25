@@ -1,11 +1,20 @@
 import * as THREE from "three";
 
 class PlayableCharacter {
-  constructor({ model, camera, onMovement, onRotation, onAnimation }) {
+  // todo refacor
+  constructor({
+    model,
+    camera,
+    onBeforeMovement,
+    onAfterMovement,
+    onRotation,
+    onAnimation,
+  }) {
     this.model = model;
     this._isRunning = false;
     this._camera = camera;
-    this._onMovement = onMovement;
+    this._onBeforeMovement = onBeforeMovement;
+    this._onAfterMovement = onAfterMovement;
     this._onRotation = (rotation) =>
       onRotation({
         x: rotation.x,
@@ -25,6 +34,13 @@ class PlayableCharacter {
   }
 
   update(delta) {
+    this.updateDrop(delta);
+    this.updateRotation(delta);
+
+    this.model.updateMixer(delta);
+  }
+
+  updateRotation(delta) {
     const rotationDelta = this.targetRotation - this.currentRotation;
     if (Math.abs(rotationDelta) >= Math.PI) {
       const sign = rotationDelta > 0 ? 1 : -1;
@@ -37,8 +53,27 @@ class PlayableCharacter {
       Math.min(1, this.rotationSpeed * delta)
     );
     this.model.rotation.y = this.currentRotation;
+  }
 
-    this.model.updateMixer(delta);
+  updateDrop(delta) {
+    // todo maybe move logic to some helper as it can be reused
+    if (!this.isDropping) return;
+
+    const gravity = -9.8;
+
+    this.velocity = (this.velocity || 0) + gravity * delta;
+
+    const newPosY = this.model.position.y + this.velocity * delta;
+
+    if (newPosY <= this.targetPosition.y) {
+      this.model.position.y = this.targetPosition.y;
+      this.velocity = 0;
+      this.isDropping = false;
+    } else {
+      this.model.position.y = newPosY;
+    }
+
+    this._camera.positionCamera();
   }
 
   rotateBy(x, y) {
@@ -155,14 +190,31 @@ class PlayableCharacter {
   }
 
   moveBy(vec) {
-    this.model.position.add(vec);
-    this._onMovement(this.model.position);
+    const beforeMovementData = this._onBeforeMovement(this, vec);
+
+    if (beforeMovementData.isDropping && !this.isDropping) {
+      this.isDropping = true;
+      this.targetPosition = new THREE.Vector3()
+        .copy(this.model.position)
+        .add(beforeMovementData.vec);
+    }
+
+    if (
+      !beforeMovementData.canMove ||
+      beforeMovementData.isDropping ||
+      this.isDropping
+    )
+      return;
+
+    const newVec = beforeMovementData.vec || vec;
+    this.model.position.add(newVec);
+    this._onAfterMovement(this.model.position);
     this._camera.positionCamera();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
-    this._onMovement(this.model.position);
+    this._onAfterMovement(this.model.position);
     this._camera.positionCamera();
   }
 

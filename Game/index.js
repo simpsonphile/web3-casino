@@ -30,6 +30,8 @@ import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
 import DeltaUpdater from "./DeltaUpdater";
 import ActorCamera from "./ActorCamera";
+import StairManager from "./StairManager";
+import CollisionManager from "./CollisionManager";
 
 class Game {
   constructor({
@@ -120,8 +122,13 @@ class Game {
   }
 
   initCollisions() {
-    this.collisions = new Collisions();
-    window.collisions = this.collisions;
+    this.collisions = new CollisionManager();
+    this.collisions.init();
+  }
+
+  initStairs() {
+    this.stairsManager = new StairManager();
+    this.stairsManager.init();
   }
 
   async initModels() {
@@ -166,7 +173,22 @@ class Game {
     this.player = new PlayableCharacter({
       model,
       camera: this.actorCamera,
-      onMovement: (position) => {
+      onBeforeMovement: (self, vec) => {
+        const isBlocked = this.collisions.check(self.model, vec);
+        if (isBlocked) return { canMove: false, vec };
+
+        const { vec: newVec, isDropping } = this.stairsManager.check(
+          self.model,
+          vec
+        );
+
+        return {
+          isDropping,
+          canMove: true,
+          vec: newVec,
+        };
+      },
+      onAfterMovement: (position) => {
         this._repo.get("players").updatePosition(position);
       },
       onRotation: (rotation) => {
@@ -365,7 +387,6 @@ class Game {
     await this.initModels();
     await this.initSounds();
 
-    this.initCollisions();
     this.initStats();
     this.initInteractionHandler();
 
@@ -373,12 +394,14 @@ class Game {
     this.initActorCamera();
     this.initAudioListener();
     this.initZoomCamera();
+    this.initCasino();
+    this.initCollisions();
+    this.initStairs();
     this.initPlayer();
     this.initClient();
     this.initUpdater();
     this.initRenderer();
     this.initUIRenderer();
-    this.initCasino();
     this.initNeons();
 
     this.initCommandsManager();
