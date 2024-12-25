@@ -66,7 +66,7 @@ class BlackjackView {
   _prepareNpc() {
     this.npc = new BusinessMan();
 
-    const v = new THREE.Vector3(1.5, 0, 0);
+    const v = new THREE.Vector3(-1.5, 0, 0);
     v.applyMatrix4(this.object3d.matrixWorld);
     v.y = 0;
     this.npc.position.copy(v);
@@ -82,7 +82,7 @@ class BlackjackView {
     const seatGap = 0.6;
     const seatEdge = 0.9;
     const seatsCount = 4;
-    const seatOffsetFromCenter = -0.5;
+    const seatOffsetFromCenter = 0.5;
 
     const slots = [...new Array(seatsCount)].map((_, i) => {
       const v = new THREE.Vector3();
@@ -102,7 +102,7 @@ class BlackjackView {
     this.seatSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos.x -= 1;
+      pos.x += 1;
       pos.applyMatrix4(this.object3d.matrixWorld);
       return pos;
     });
@@ -110,7 +110,7 @@ class BlackjackView {
     this.chipSlots = slots.map((slot) => {
       const pos = new THREE.Vector3();
       pos.copy(slot);
-      pos.x -= 0.1;
+      pos.x += 0.1;
       return pos;
     });
 
@@ -119,9 +119,9 @@ class BlackjackView {
 
   createCard(cardName, pos, index) {
     const newPos = new THREE.Vector3().copy(pos);
-    newPos.z -= index * 0.02;
+    newPos.z += index * 0.02;
     newPos.y += index * 0.0001;
-    newPos.x += index * 0.02;
+    newPos.x -= index * 0.02;
     newPos.applyMatrix4(this.object3d.matrixWorld);
 
     const card = new Card({ name: cardName });
@@ -158,7 +158,7 @@ class BlackjackView {
     const index = this.playersOrder.indexOf(id);
     const pos = new THREE.Vector3().copy(this.chipSlots[index]);
 
-    if (bet > 0) pos.x += 0.04;
+    if (bet > 0) pos.x -= 0.04;
     newBet -= bet;
 
     const chips = getChipsForBet(newBet);
