@@ -41,12 +41,14 @@ class Collisions {
 
   // Method to check for collisions with the given object
   check(obj, v = new THREE.Vector3(0, 0, 0)) {
-    if (!(obj?.type === "Object3D")) {
-      console.warn("Object to check is not an instance of THREE.Object3D");
+    if (!(obj?.type === "Object3D" || obj.isBox3)) {
+      console.warn(
+        "Object to check is not an instance of THREE.Object3D or THREE.Box3"
+      );
       return false;
     }
 
-    const objectBox = new THREE.Box3().setFromObject(obj);
+    const objectBox = obj.isBox3 ? obj : new THREE.Box3().setFromObject(obj);
     const futureBox = objectBox.clone().translate(v);
 
     const center = futureBox.getCenter(new THREE.Vector3());
