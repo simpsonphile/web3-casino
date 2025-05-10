@@ -1,14 +1,21 @@
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { modelPaths } from "./modelPaths";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
+
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("/draco/");
-loader.setDRACOLoader(dracoLoader);
+const ktx2Loader = new KTX2Loader();
 
 class ModelsLoader {
   constructor() {
     this.models = {};
+
+    ktx2Loader.setTranscoderPath("/ktx2/");
+    dracoLoader.setDecoderPath("/draco/");
+    loader.setDRACOLoader(dracoLoader);
+    loader.setKTX2Loader(ktx2Loader);
+    ktx2Loader.detectSupport(window.renderer.renderer);
   }
 
   async load() {

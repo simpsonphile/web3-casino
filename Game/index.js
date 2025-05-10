@@ -273,6 +273,7 @@ class Game {
     this.camerasManager.setOnCameraChange((manager) => {
       this.renderer.setRenderPassCamera(manager.getActiveCamera());
     });
+    window.renderer = this.renderer;
   }
 
   initBlackjack() {
@@ -382,26 +383,27 @@ class Game {
   }
 
   async init() {
+    this.initStats();
     this.initScene();
     this.initUIScene();
-    await this.initModels();
-    await this.initSounds();
-
-    this.initStats();
-    this.initInteractionHandler();
-
     this.initCamerasManager();
     this.initActorCamera();
     this.initAudioListener();
     this.initZoomCamera();
+    this.initUpdater();
+    this.initUIRenderer();
+    this.initRenderer();
+
+    await this.initModels();
+    await this.initSounds();
+
+    this.initInteractionHandler();
+
     this.initCasino();
     this.initCollisions();
     this.initStairs();
     this.initPlayer();
     this.initClient();
-    this.initUpdater();
-    this.initRenderer();
-    this.initUIRenderer();
     this.initNeons();
 
     this.initCommandsManager();
