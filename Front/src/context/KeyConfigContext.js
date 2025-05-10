@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import KeyConfig from "../../../Common/KeyConfig";
+import KeyConfig from "@Common/KeyConfig";
 
 const KeyConfigContext = createContext();
 

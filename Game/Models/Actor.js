@@ -11,7 +11,6 @@ class Actor extends THREE.Object3D {
 
   _initAnimations(animations) {
     this.animationActions = {};
-    this.activeAnimation = "Idle";
     animations.forEach((animation) => {
       const name = animation.name.split("|")[1];
       this.animationActions[name] = this.mixer.clipAction(animation);
@@ -19,14 +18,20 @@ class Actor extends THREE.Object3D {
     });
   }
 
+  getActiveAnimation() {
+    return this.animationActions[this.activeAnimation];
+  }
+
   runAnimation(animationName) {
+    const activeAnimation = this.getActiveAnimation();
     if (
       this.activeAnimation === animationName ||
       !this.animationActions[animationName]
     )
       return;
-    this.animationActions[this.activeAnimation].fadeOut(0.5);
     const action = this.animationActions[animationName];
+    if (!action) return;
+    if (activeAnimation) activeAnimation.fadeOut(0.5);
     action.reset();
     action.fadeIn(0.5);
     action.play();

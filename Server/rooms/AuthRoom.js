@@ -5,8 +5,7 @@ const { Room } = colyseus;
 
 class AuthRoom extends Room {
   onAuth(client) {
-    console.log("onAuth");
-
+    // find a way to pass http only cookie
     // const { authToken } = client;
     // return verifyAccessToken(authToken);
     return true;

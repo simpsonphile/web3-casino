@@ -4,8 +4,6 @@ import "./Extensions";
 import Controls from "./Controls";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
-import BusinessMan from "./Models/BusinessMan";
-import ThirdPersonCamera from "./ThirdPersonCamera";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
 import Casino from "./Casino";
@@ -21,9 +19,19 @@ import ZoomCamera from "./ZoomCamera";
 import RendererComposer from "./RendererComposer";
 import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
-import Blackjack from "./Modes/Blackjack";
-import RemoteBlackjack from "@Common/Remote/Blackjack";
 import UIRenderer from "./UIRenderer";
+import CasualMan from "./Models/CasualMan";
+import SlotMachineInteraction from "./Modes/SlotMachine/SlotMachineInteraction";
+import SlotMachineCommands from "./Modes/SlotMachine/SlotMachineCommands";
+import MovementCommands from "./Modes/Movement/MovementCommands";
+import ZoomCommands from "./Modes/Zoom/ZoomCommands";
+import SlotMachineController from "./Modes/SlotMachine/SlotMachineController";
+import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
+import ATMMode from "./Modes/ATM/ATMMode";
+import DeltaUpdater from "./DeltaUpdater";
+import ActorCamera from "./ActorCamera";
+import StairManager from "./StairManager";
+import CollisionManager from "./CollisionManager";
 
 class Game {
   constructor({
@@ -34,12 +42,13 @@ class Game {
     onAtmExit,
     showTooltip,
     hideTooltip,
+    dispatchBlackjackUI,
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.clock = new THREE.Clock();
     this._onPause = onPause;
     this.keyConfig = keyConfig;
+    window.keyConfig = keyConfig;
     this._repo = repo;
     window.repo = this._repo;
 
@@ -48,6 +57,7 @@ class Game {
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
+    this.dispatchBlackjackUI = dispatchBlackjackUI;
   }
 
   initUIRenderer() {
@@ -112,8 +122,13 @@ class Game {
   }
 
   initCollisions() {
-    this.collisions = new Collisions();
-    window.collisions = this.collisions;
+    this.collisions = new CollisionManager();
+    this.collisions.init();
+  }
+
+  initStairs() {
+    this.stairsManager = new StairManager();
+    this.stairsManager.init();
   }
 
   async initModels() {
@@ -134,15 +149,15 @@ class Game {
     this.casino = new Casino();
   }
 
-  initThirdPersonCamera() {
-    this.thirdPersonCamera = new ThirdPersonCamera({
+  initActorCamera() {
+    this.actorCamera = new ActorCamera({
       fov: 70,
       aspect: this.width / this.height,
       near: 0.01,
       far: 1024,
     });
 
-    window.camerasManager.addCamera("thirdPerson", this.thirdPersonCamera);
+    window.camerasManager.addCamera("thirdPerson", this.actorCamera);
   }
 
   initAudioListener() {
@@ -152,13 +167,28 @@ class Game {
   }
 
   async initPlayer() {
-    const model = new BusinessMan();
+    const model = new CasualMan();
     window.scene.add(model);
 
     this.player = new PlayableCharacter({
       model,
-      thirdPersonCamera: this.thirdPersonCamera,
-      onMovement: (position) => {
+      camera: this.actorCamera,
+      onBeforeMovement: (self, vec) => {
+        const isBlocked = this.collisions.check(self.model, vec);
+        if (isBlocked) return { canMove: false, vec };
+
+        const { vec: newVec, isDropping } = this.stairsManager.check(
+          self.model,
+          vec
+        );
+
+        return {
+          isDropping,
+          canMove: true,
+          vec: newVec,
+        };
+      },
+      onAfterMovement: (position) => {
         this._repo.get("players").updatePosition(position);
       },
       onRotation: (rotation) => {
@@ -169,7 +199,7 @@ class Game {
       },
     });
 
-    this.thirdPersonCamera.target = this.player.model;
+    this.actorCamera.target = this.player.model;
     window.player = this.player;
   }
 
@@ -201,13 +231,27 @@ class Game {
     this.neonsManager = new Neons();
   }
 
+  initUpdater() {
+    this.deltaUpdater = new DeltaUpdater();
+    window.deltaUpdater = this.deltaUpdater;
+  }
+
+  updateUpdater() {
+    // move these
+    this.deltaUpdater.add(this.player.update.bind(this.player));
+    this.deltaUpdater.add(this.players.update.bind(this.players));
+    this.deltaUpdater.add(
+      this.neonsManager.update.bind(this.neonsManager),
+      false
+    );
+    this.deltaUpdater.add(this.camerasManager.update.bind(this.camerasManager));
+    this.deltaUpdater.add(
+      this.slotMachineController.update.bind(this.slotMachineController)
+    );
+  }
+
   update() {
-    const delta = this.clock.getDelta();
-    this.player.update(delta);
-    this.player.model.updateMixer(delta);
-    this.players.update(delta);
-    this.neonsManager.update(this.clock.getElapsedTime());
-    this.camerasManager.update(delta);
+    this.deltaUpdater.update();
   }
 
   animate() {
@@ -229,69 +273,41 @@ class Game {
     this.camerasManager.setOnCameraChange((manager) => {
       this.renderer.setRenderPassCamera(manager.getActiveCamera());
     });
+    window.renderer = this.renderer;
   }
 
   initBlackjack() {
-    this._repo.add("blackjack_1", RemoteBlackjack, { id: "blackjack_1" });
-    this.blackjack = new Blackjack();
+    new BlackjackMode({
+      game: this,
+      dispatchBlackjackUI: this.dispatchBlackjackUI,
+    }).init();
+  }
+
+  initATM() {
+    new ATMMode({
+      game: this,
+      onAtmClick: this.onAtmClick,
+      onAtmExit: this.onAtmExit,
+    }).init();
+  }
+
+  initSlotMachine() {
+    this.slotMachineController = new SlotMachineController();
+
+    window.slotMachineController = this.slotMachineController;
+
+    new SlotMachineCommands(this.slotMachineController);
   }
 
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
-
-    this.interactionHandler.registerInteraction(
-      "blackjack_table",
-      "mouseOver",
-      (data) => {
-        if (data.distance > 6) return;
-        if (!this.commandManager.checkIfModeEnabled("movement")) return;
-
-        this.showTooltip("use?");
-      }
-    );
-
-    this.interactionHandler.registerInteraction("atm", "mouseOver", (data) => {
-      const pos = new THREE.Vector3()
-        .copy(data.object.position)
-        .add(new THREE.Vector3(0, 3, 0));
-
-      if (data.distance > 5) return;
-      if (!this.commandManager.checkIfModeEnabled("movement")) return;
-
-      this.showTooltip("use?");
-    });
-
-    this.interactionHandler.registerInteraction(
-      "blackjack_table",
-      "mouseClick",
-      (data) => {
-        if (data.distance > 6) return;
-
-        const obj = data.object.parent;
-        this.camerasManager.getCamera("zoom").setTarget(obj.position);
-        this.camerasManager.setActiveCamera("zoom", true, () => {
-          this.commandManager.setMode(["zoom", "blackjack"]);
-          this.interactionHandler.setState(false);
-          this.blackjack.join({ object3d: obj, roomId: "blackjack_1" });
-        });
-      }
-    );
-
-    this.interactionHandler.registerInteraction("atm", "mouseClick", (data) => {
-      if (data.distance > 5) return;
-
-      const obj = data.object;
-      this.camerasManager.getCamera("zoom").setTarget(obj.position);
-      this.camerasManager.setActiveCamera("zoom", true, () => {
-        this.commandManager.setMode(["zoom", "atm"]); // mode zoom and atm
-        this.interactionHandler.setState(false);
-        this.onAtmClick();
-      });
-    });
+    window.interactionHandler = this.interactionHandler;
+    this.slotMachineInteraction = new SlotMachineInteraction(this);
   }
 
   initCommandsManager() {
     this.commandManager = new CommandManager();
+    window.commandManager = this.commandManager;
 
     window.camerasManager.setOnCameraTransitioning(() => {
       this.commandManager.setMode("cameraTransition");
@@ -299,71 +315,11 @@ class Game {
   }
 
   addCommands() {
-    const keys = this.keyConfig.get();
     this.commandManager.resetCommands();
-    this.commandManager.addCommand(
-      "movement",
-      "up",
-      keys.movement.up,
-      this.player.goForward.bind(this.player),
-      this.player.beIdle.bind(this.player)
-    );
-    this.commandManager.addCommand(
-      "movement",
-      "left",
-      keys.movement.left,
-      this.player.goLeft.bind(this.player),
-      this.player.beIdle.bind(this.player)
-    );
-    this.commandManager.addCommand(
-      "movement",
-      "right",
-      keys.movement.right,
-      this.player.goRight.bind(this.player),
-      this.player.beIdle.bind(this.player)
-    );
-    this.commandManager.addCommand(
-      "movement",
-      "down",
-      keys.movement.down,
-      this.player.goBackward.bind(this.player),
-      this.player.beIdle.bind(this.player)
-    );
-    this.commandManager.addCommand(
-      "movement",
-      "run",
-      keys.movement.run,
-      this.player.setRun.bind(this.player),
-      this.player.setWalk.bind(this.player)
-    );
-    this.commandManager.addCommand("zoom", "scrollIn", ["wheelDown"], () => {
-      this.camerasManager.getCamera("zoom").zoomBy(0.02);
-    });
-    this.commandManager.addCommand("zoom", "scrollOut", ["wheelUp"], () => {
-      this.camerasManager.getCamera("zoom").zoomBy(-0.02);
-    });
-    this.commandManager.addCommand("zoom", "exit", keys.zoom.exit, () => {
-      this.camerasManager.setActiveCamera("thirdPerson", true, () => {
-        this.commandManager.setMode("movement");
-        this.interactionHandler.setState(true);
-      });
-    });
-    this.commandManager.addCommand(
-      "blackjack",
-      "hit",
-      keys.blackjack.hit,
-      () => {
-        console.log("player hit");
-      }
-    );
-    this.commandManager.addCommand(
-      "blackjack",
-      "stand",
-      keys.blackjack.stand,
-      () => {
-        console.log("player stand");
-      }
-    );
+
+    // todo move to modes
+    new ZoomCommands();
+    new MovementCommands();
   }
 
   initRaycaster() {
@@ -427,35 +383,41 @@ class Game {
   }
 
   async init() {
+    this.initStats();
     this.initScene();
     this.initUIScene();
+    this.initCamerasManager();
+    this.initActorCamera();
+    this.initAudioListener();
+    this.initZoomCamera();
+    this.initUpdater();
+    this.initUIRenderer();
+    this.initRenderer();
+
     await this.initModels();
     await this.initSounds();
 
-    this.initCollisions();
-    this.initStats();
     this.initInteractionHandler();
 
-    this.initCamerasManager();
-    this.initThirdPersonCamera();
-    this.initAudioListener();
-    this.initZoomCamera();
+    this.initCasino();
+    this.initCollisions();
+    this.initStairs();
     this.initPlayer();
     this.initClient();
-    this.initRenderer();
-    this.initUIRenderer();
-    this.initBlackjack();
-    this.initCasino();
     this.initNeons();
 
     this.initCommandsManager();
     this.addCommands();
+    this.initATM();
+    this.initBlackjack();
+    this.initSlotMachine();
 
     this.initOnScreenResize();
     this.initControls();
     this.initRaycaster();
 
     this.pointerLock.requestPointerLock();
+    this.updateUpdater();
   }
 }
 

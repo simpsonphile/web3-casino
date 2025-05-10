@@ -8,6 +8,7 @@ const getEmptyCommands = () => ({
   movement: {},
   menu: {},
   blackjack: {},
+  slotMachine: {},
   cameraTransition: {},
   zoom: {},
 });

@@ -1,30 +1,117 @@
 import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../../Server/messageTypes";
 
 class RemoteBlackjack {
-  constructor({ client, address, id }) {
+  constructor({ client, address }) {
     this._client = client;
     this.address = address;
-    this.id = id;
   }
 
-  async connect() {
-    this._room = await this._client.joinOrCreate(this.id, {
+  async connect({
+    id,
+    onJoin,
+    onNewPlayer,
+    onNewGame,
+    onStepChange,
+    onTurnChange,
+    onPlayerHandUpdate,
+    onPlayerBetUpdate,
+    onPlayerStateUpdate,
+    onDealerHandUpdate,
+    onEndGameResults,
+    onBetAccepted,
+    onHitAccepted,
+    onStandAccepted,
+    onDeletePlayer,
+  }) {
+    this._room = await this._client.joinOrCreate("blackjack", {
       address: this.address,
+      id,
     });
-
-    this._room.onMessage(SERVER_MESSAGES.BLACKJACK_NEW_PLAYER, (data) => {
-      // this._onNewMessage(this._room, data);
-    });
+    this.sessionId = this._room.sessionId;
+    this._room.onMessage(SERVER_MESSAGES.blackjack.BLACKJACK_STATE, (data) =>
+      onJoin(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_NEW_PLAYER,
+      (data) => onNewPlayer(data)
+    );
+    this._room.onMessage(SERVER_MESSAGES.blackjack.BLACKJACK_NEW_GAME, (data) =>
+      onNewGame(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_STEP_CHANGE,
+      (data) => onStepChange(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_TURN_CHANGE,
+      (data) => onTurnChange(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_PLAYER_HAND_UPDATE,
+      (data) => onPlayerHandUpdate(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_PLAYER_BET_UPDATE,
+      (data) => onPlayerBetUpdate(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_PLAYER_STATE_UPDATE,
+      (data) => onPlayerStateUpdate(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_DEALER_HAND_UPDATE,
+      (data) => onDealerHandUpdate(data)
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_END_GAME_RESULTS,
+      (data) => {
+        onEndGameResults(data);
+      }
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_BET_ACCEPTED,
+      (data) => {
+        onBetAccepted(data);
+      }
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_HIT_ACCEPTED,
+      (data) => {
+        onHitAccepted(data);
+      }
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_STAND_ACCEPTED,
+      (data) => {
+        onStandAccepted(data);
+      }
+    );
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.BLACKJACK_DELETE_PLAYER,
+      (data) => {
+        onDeletePlayer(data);
+      }
+    );
   }
 
   disconnect() {
     this._room.leave();
   }
 
-  sendMessage(value) {
-    this._room?.send(CLIENT_MESSAGES.BLACKJACK_MOVE, {
-      value,
-    });
+  bet(bet) {
+    this._room.send(CLIENT_MESSAGES.blackjack.BLACKJACK_BET, bet);
+  }
+
+  hit() {
+    this._room.send(CLIENT_MESSAGES.blackjack.BLACKJACK_HIT);
+  }
+
+  stand() {
+    this._room.send(CLIENT_MESSAGES.blackjack.BLACKJACK_STAND);
+  }
+
+  double() {
+    this._room.send(CLIENT_MESSAGES.blackjack.BLACKJACK_DOUBLE);
   }
 }
 

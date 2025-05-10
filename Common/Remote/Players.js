@@ -25,7 +25,9 @@ class RemotePlayers {
       address: this.address,
     });
 
-    this._room.onMessage(SERVER_MESSAGES.PLAYERS_DATA, (data) => {
+    this.sessionId = this._room.sessionId;
+
+    this._room.onMessage(SERVER_MESSAGES.game.PLAYERS_DATA, (data) => {
       if (this.isFirstPlayersData) {
         this._onFirstPlayersData(this._room, data);
         this.isFirstPlayersData = false;
@@ -34,15 +36,15 @@ class RemotePlayers {
       }
     });
 
-    this._room.onMessage(SERVER_MESSAGES.NEW_PLAYER, (data) => {
+    this._room.onMessage(SERVER_MESSAGES.game.NEW_PLAYER, (data) => {
       this._onNewPlayer(this._room, data);
     });
 
-    this._room.onMessage(SERVER_MESSAGES.DELETE_PLAYER, (data) => {
+    this._room.onMessage(SERVER_MESSAGES.game.DELETE_PLAYER, (data) => {
       this._onDeletePlayer(this._room, data);
     });
 
-    this._room.onMessage(SERVER_MESSAGES.PLAYER_DATA, (data) => {
+    this._room.onMessage(SERVER_MESSAGES.game.PLAYER_DATA, (data) => {
       this._onMainPlayerData(this._room, data);
     });
   }
@@ -52,19 +54,19 @@ class RemotePlayers {
   }
 
   updatePosition(position) {
-    this._room?.send(CLIENT_MESSAGES.PLAYER_MOVE, position);
+    this._room?.send(CLIENT_MESSAGES.game.PLAYER_MOVE, position);
   }
 
   updateRotation(rotation) {
-    this._room?.send(CLIENT_MESSAGES.PLAYER_ROTATE, rotation);
+    this._room?.send(CLIENT_MESSAGES.game.PLAYER_ROTATE, rotation);
   }
 
   updateAnimation(animation) {
-    this._room?.send(CLIENT_MESSAGES.PLAYER_ANIMATION, animation);
+    this._room?.send(CLIENT_MESSAGES.game.PLAYER_ANIMATION, animation);
   }
 
   updateNickname(nickname) {
-    this._room?.send(CLIENT_MESSAGES.UPDATE_NICKNAME, nickname);
+    this._room?.send(CLIENT_MESSAGES.game.UPDATE_NICKNAME, nickname);
   }
 }
 

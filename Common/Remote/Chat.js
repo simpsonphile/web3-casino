@@ -12,7 +12,7 @@ class RemoteChat {
       address: this.address,
     });
 
-    this._room.onMessage(SERVER_MESSAGES.NEW_MESSAGE, (data) => {
+    this._room.onMessage(SERVER_MESSAGES.chat.NEW_MESSAGE, (data) => {
       this._onNewMessage(this._room, data);
     });
   }
@@ -22,7 +22,7 @@ class RemoteChat {
   }
 
   sendMessage(value) {
-    this._room?.send(CLIENT_MESSAGES.MESSAGE, {
+    this._room?.send(CLIENT_MESSAGES.chat.MESSAGE, {
       value,
     });
   }

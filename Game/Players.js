@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import BusinessMan from "./Models/BusinessMan";
+import CasualMan from "./Models/CasualMan";
 import Nickname from "./Nickname";
 
 class Players {
@@ -19,7 +19,7 @@ class Players {
   }
 
   createNewPlayer(id, nickname, position) {
-    const newPlayer = new BusinessMan({ nickname });
+    const newPlayer = new CasualMan({ nickname });
     const newPlayerNickname = new Nickname({ nickname, position });
     newPlayer.position.copy(position);
     this.players[id] = newPlayer;
