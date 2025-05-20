@@ -6,7 +6,7 @@ class Chip extends THREE.Object3D {
     if (!chipNamesMap?.[name]) throw Error(`no such Chip ${name}`);
     super();
 
-    const chip = window.scene.getObjectByName(name).clone();
+    const chip = window.models.chips.scene.getObjectByName(name).clone();
     chip.position.set(0, 0, 0);
 
     this.add(chip);
