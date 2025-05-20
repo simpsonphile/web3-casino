@@ -1,11 +1,9 @@
 import styles from "./index.module.scss";
 
+import { getReadableKey } from "../../utils/keyboard";
+
 const KeyboardKey = ({ code }) => {
-  let value;
-  if (!code) return null;
-  if (code.includes("Key")) value = code.split("Key")[1].toLowerCase();
-  else if (code.includes("Digit")) value = code.split("Digit")[1].toLowerCase();
-  else value = code;
+  let value = getReadableKey(code);
   return <span className={styles.KeyboardKey}>{value}</span>;
 };
 
