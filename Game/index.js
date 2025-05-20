@@ -6,7 +6,7 @@ import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
-import Casino from "./Casino";
+import World from "./World";
 import PointerLock from "./PointerLock";
 import Collisions from "./Collisions";
 import CommandManager from "./CommandManager";
@@ -145,8 +145,8 @@ class Game {
     window.sounds = this.sounds.soundBuffers;
   }
 
-  initCasino() {
-    this.casino = new Casino();
+  initWorld() {
+    new World();
   }
 
   initActorCamera() {
@@ -399,7 +399,7 @@ class Game {
 
     this.initInteractionHandler();
 
-    this.initCasino();
+    this.initWorld();
     this.initCollisions();
     this.initStairs();
     this.initPlayer();
