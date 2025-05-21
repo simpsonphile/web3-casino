@@ -26,7 +26,7 @@ class World {
   }
 
   applyLight() {
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
   }
 }
 export default World;
