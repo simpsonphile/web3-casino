@@ -7,6 +7,7 @@ const soundPaths = {
 
   reelStart: "game-assets/sounds/reel-start.mp3",
   reelStop: "game-assets/sounds/reel-stop.mp3",
+  menuSelect: "game-assets/sounds/menu-select.mp3",
 };
 
 export default soundPaths;
