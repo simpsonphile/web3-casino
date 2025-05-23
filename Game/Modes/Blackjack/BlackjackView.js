@@ -16,28 +16,28 @@ const slotRotations = [
   new THREE.Euler(0, 0.47, 0),
   new THREE.Euler(0, 0.94, 0),
   new THREE.Euler(0, 1.57, 0),
-  new THREE.Euler(-3.14, 0.94, -3.14),
-  new THREE.Euler(-3.14, 0.47, -3.14),
+  new THREE.Euler(-Math.PI, 0.94, -Math.PI),
+  new THREE.Euler(-Math.PI, 0.47, -Math.PI),
 ];
 
 class BlackjackView {
   constructor({ object3d }) {
     this.object3d = object3d;
     this.group = new THREE.Group();
+    this.height = this.object3d.getHeight();
 
     this.players = {};
     this.playersOrder = [];
 
     this.dealerHand = [];
     this.dealerMeshGroup = new THREE.Group();
-
+    this.dealerMeshGroup.position.set(0, 0.1, 0);
+    this.dealerMeshGroup.applyMatrix4(this.object3d.matrixWorld);
     this.group.add(this.dealerMeshGroup);
 
     window.scene.add(this.group);
 
-    this._prepareSlots();
     this._prepareNpc();
-    this._tempQuests();
   }
 
   createPlayer(id) {
@@ -51,7 +51,13 @@ class BlackjackView {
     if (!this.playersOrder.includes(id)) {
       this.playersOrder.push(id);
     }
-
+    const index = this.playersOrder.indexOf(id);
+    const pos = slots[index];
+    const rotation = slotRotations[index];
+    const quat = new THREE.Quaternion().setFromEuler(rotation);
+    meshGroup.position.copy(pos);
+    meshGroup.applyQuaternion(quat);
+    meshGroup.applyMatrix4(this.object3d.matrixWorld);
     this.group.add(meshGroup);
   }
 
@@ -68,9 +74,10 @@ class BlackjackView {
 
   resetDealer() {
     this.dealerHand = [];
-    this.group.remove(this.dealerMeshGroup);
-    this.dealerMeshGroup = new THREE.Group();
-    this.group.add(this.dealerMeshGroup);
+    while (this.dealerMeshGroup.children.length > 0) {
+      const child = this.dealerMeshGroup.children[0];
+      this.dealerMeshGroup.remove(child);
+    }
   }
 
   resetTable() {
@@ -85,7 +92,7 @@ class BlackjackView {
 
     const v = new THREE.Vector3(-1.5, 0, 0);
     v.applyMatrix4(this.object3d.matrixWorld);
-    v.y = 0;
+    v.y -= this.height;
     this.npc.position.copy(v);
 
     this.npc.runIdleAnimation();
@@ -95,73 +102,16 @@ class BlackjackView {
     window.deltaUpdater.add(this.npc.updateMixer.bind(this.npc));
   }
 
-  _tempQuests() {
-    this.seatSlots.forEach((slot, i) => {
-      const dude = new BusinessMan();
-      const v = new THREE.Vector3().copy(slot);
-      v.y = 0;
-      dude.position.copy(v);
-      dude.lookAtY(this.object3d.position);
-      this.group.add(dude);
-      this.createPlayer(i);
-      this.giveCardToPlayer(i, "heart_2");
-      this.giveCardToPlayer(i, "heart_2");
-      this.giveCardToPlayer(i, "heart_2");
-      this.giveCardToPlayer(i, "heart_2");
-      this.giveChipsToPlayer(i, 123);
-    });
-  }
-
-  _prepareSlots() {
-    this.cardSlots = slots.map((slot, i) => {
-      const pos = new THREE.Vector3();
-      pos.copy(slot);
-      return pos;
-    });
-
-    this.seatSlots = slots.map((slot, i) => {
-      const pos = new THREE.Vector3();
-      const rotation = slotRotations[i];
-      const quat = new THREE.Quaternion().setFromEuler(rotation);
-      const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(quat);
-      const movedPos = pos.clone().add(forward.multiplyScalar(1.5));
-      movedPos.applyMatrix4(this.object3d.matrixWorld);
-      return movedPos;
-    });
-
-    this.chipSlots = slots.map((slot) => {
-      const pos = new THREE.Vector3();
-      pos.copy(slot);
-      pos.x += 0.1;
-      return pos;
-    });
-
-    this.dealerSlot = new THREE.Vector3(0, 0.1, 0).applyMatrix4(
-      this.object3d.matrixWorld
-    );
-  }
-
-  createCard({ cardName, pos, index, rotation = 0 }) {
-    const newPos = new THREE.Vector3().copy(pos);
-    newPos.x -= index * 0.02;
-    newPos.z += index * 0.02;
-    newPos.y += index * 0.0001;
-
+  createCard(cardName, index) {
     const card = new Card({ name: cardName });
-
-    card.position.copy(newPos);
-    card.applyMatrix4(this.object3d.matrixWorld);
+    card.position.x -= index * 0.02;
+    card.position.z += index * 0.02;
+    card.position.y -= index * 0.0001;
     return card;
   }
 
   giveCardToDealer(cardName) {
-    const card = this.createCard({
-      cardName,
-      pos: this.dealerSlot,
-      index: this.dealerHand.length,
-    });
-
-    console.log(card);
+    const card = this.createCard(cardName, this.dealerHand.length);
 
     this.dealerHand.push(cardName);
     this.dealerMeshGroup.add(card);
@@ -169,15 +119,9 @@ class BlackjackView {
 
   giveCardToPlayer(id, cardName) {
     const { hand, meshGroup } = this.players[id];
-    const index = this.playersOrder.indexOf(id);
-    const pos = this.cardSlots[index];
 
-    const card = this.createCard({
-      cardName,
-      pos,
-      index: hand.length,
-      rotation: slotRotations[index],
-    });
+    const card = this.createCard(cardName, hand.length);
+    card.rotateY(-Math.PI / 2);
 
     hand.push(cardName);
     meshGroup.add(card);
@@ -185,25 +129,19 @@ class BlackjackView {
 
   giveChipsToPlayer(id, newBet) {
     const { bet, meshGroup } = this.players[id];
-    const index = this.playersOrder.indexOf(id);
-    const pos = new THREE.Vector3().copy(this.chipSlots[index]);
 
-    if (bet > 0) pos.x -= 0.04;
-    newBet -= bet;
+    const zOffset = bet !== 0 ? 0.04 : 0;
+    const betDiff = newBet - bet;
 
-    const chips = getChipsForBet(newBet);
+    const chips = getChipsForBet(betDiff);
     const stacksOfChips = groupChips(chips);
 
     stacksOfChips.forEach((group, i) => {
       group.forEach((name, j) => {
         const chip = new Chip({ name });
-        const newPos = new THREE.Vector3().copy(pos);
-        newPos.z += i * 0.04 + (0.5 - Math.random()) * 0.005;
-        newPos.y += j * 0.0033;
-        newPos.x += (0.5 - Math.random()) * 0.005;
-        newPos.applyMatrix4(this.object3d.matrixWorld);
-
-        chip.position.copy(newPos);
+        chip.position.x += i * 0.04 + (0.5 - Math.random()) * 0.005;
+        chip.position.y += j * 0.0033;
+        chip.position.z += zOffset + 0.15 + (0.5 - Math.random()) * 0.005;
         meshGroup.add(chip);
       });
     });
@@ -216,11 +154,15 @@ class BlackjackView {
   }
 
   getPlayerSeatPosition(id) {
-    const index = this.playersOrder.indexOf(id);
-    const pos = this.seatSlots[index];
-    pos.y = 0;
-
-    return pos;
+    const { meshGroup } = this.players[id];
+    const rotation = meshGroup.rotation.clone();
+    const quat = new THREE.Quaternion().setFromEuler(rotation);
+    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(quat);
+    const movedPos = meshGroup.position
+      .clone()
+      .add(forward.multiplyScalar(1.2));
+    movedPos.y -= this.height;
+    return movedPos;
   }
 
   deletePlayer(id) {
