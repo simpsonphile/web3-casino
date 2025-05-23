@@ -32,7 +32,6 @@ import DeltaUpdater from "./DeltaUpdater";
 import ActorCamera from "./ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
-import SoundPlayer from "../Common/SoundPlayer";
 
 class Game {
   constructor({
@@ -59,12 +58,6 @@ class Game {
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
     this.dispatchBlackjackUI = dispatchBlackjackUI;
-  }
-
-  initSoundPlayer() {
-    this.soundPlayer = new SoundPlayer();
-    window.soundPlayer = this.soundPlayer;
-    window.soundPlayer.loadSounds();
   }
 
   initCSSRenderer() {
@@ -393,7 +386,6 @@ class Game {
   }
 
   async init() {
-    this.initSoundPlayer();
     this.initStats();
     this.initCamerasManager();
     this.initScene();

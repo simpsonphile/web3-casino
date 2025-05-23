@@ -4,6 +4,7 @@ import Menu from "../Menu";
 import Chat from "../Chat";
 import RemoteChat from "@Common/Remote/Chat";
 import Remote from "@Common/Remote";
+import SoundPlayer from "@Common/SoundPlayer";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
 import styles from "./index.module.scss";
@@ -37,6 +38,12 @@ const GameContainer = () => {
     repo.get("chat").connect();
 
     setRepo(repo);
+  }, []);
+
+  useEffect(() => {
+    const soundPlayer = new SoundPlayer();
+    soundPlayer.loadSounds();
+    window.soundPlayer = soundPlayer;
   }, []);
 
   useEffect(() => {
