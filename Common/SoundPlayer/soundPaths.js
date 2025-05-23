@@ -1,0 +1,12 @@
+const soundPaths = {
+  betSound: "game-assets/sounds/chip-drop.mp3",
+  betAccept: "game-assets/sounds/all-in-chips.mp3",
+  cardDrop: "game-assets/sounds/card-drop.mp3",
+  winSound: "game-assets/sounds/you-win-1.mp3",
+  standardSound: "game-assets/sounds/menu-select.mp3",
+
+  reelStart: "game-assets/sounds/reel-start.mp3",
+  reelStop: "game-assets/sounds/reel-stop.mp3",
+};
+
+export default soundPaths;
