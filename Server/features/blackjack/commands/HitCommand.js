@@ -58,6 +58,10 @@ export class HitCommand extends Command {
       this.state.turn === id
     ) {
       if (isDouble) {
+        if (this.state.getPlayerCards(id).length > 2) {
+          client.send(SERVER_MESSAGES.BLACKJACK_DOUBLE_BET_ERROR);
+          return;
+        }
         this.doubleBet(id);
       }
       this.dealCard(client);
