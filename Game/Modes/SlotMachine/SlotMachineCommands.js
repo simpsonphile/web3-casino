@@ -13,7 +13,19 @@ class SlotMachineCommands {
       this.keys.slotMachine.spin,
       null,
       () => {
-        slotMachineController.spin("10,11,12,13,14");
+        const getRandomBetween = (min, max) => {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        const slots = [
+          getRandomBetween(0, 14),
+          getRandomBetween(0, 14),
+          getRandomBetween(0, 14),
+          getRandomBetween(0, 14),
+          getRandomBetween(0, 14),
+        ];
+
+        slotMachineController.spin(slots.join(","));
       }
     );
 
