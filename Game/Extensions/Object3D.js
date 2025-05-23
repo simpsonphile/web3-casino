@@ -11,3 +11,8 @@ THREE.Object3D.prototype.lookAtY = function (targetPos) {
   const angle = Math.atan2(direction.x, direction.z);
   this.rotation.y = angle;
 };
+
+THREE.Object3D.prototype.getHeight = function () {
+  const box = new THREE.Box3().setFromObject(this);
+  return box.max.y - box.min.y;
+};
