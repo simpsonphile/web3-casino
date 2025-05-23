@@ -1,12 +1,5 @@
-const betSound = new Audio("game-assets/sounds/chip-drop.mp3");
-const betAccept = new Audio("game-assets/sounds/all-in-chips.mp3");
-const cardDrop = new Audio("game-assets/sounds/card-drop.mp3");
-const winSound = new Audio("game-assets/sounds/you-win-1.mp3");
-const standardSound = new Audio("game-assets/sounds/menu-select.mp3"); // different
-
-const playSound = (sound) => {
-  sound.currentTime = 0;
-  sound.play();
+const playSound = (name) => {
+  window.soundPlayer.playSound(name);
 };
 
 class BlackjackController {
@@ -110,7 +103,7 @@ class BlackjackController {
 
   onPlayerHandUpdate({ id, card }) {
     this.getCurrentView().giveCardToPlayer(id, card);
-    playSound(cardDrop);
+    playSound("cardDrop");
 
     if (id === this.sessionId) {
       this.dispatchBlackjackUI({ type: "addCard", payload: card });
@@ -130,7 +123,7 @@ class BlackjackController {
   onDealerHandUpdate(card) {
     this.getCurrentView().giveCardToDealer(card);
     this.dispatchBlackjackUI({ type: "addDealerCard", payload: card });
-    playSound(cardDrop);
+    playSound("cardDrop");
   }
 
   onEndGameResults(currentGame) {
@@ -140,23 +133,23 @@ class BlackjackController {
       payload: currentGame[this.sessionId].state,
     });
     if (["win", "win-early"].includes(currentGame[this.sessionId].state)) {
-      playSound(winSound);
+      playSound("winSound");
     }
   }
 
   onBetAccepted() {
     this.dispatchBlackjackUI({ type: "setHasBeaten" });
-    playSound(betAccept);
+    playSound("betAccept");
   }
 
   onHitAccepted() {
     this.dispatchBlackjackUI({ type: "setHasHit" });
-    playSound(standardSound);
+    playSound("standardSound");
   }
 
   onStandAccepted() {
     this.dispatchBlackjackUI({ type: "setHasStand" });
-    playSound(standardSound);
+    playSound("standardSound");
   }
 
   onDeletePlayer(id) {
@@ -167,7 +160,7 @@ class BlackjackController {
     this.pendingBet = bet;
 
     this.dispatchBlackjackUI({ type: "setBet", payload: this.pendingBet });
-    playSound(betSound);
+    playSound("betSound");
   }
 
   addToPendingBet(bet) {

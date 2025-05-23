@@ -3,6 +3,7 @@ import Button from "../Button";
 import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
 import { Heading, HStack } from "@chakra-ui/react";
+import { getReadableKey } from "../../utils/keyboard";
 
 const KeyConfigMenu = ({ setCurrentMenu, keyConfig, onKeyConfigUpdate }) => {
   const ref = useRef(document.createElement("div"));
@@ -84,7 +85,7 @@ const KeyConfigMenu = ({ setCurrentMenu, keyConfig, onKeyConfigUpdate }) => {
                   >
                     {`${name}.${settingsName}.${i}` === current
                       ? "press any key"
-                      : key}
+                      : getReadableKey(key)}
                   </Button>
                 ))}
               </div>

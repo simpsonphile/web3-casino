@@ -6,7 +6,7 @@ class Card extends THREE.Object3D {
     if (!cardNamesMap?.[name]) throw Error(`no such card ${name}`);
     super();
 
-    const card = window.scene.getObjectByName(name).clone();
+    const card = window.models.cards.scene.getObjectByName(name).clone();
     card.position.set(0, 0, 0);
 
     this.add(card);

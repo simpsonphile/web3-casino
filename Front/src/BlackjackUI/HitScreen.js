@@ -7,23 +7,27 @@ import Points from "./Points";
 
 const HitScreen = () => {
   const {
-    state: { turn, id, hasStand, playerState },
+    state: { cards, turn, id, hasStand, playerState },
   } = useBlackjackUIContext();
   const { keyConfig } = useKeyConfigContext();
 
   const blackjackKeys = keyConfig.get().blackjack;
+
+  const isDoubleVisible = cards.length === 2 && !hasStand;
 
   if (turn === id) {
     return (
       <div className={styles.HitScreen}>
         <Points />
         <HStack gap={3} textAlign="center">
-          <Box>
-            <Heading size="lg" color="white">
-              Double
-            </Heading>
-            <KeyboardKey code={blackjackKeys.double[0]}></KeyboardKey>
-          </Box>
+          {isDoubleVisible && (
+            <Box>
+              <Heading size="lg" color="white">
+                Double
+              </Heading>
+              <KeyboardKey code={blackjackKeys.double[0]}></KeyboardKey>
+            </Box>
+          )}
           <Box>
             <Heading size="lg" color="white">
               Hit

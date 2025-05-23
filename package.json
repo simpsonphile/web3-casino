@@ -51,7 +51,8 @@
     "contracts:start": "npm --prefix ./Contracts run start",
     "contract-hooks:generate": "npm --prefix ./Contract-hooks run generate",
     "optimize-model": "gltf-transform optimize Front/public/game-assets/models/world.glb Front/public/game-assets/models/world-geometry-optimized.glb",
-    "optimize-textures": "gltf-transform etc1s Front/public/game-assets/models/world-geometry-optimized.glb Front/public/game-assets/models/world-optimized.glb"
+    "optimize-textures-size": "gltf-transform resize Front/public/game-assets/models/world-geometry-optimized.glb Front/public/game-assets/models/world-geometry-optimized-size.glb --width 1024 --height 1024",
+    "optimize-textures": "gltf-transform etc1s Front/public/game-assets/models/world.glb Front/public/game-assets/models/world-optimized.glb --quality 80 --effort 1 --no-mipmaps"
   },
   "eslintConfig": {
     "extends": [

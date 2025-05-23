@@ -1,21 +1,13 @@
 import SlotMachineView from "./SlotMachineView";
 
-const reelStartSound = new Audio("game-assets/sounds/reel-start.mp3");
-const reelStopSound = new Audio("game-assets/sounds/reel-stop.mp3");
-
-const playSound = (sound) => {
-  sound.currentTime = 0;
-  sound.play();
-};
-
 class SlotMachineController {
   constructor() {}
 
   _onReelStart() {
-    playSound(reelStartSound);
+    window.soundPlayer.playSound("reelStart");
   }
   _onReelStop() {
-    playSound(reelStopSound);
+    window.soundPlayer.playSound("reelStop");
   }
   _onSpinStop() {}
 

@@ -1,12 +1,5 @@
 import { Button as ChakraButton } from "@chakra-ui/react";
 
-const hoverSound = new Audio("game-assets/sounds/menu-select.mp3");
-
-const playSound = () => {
-  hoverSound.currentTime = 0;
-  hoverSound.play();
-};
-
 const Button = ({
   onClick: onClickProps,
   isPlaySoundOnClick = true,
@@ -16,7 +9,7 @@ const Button = ({
     onClickProps?.();
 
     if (isPlaySoundOnClick) {
-      playSound();
+      window.soundPlayer.playSound("menuSelect");
     }
   };
 

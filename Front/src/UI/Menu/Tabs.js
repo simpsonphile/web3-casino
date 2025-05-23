@@ -1,4 +1,5 @@
 import { Tabs as ChakraTabs } from "@chakra-ui/react";
+import styles from "./Menu.module.scss";
 
 const Tabs = ({ list, content, ...rest }) => {
   return (
@@ -10,7 +11,10 @@ const Tabs = ({ list, content, ...rest }) => {
       </ChakraTabs.List>
 
       {content.map((item) => (
-        <ChakraTabs.Content value={item.value}>
+        <ChakraTabs.Content
+          value={item.value}
+          className={styles.MenuTabContent}
+        >
           {item.children}
         </ChakraTabs.Content>
       ))}

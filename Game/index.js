@@ -6,7 +6,7 @@ import Stats from "three/examples/jsm/libs/stats.module.js";
 import PlayableCharacter from "./PlayableCharacter";
 import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
-import Casino from "./Casino";
+import World from "./World";
 import PointerLock from "./PointerLock";
 import Collisions from "./Collisions";
 import CommandManager from "./CommandManager";
@@ -19,7 +19,7 @@ import ZoomCamera from "./ZoomCamera";
 import RendererComposer from "./RendererComposer";
 import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
-import UIRenderer from "./UIRenderer";
+import CSSRenderer from "./CSSRenderer";
 import CasualMan from "./Models/CasualMan";
 import SlotMachineInteraction from "./Modes/SlotMachine/SlotMachineInteraction";
 import SlotMachineCommands from "./Modes/SlotMachine/SlotMachineCommands";
@@ -60,21 +60,21 @@ class Game {
     this.dispatchBlackjackUI = dispatchBlackjackUI;
   }
 
-  initUIRenderer() {
-    this.uiRenderer = new UIRenderer();
-    window.uiRenderer = this.uiRenderer;
+  initCSSRenderer() {
+    this.cssRenderer = new CSSRenderer();
+    window.cssRenderer = this.cssRenderer;
   }
 
-  initUIScene() {
-    this.uiScene = new THREE.Scene();
-    window.uiScene = this.uiScene;
+  initCSSScene() {
+    this.cssScene = new THREE.Scene();
+    window.cssScene = this.cssScene;
   }
 
   initClient() {
     // rename
     this.players = new Players();
     window.scene.add(this.players.playersGroup);
-    window.uiScene.add(this.players.nicknamesGroup);
+    window.cssScene.add(this.players.nicknamesGroup);
     this._repo.add("players", RemotePlayers, {
       onMainPlayerData: (room, data) => {
         const { position } = data;
@@ -145,8 +145,8 @@ class Game {
     window.sounds = this.sounds.soundBuffers;
   }
 
-  initCasino() {
-    this.casino = new Casino();
+  initWorld() {
+    new World();
   }
 
   initActorCamera() {
@@ -259,7 +259,10 @@ class Game {
 
     this.update();
     this.render();
-    this.uiRenderer.render(this.uiScene, this.camerasManager.getActiveCamera());
+    this.cssRenderer.render(
+      this.cssScene,
+      this.camerasManager.getActiveCamera()
+    );
     this.stats.end();
   }
 
@@ -384,14 +387,14 @@ class Game {
 
   async init() {
     this.initStats();
-    this.initScene();
-    this.initUIScene();
     this.initCamerasManager();
+    this.initScene();
+    this.initCSSScene();
     this.initActorCamera();
     this.initAudioListener();
     this.initZoomCamera();
     this.initUpdater();
-    this.initUIRenderer();
+    this.initCSSRenderer();
     this.initRenderer();
 
     await this.initModels();
@@ -399,7 +402,7 @@ class Game {
 
     this.initInteractionHandler();
 
-    this.initCasino();
+    this.initWorld();
     this.initCollisions();
     this.initStairs();
     this.initPlayer();
