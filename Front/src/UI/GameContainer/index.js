@@ -8,11 +8,11 @@ import SoundPlayer from "@Common/SoundPlayer";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
 import styles from "./index.module.scss";
-import { useKeyConfigContext } from "../../context/KeyConfigContext";
 import AtmModal from "../AtmModal";
 import GameTooltip from "../GameTooltip";
 import BlackjackUI from "../../BlackjackUI";
-import { useBlackjackUIContext } from "../../context/BlackjackUIContext";
+import SlotsUI from "../../SlotsUI";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -22,10 +22,9 @@ const GameContainer = () => {
   const [repo, setRepo] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isAtmOpen, setIsAtmOpen] = useState(false);
-  const { keyConfig } = useKeyConfigContext();
+  const { keyConfig } = useKeyConfigStore();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
-  const { dispatch: dispatchBlackjackUI } = useBlackjackUIContext();
 
   useEffect(() => {
     const repo = new Remote({ address });
@@ -51,7 +50,6 @@ const GameContainer = () => {
     const initGame = async () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
-        keyConfig: keyConfig,
         repo,
         onAtmClick: () => setIsAtmOpen(true),
         onAtmExit: () => setIsAtmOpen(false),
@@ -63,7 +61,6 @@ const GameContainer = () => {
           setTooltipVisible(false);
           setTooltipText("");
         },
-        dispatchBlackjackUI: dispatchBlackjackUI,
       });
       setGameInstance(game);
     };
@@ -123,6 +120,7 @@ const GameContainer = () => {
       {tooltipVisible && <GameTooltip>{tooltipText}</GameTooltip>}
 
       <BlackjackUI />
+      <SlotsUI />
     </div>
   );
 };

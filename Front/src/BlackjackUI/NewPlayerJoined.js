@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
 import { Heading } from "@chakra-ui/react";
 import styles from "./index.module.scss";
+import { useBlackjackStore } from "../stores/blackjackStore";
 
 const NewPlayerJoined = () => {
-  const { state, dispatch } = useBlackjackUIContext();
-  const { newPlayer } = state;
+  const { newPlayer, newPlayerJoined } = useBlackjackStore();
 
   useEffect(() => {
     setTimeout(() => {
-      dispatch({ type: "newPlayerJoined", payload: null });
+      newPlayerJoined(null);
     }, 2500);
   }, [newPlayer]);
 

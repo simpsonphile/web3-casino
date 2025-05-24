@@ -21,34 +21,29 @@ import RemotePlayers from "@Common/Remote/Players";
 import Players from "./Players";
 import CSSRenderer from "./CSSRenderer";
 import CasualMan from "./Models/CasualMan";
-import SlotMachineInteraction from "./Modes/SlotMachine/SlotMachineInteraction";
-import SlotMachineCommands from "./Modes/SlotMachine/SlotMachineCommands";
 import MovementCommands from "./Modes/Movement/MovementCommands";
 import ZoomCommands from "./Modes/Zoom/ZoomCommands";
-import SlotMachineController from "./Modes/SlotMachine/SlotMachineController";
 import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
 import DeltaUpdater from "./DeltaUpdater";
 import ActorCamera from "./ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
+import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
+import { initStoreRegistry } from "./storeRegistry";
 
 class Game {
   constructor({
     onPause,
-    keyConfig,
     repo,
     onAtmClick,
     onAtmExit,
     showTooltip,
     hideTooltip,
-    dispatchBlackjackUI,
   }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
-    this.keyConfig = keyConfig;
-    window.keyConfig = keyConfig;
     this._repo = repo;
     window.repo = this._repo;
 
@@ -57,7 +52,6 @@ class Game {
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
-    this.dispatchBlackjackUI = dispatchBlackjackUI;
   }
 
   initCSSRenderer() {
@@ -98,10 +92,6 @@ class Game {
   resumeGame() {
     this.commandManager.setToPrevMode();
     this.pointerLock.requestPointerLock();
-  }
-
-  updateKeyConfig(type, key, values) {
-    this.keyConfig.update(type, key, values);
   }
 
   initCamerasManager() {
@@ -245,9 +235,6 @@ class Game {
       false
     );
     this.deltaUpdater.add(this.camerasManager.update.bind(this.camerasManager));
-    this.deltaUpdater.add(
-      this.slotMachineController.update.bind(this.slotMachineController)
-    );
   }
 
   update() {
@@ -282,7 +269,6 @@ class Game {
   initBlackjack() {
     new BlackjackMode({
       game: this,
-      dispatchBlackjackUI: this.dispatchBlackjackUI,
     }).init();
   }
 
@@ -295,17 +281,14 @@ class Game {
   }
 
   initSlotMachine() {
-    this.slotMachineController = new SlotMachineController();
-
-    window.slotMachineController = this.slotMachineController;
-
-    new SlotMachineCommands(this.slotMachineController);
+    new SlotMachineMode({
+      game: this,
+    }).init();
   }
 
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
     window.interactionHandler = this.interactionHandler;
-    this.slotMachineInteraction = new SlotMachineInteraction(this);
   }
 
   initCommandsManager() {
@@ -386,6 +369,7 @@ class Game {
   }
 
   async init() {
+    initStoreRegistry();
     this.initStats();
     this.initCamerasManager();
     this.initScene();

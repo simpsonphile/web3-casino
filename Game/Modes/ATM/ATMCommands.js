@@ -1,6 +1,6 @@
 class ATMCommands {
   constructor() {
-    this.keys = window.keyConfig.get();
+    this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
 
     this.addCommands();
   }

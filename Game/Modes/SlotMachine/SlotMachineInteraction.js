@@ -1,8 +1,9 @@
 import * as THREE from "three";
 
 class SlotMachineInteraction {
-  constructor(game) {
+  constructor({ game, controller }) {
     this.game = game;
+    this.controller = controller;
     this.registerInteractions();
   }
 
@@ -31,7 +32,7 @@ class SlotMachineInteraction {
     seatPos.y = 0;
     this.game.player.moveTo(seatPos);
     this.game.interactionHandler.setState(false);
-    this.game.slotMachineController.join({ object3d: obj });
+    this.controller.join({ object3d: obj });
   }
 
   registerInteractions() {

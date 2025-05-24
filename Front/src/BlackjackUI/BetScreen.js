@@ -3,14 +3,12 @@ import styles from "./index.module.scss";
 import KeyboardKey from "../UI/KeyboardKey";
 import CasinoChip from "../UI/CasinoChip";
 import { chipColorNominalsMap } from "@Common/constants";
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
-import { useKeyConfigContext } from "../context/KeyConfigContext";
+import { useBlackjackStore } from "../stores/blackjackStore";
+import { useKeyConfigStore } from "../stores/keyConfigStore";
 
 const BetScreen = () => {
-  const {
-    state: { bet, hasBeaten },
-  } = useBlackjackUIContext();
-  const { keyConfig } = useKeyConfigContext();
+  const { bet, hasBeaten } = useBlackjackStore();
+  const { keyConfig } = useKeyConfigStore();
 
   const blackjackKeys = keyConfig.get().blackjack;
 
@@ -31,7 +29,13 @@ const BetScreen = () => {
         {Object.entries(chipColorNominalsMap)
           .sort(([_, a], [__, b]) => a - b)
           .map(([name, value], i) => (
-            <Box display="flex" flexDir="column" gap={2} textAlign="center">
+            <Box
+              key={name}
+              display="flex"
+              flexDir="column"
+              gap={2}
+              textAlign="center"
+            >
               <CasinoChip color={name.split("chip_")[1]} />
               <div>
                 <KeyboardKey code={`Digit${i + 1}`}></KeyboardKey>

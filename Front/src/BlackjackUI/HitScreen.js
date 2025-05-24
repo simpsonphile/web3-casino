@@ -1,15 +1,13 @@
 import styles from "./index.module.scss";
 import KeyboardKey from "../UI/KeyboardKey";
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
 import { Heading, HStack, Box } from "@chakra-ui/react";
-import { useKeyConfigContext } from "../context/KeyConfigContext";
 import Points from "./Points";
+import { useBlackjackStore } from "../stores/blackjackStore";
+import { useKeyConfigStore } from "../stores/keyConfigStore";
 
 const HitScreen = () => {
-  const {
-    state: { cards, turn, id, hasStand, playerState },
-  } = useBlackjackUIContext();
-  const { keyConfig } = useKeyConfigContext();
+  const { cards, turn, id, hasStand, playerState } = useBlackjackStore();
+  const { keyConfig } = useKeyConfigStore();
 
   const blackjackKeys = keyConfig.get().blackjack;
 

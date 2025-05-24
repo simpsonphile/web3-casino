@@ -1,11 +1,9 @@
 import { Heading } from "@chakra-ui/react";
 import { countCardPoints } from "../../../Common/utilis/countCardPoints";
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
+import { useBlackjackStore } from "../stores/blackjackStore";
 
 const Points = () => {
-  const {
-    state: { cards, dealerCards },
-  } = useBlackjackUIContext();
+  const { cards, dealerCards } = useBlackjackStore();
 
   return (
     <div>
