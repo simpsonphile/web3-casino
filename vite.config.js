@@ -23,6 +23,7 @@ export default defineConfig({
     alias: {
       "@Game": path.resolve(__dirname, "./Game"),
       "@Common": path.resolve(__dirname, "./Common"),
+      "@Front": path.resolve(__dirname, "./Front/src"),
     },
   },
   optimizeDeps: {
