@@ -1,13 +1,11 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = "219031390302@AWDJoi#JIFOrjreio1029SJAOWIwidjwqoij";
-
 export const generateAccessToken = (address) => {
-  return jwt.sign({ address }, SECRET_KEY, { expiresIn: "24h" });
+  return jwt.sign({ address }, process.env.JWT_SECRET, { expiresIn: "24h" });
 };
 
 export const verifyAccessToken = (token) => {
-  return jwt.verify(token, SECRET_KEY);
+  return jwt.verify(token, process.env.JWT_SECRET);
 };
 
 export const getAddressFromToken = (token) => {
