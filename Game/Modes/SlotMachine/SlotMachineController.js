@@ -1,7 +1,9 @@
 import SlotMachineView from "./SlotMachineView";
 
 class SlotMachineController {
-  constructor() {}
+  constructor() {
+    this.slotsStore = window.slotsStore.getState();
+  }
 
   _onReelStart() {
     window.soundPlayer.playSound("reelStart");
@@ -18,6 +20,8 @@ class SlotMachineController {
       onReelStop: this._onReelStop,
       onSpinStop: this._onSpinStop,
     });
+
+    this.slotsStore.setVisible(true);
   }
 
   spin(combination) {
@@ -27,6 +31,25 @@ class SlotMachineController {
   update(delta) {
     if (!this.view) return;
     this.view.update(delta);
+  }
+
+  leave() {
+    this.slotsStore.setVisible(false);
+  }
+
+  showHelp() {
+    this.slotsStore.setStep("help");
+  }
+  increaseBet() {
+    this.slotsStore.increaseBet();
+  }
+  decreaseBet() {
+    if (this.slotsStore.bet > 0) {
+      this.slotsStore.decreaseBet();
+    }
+  }
+  goBack() {
+    this.slotsStore.setStep("main");
   }
 }
 

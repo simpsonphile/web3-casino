@@ -1,10 +1,10 @@
 import { Grid } from "@chakra-ui/react";
 import Button from "../Button";
 import KeyboardKey from "../KeyboardKey";
-import { useKeyConfigContext } from "../../context/KeyConfigContext";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const Main = () => {
-  const { keyConfig } = useKeyConfigContext();
+  const { keyConfig } = useKeyConfigStore();
 
   return (
     <div>

@@ -6,10 +6,10 @@ import { parseEther, formatEther } from "viem";
 import { Grid, GridItem } from "@chakra-ui/react";
 import Button from "../Button";
 import KeyboardKey from "../KeyboardKey";
-import { useKeyConfigContext } from "../../context/KeyConfigContext";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const Deposit = () => {
-  const { keyConfig } = useKeyConfigContext();
+  const { keyConfig } = useKeyConfigStore();
   const [value, setValue] = useState("0");
   const { address } = useAccount();
   const { data } = useBalance({ address });

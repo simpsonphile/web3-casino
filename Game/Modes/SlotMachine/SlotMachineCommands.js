@@ -1,7 +1,7 @@
 class SlotMachineCommands {
   constructor(slotMachineController) {
     this.slotMachineController = slotMachineController;
-    this.keys = window.keyConfig.get();
+    this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
 
     this.addCommands();
   }
@@ -25,7 +25,7 @@ class SlotMachineCommands {
           getRandomBetween(0, 14),
         ];
 
-        slotMachineController.spin(slots.join(","));
+        this.slotMachineController.spin(slots.join(","));
       }
     );
 
@@ -37,6 +37,40 @@ class SlotMachineCommands {
         window.commandManager.setMode("movement");
         window.interactionHandler.setState(true);
         window.player.switchCameraMode("third-person");
+        this.slotMachineController.leave();
+      }
+    );
+
+    window.commandManager.addCommand(
+      "slotMachine",
+      "increaseBet",
+      this.keys.slotMachine.increaseBet,
+      () => {
+        this.slotMachineController.increaseBet();
+      }
+    );
+    window.commandManager.addCommand(
+      "slotMachine",
+      "decreaseBet",
+      this.keys.slotMachine.decreaseBet,
+      () => {
+        this.slotMachineController.decreaseBet();
+      }
+    );
+    window.commandManager.addCommand(
+      "slotMachine",
+      "help",
+      this.keys.slotMachine.help,
+      () => {
+        this.slotMachineController.showHelp();
+      }
+    );
+    window.commandManager.addCommand(
+      "slotMachine",
+      "goBack",
+      this.keys.slotMachine.goBack,
+      () => {
+        this.slotMachineController.goBack();
       }
     );
   }

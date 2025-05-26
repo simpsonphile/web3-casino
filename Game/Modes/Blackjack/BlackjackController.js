@@ -3,9 +3,7 @@ const playSound = (name) => {
 };
 
 class BlackjackController {
-  constructor({ dispatchBlackjackUI, views }) {
-    this.dispatchBlackjackUI = dispatchBlackjackUI;
-
+  constructor({ views }) {
     this.roomId = null;
 
     this.currentTurn = null;
@@ -13,6 +11,8 @@ class BlackjackController {
     this.views = views;
 
     this.pendingBet = 0;
+
+    this.blackjackStore = window.blackjackStore.getState();
   }
 
   getRemote() {
@@ -45,8 +45,8 @@ class BlackjackController {
       onDeletePlayer: this.onDeletePlayer.bind(this),
     });
 
-    this.dispatchBlackjackUI({ type: "setVisible", payload: true });
-    this.dispatchBlackjackUI({ type: "setStep", payload: "wait" });
+    this.blackjackStore.setVisible(true);
+    this.blackjackStore.setStep("wait");
   }
 
   buildCurrentTable(data) {
@@ -70,8 +70,8 @@ class BlackjackController {
 
     this.getCurrentView().createPlayer(this.sessionId);
 
-    this.dispatchBlackjackUI({ type: "setVisible", payload: true });
-    this.dispatchBlackjackUI({ type: "setId", payload: this.sessionId });
+    this.blackjackStore.setVisible(true);
+    this.blackjackStore.setId(this.sessionId);
 
     this._afterJoin(
       this.getCurrentView().getPlayerSeatPosition(this.sessionId)
@@ -80,25 +80,25 @@ class BlackjackController {
 
   onNewPlayer({ id, nickname }) {
     this.getCurrentView().createPlayer(id);
-    this.dispatchBlackjackUI({ type: "newPlayerJoined", payload: nickname });
+    this.blackjackStore.newPlayerJoined(nickname);
   }
 
   onNewGame() {
     this.getCurrentView().resetTable();
-    this.dispatchBlackjackUI({ type: "reset" });
-    this.dispatchBlackjackUI({ type: "setVisible", payload: true });
-    this.dispatchBlackjackUI({ type: "setBet", payload: this.pendingBet });
+    this.blackjackStore.reset();
+    this.blackjackStore.setVisible(true);
+    this.blackjackStore.setBet(this.pendingBet);
   }
 
   onStepChange(step) {
     this.currentStep = step;
-    this.dispatchBlackjackUI({ type: "setStep", payload: step });
+    this.blackjackStore.setStep(step);
   }
 
   onTurnChange(id) {
     this.currentTurn = id;
 
-    this.dispatchBlackjackUI({ type: "setTurn", payload: this.currentTurn });
+    this.blackjackStore.setTurn(this.currentTurn);
   }
 
   onPlayerHandUpdate({ id, card }) {
@@ -106,7 +106,7 @@ class BlackjackController {
     playSound("cardDrop");
 
     if (id === this.sessionId) {
-      this.dispatchBlackjackUI({ type: "addCard", payload: card });
+      this.blackjackStore.addCard(card);
     }
   }
 
@@ -116,39 +116,37 @@ class BlackjackController {
 
   onPlayerStateUpdate({ id, state }) {
     if (id === this.sessionId) {
-      this.dispatchBlackjackUI({ type: "setPlayerState", payload: state });
+      this.blackjackStore.setPlayerState(state);
     }
   }
 
   onDealerHandUpdate(card) {
     this.getCurrentView().giveCardToDealer(card);
-    this.dispatchBlackjackUI({ type: "addDealerCard", payload: card });
+    this.blackjackStore.addDealerCard(card);
     playSound("cardDrop");
   }
 
   onEndGameResults(currentGame) {
-    this.dispatchBlackjackUI({ type: "setStep", payload: "result" });
-    this.dispatchBlackjackUI({
-      type: "setResult",
-      payload: currentGame[this.sessionId].state,
-    });
+    this.blackjackStore.setStep("result");
+    this.blackjackStore.setResult(currentGame[this.sessionId].state);
+
     if (["win", "win-early"].includes(currentGame[this.sessionId].state)) {
       playSound("winSound");
     }
   }
 
   onBetAccepted() {
-    this.dispatchBlackjackUI({ type: "setHasBeaten" });
+    this.blackjackStore.setHasBeaten();
     playSound("betAccept");
   }
 
   onHitAccepted() {
-    this.dispatchBlackjackUI({ type: "setHasHit" });
+    this.blackjackStore.setHasHit();
     playSound("standardSound");
   }
 
   onStandAccepted() {
-    this.dispatchBlackjackUI({ type: "setHasStand" });
+    this.blackjackStore.setHasStand();
     playSound("standardSound");
   }
 
@@ -159,7 +157,7 @@ class BlackjackController {
   setPendingBet(bet) {
     this.pendingBet = bet;
 
-    this.dispatchBlackjackUI({ type: "setBet", payload: this.pendingBet });
+    this.blackjackStore.setBet(this.pendingBet);
     playSound("betSound");
   }
 
@@ -195,7 +193,7 @@ class BlackjackController {
   leave() {
     this.getCurrentView().deletePlayer(this.getRemote().sessionId);
     this.getRemote().disconnect();
-    this.dispatchBlackjackUI({ type: "setVisible", payload: false });
+    this.blackjackStore.setVisible(false);
   }
 }
 

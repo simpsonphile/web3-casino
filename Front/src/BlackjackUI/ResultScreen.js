@@ -1,12 +1,10 @@
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
 import styles from "./index.module.scss";
 import { Heading } from "@chakra-ui/react";
 import Points from "./Points";
+import { useBlackjackStore } from "../stores/blackjackStore";
 
 const ResultScreen = () => {
-  const {
-    state: { result },
-  } = useBlackjackUIContext();
+  const { result } = useBlackjackStore();
 
   const getMessage = () => {
     if (result === "win") return "You won";

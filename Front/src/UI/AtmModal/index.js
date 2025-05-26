@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Modal from "../Modal";
 import Main from "./Main";
 
@@ -6,9 +5,10 @@ import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import Balance from "../Balance";
 import { VStack } from "@chakra-ui/react";
+import { useAtmStore } from "../../stores/atmStore";
 
-const AtmModal = ({ isOpen, setIsOpen }) => {
-  const [step, setStep] = useState("main");
+const AtmModal = () => {
+  const { isVisible, step } = useAtmStore();
 
   const getModalTitle = () => {
     switch (step) {
@@ -34,27 +34,10 @@ const AtmModal = ({ isOpen, setIsOpen }) => {
     }
   };
 
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.code === "KeyE") {
-        if (step == "main") setIsOpen(false);
-        else setStep("main");
-      } else if (step === "main") {
-        if (e.code === "KeyD") {
-          setStep("deposit");
-        } else if (e.code === "KeyW") setStep("withdraw");
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [step]);
-
   return (
     <Modal
       title={getModalTitle()}
-      isOpen={isOpen}
+      isOpen={isVisible}
       hasCloseInFooter={false}
       hasCloseInHeader={false}
     >

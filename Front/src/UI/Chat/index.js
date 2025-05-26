@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 import ChatButton from "./Button";
 import { Button, Input } from "@chakra-ui/react";
-import { useKeyConfigContext } from "../../context/KeyConfigContext";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const Chat = ({ onSend, messages }) => {
-  const { keyConfig } = useKeyConfigContext();
+  const { keyConfig } = useKeyConfigStore();
   const [isVisible, setIsVisible] = useState(false);
   const textRef = useRef(document.createElement("input"));
 

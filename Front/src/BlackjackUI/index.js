@@ -3,13 +3,12 @@ import WaitScreen from "./WaitScreen";
 import HitScreen from "./HitScreen";
 import ResultScreen from "./ResultScreen";
 import styles from "./index.module.scss";
-import { useBlackjackUIContext } from "../context/BlackjackUIContext";
 import NewPlayerJoined from "./NewPlayerJoined";
 import { Box } from "@chakra-ui/react";
+import { useBlackjackStore } from "../stores/blackjackStore";
 
 const BlackjackUI = () => {
-  const { state } = useBlackjackUIContext();
-  const { isVisible, step } = state;
+  const { isVisible, step } = useBlackjackStore();
 
   if (!isVisible) return null;
 

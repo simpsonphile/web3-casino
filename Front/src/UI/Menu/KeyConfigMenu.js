@@ -4,8 +4,10 @@ import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
 import { Heading, HStack } from "@chakra-ui/react";
 import { getReadableKey } from "../../utils/keyboard";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
-const KeyConfigMenu = ({ setCurrentMenu, keyConfig, onKeyConfigUpdate }) => {
+const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
+  const { keyConfig } = useKeyConfigStore();
   const ref = useRef(document.createElement("div"));
   const keys = keyConfig.get();
   const [state, setState] = useState(keys);

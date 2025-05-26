@@ -4,10 +4,10 @@ import Button from "../Button";
 import KeyConfigMenu from "./KeyConfigMenu";
 import { useUserContext } from "../../context/UserContext";
 import { Heading } from "@chakra-ui/react";
-import { useKeyConfigContext } from "../../context/KeyConfigContext";
+import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const Menu = ({ onResumeClick, isGameInit, onKeyConfigUpdate }) => {
-  const { keyConfig } = useKeyConfigContext();
+  const { keyConfig } = useKeyConfigStore();
   const [currentMenu, setCurrentMenu] = useState("main");
 
   switch (currentMenu) {

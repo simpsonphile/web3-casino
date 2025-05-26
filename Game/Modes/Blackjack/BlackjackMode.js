@@ -5,9 +5,8 @@ import BlackjackInteraction from "./BlackjackInteraction";
 import BlackjackView from "./BlackjackView";
 
 class BlackjackMode {
-  constructor({ game, dispatchBlackjackUI }) {
+  constructor({ game }) {
     this.game = game;
-    this.dispatchBlackjackUI = dispatchBlackjackUI;
 
     this.blackjackViews = {};
   }
@@ -18,7 +17,6 @@ class BlackjackMode {
     window.repo.add("blackjack", RemoteBlackjack);
 
     this.controller = new BlackjackController({
-      dispatchBlackjackUI: this.dispatchBlackjackUI,
       views: this.blackjackViews,
     });
 

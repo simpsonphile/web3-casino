@@ -2,7 +2,7 @@ class BlackjackCommands {
   constructor(blackjackController) {
     this.blackjackController = blackjackController;
 
-    this.keys = window.keyConfig.get();
+    this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
 
     this.addBetCommands();
     this.addCommands();
