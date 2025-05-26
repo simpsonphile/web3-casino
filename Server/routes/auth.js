@@ -18,7 +18,7 @@ export const auth = async (req, res) => {
   res.cookie("authToken", accessToken, {
     httpOnly: true,
     secure: isProd,
-    sameSite: "Lax",
+    sameSite: isProd ? "None" : "Lax",
     maxAge: 24 * 60 * 60 * 1000,
   });
 
@@ -30,7 +30,7 @@ export const logOut = async (req, res) => {
     res.clearCookie("authToken", {
       httpOnly: true,
       secure: isProd,
-      sameSite: "Lax",
+      sameSite: isProd ? "None" : "Lax",
     });
     return res.json({ success: true, message: "User logged out" });
   } catch (err) {
