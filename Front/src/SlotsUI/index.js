@@ -1,32 +1,19 @@
-import styles from "./index.module.scss";
-import KeyboardKey from "../UI/KeyboardKey";
 import { useSlotsStore } from "../stores/slotsStore";
+import BetScreen from "./BetScreen";
+import Help from "./Help";
+import styles from "./index.module.scss";
 
 const SlotsUI = () => {
-  const { isVisible } = useSlotsStore();
+  const { isVisible, step, bet } = useSlotsStore();
 
   if (!isVisible) return null;
 
-  return (
-    <div className={styles.slotsUI}>
-      <div className={styles.slotsUI__title}>
-        <h1>Slots Game</h1>
-      </div>
-      <div className={styles.slotsUI__controls}>
-        <div className={styles.slotsUI__controls__button}>
-          <KeyboardKey code="s" />
-          <span>Spin</span>
-        </div>
-        <div className={styles.slotsUI__controls__button}>
-          <KeyboardKey code="ArrowUp" />
-          <span>Increase Bet</span>
-        </div>
-        <div className={styles.slotsUI__controls__button}>
-          <KeyboardKey code="ArrowDown" />
-          <span>Decrease Bet</span>
-        </div>
-      </div>
-    </div>
-  );
+  const content = () => {
+    if (step === "help") return <Help />;
+
+    if (step === "main") return <BetScreen />;
+  };
+
+  return <div className={styles.slotsUI}>{content()}</div>;
 };
 export default SlotsUI;

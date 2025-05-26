@@ -1,6 +1,9 @@
 class ATMCommands {
-  constructor() {
+  constructor({ controller }) {
     this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
+    this.atmStore = window.atmStore.getState();
+    console.log(this.atmStore);
+    this.controller = controller;
 
     this.addCommands();
   }
@@ -12,8 +15,25 @@ class ATMCommands {
       this.keys.atm.exit,
       null,
       () => {
-        window.player.switchCameraMode("third-person");
-        window.commandManager.setMode("movement");
+        this.controller.onExit();
+      }
+    );
+    window.commandManager.addCommand(
+      "atm",
+      "deposit",
+      this.keys.atm.deposit,
+      null,
+      () => {
+        this.controller.setStep("deposit");
+      }
+    );
+    window.commandManager.addCommand(
+      "atm",
+      "withdraw",
+      this.keys.atm.withdraw,
+      null,
+      () => {
+        this.controller.setStep("withdraw");
       }
     );
   }

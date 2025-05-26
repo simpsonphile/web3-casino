@@ -21,7 +21,6 @@ const GameContainer = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const [repo, setRepo] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isAtmOpen, setIsAtmOpen] = useState(false);
   const { keyConfig } = useKeyConfigStore();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
@@ -51,7 +50,6 @@ const GameContainer = () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
         repo,
-        onAtmClick: () => setIsAtmOpen(true),
         onAtmExit: () => setIsAtmOpen(false),
         showTooltip: (text) => {
           setTooltipVisible(true);
@@ -115,7 +113,7 @@ const GameContainer = () => {
         )}
       </Footer>
 
-      <AtmModal isOpen={isAtmOpen} setIsOpen={setIsAtmOpen} />
+      <AtmModal />
 
       {tooltipVisible && <GameTooltip>{tooltipText}</GameTooltip>}
 

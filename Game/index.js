@@ -33,22 +33,12 @@ import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import { initStoreRegistry } from "./storeRegistry";
 
 class Game {
-  constructor({
-    onPause,
-    repo,
-    onAtmClick,
-    onAtmExit,
-    showTooltip,
-    hideTooltip,
-  }) {
+  constructor({ onPause, repo, showTooltip, hideTooltip }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
     this._repo = repo;
     window.repo = this._repo;
-
-    this.onAtmClick = onAtmClick;
-    this.onAtmExit = onAtmExit;
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
@@ -275,8 +265,6 @@ class Game {
   initATM() {
     new ATMMode({
       game: this,
-      onAtmClick: this.onAtmClick,
-      onAtmExit: this.onAtmExit,
     }).init();
   }
 

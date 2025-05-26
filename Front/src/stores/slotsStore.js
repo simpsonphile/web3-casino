@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const defaultState = {
   isVisible: false,
-  step: "wait",
+  step: "main",
   bet: 0,
 };
 
@@ -12,6 +12,15 @@ export const useSlotsStore = create((set) => ({
   setVisible: (isVisible) => set({ isVisible }),
   setStep: (step) => set({ step }),
   setBet: (bet) => set({ bet }),
+  increaseBet: (val = 1) => {
+    set((state) => ({
+      bet: state.bet + val,
+    }));
+  },
+  decreaseBet: (val = 1) =>
+    set((state) => ({
+      bet: Math.max(0, state.bet - val),
+    })),
 
   reset: () =>
     set((state) => ({

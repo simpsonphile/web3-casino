@@ -4,6 +4,7 @@ class ATMInteraction {
   constructor(game) {
     this.game = game;
     this.registerInteractions();
+    this.atmStore = window.atmStore.getState();
   }
 
   onMouseOver(data) {
@@ -27,7 +28,7 @@ class ATMInteraction {
 
     this.game.commandManager.setMode(["atm"]);
     this.game.interactionHandler.setState(false);
-    this.game.onAtmClick();
+    this.atmStore.setIsVisible(true);
   }
 
   registerInteractions() {

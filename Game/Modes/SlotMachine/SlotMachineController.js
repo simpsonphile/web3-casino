@@ -36,6 +36,21 @@ class SlotMachineController {
   leave() {
     this.slotsStore.setVisible(false);
   }
+
+  showHelp() {
+    this.slotsStore.setStep("help");
+  }
+  increaseBet() {
+    this.slotsStore.increaseBet();
+  }
+  decreaseBet() {
+    if (this.slotsStore.bet > 0) {
+      this.slotsStore.decreaseBet();
+    }
+  }
+  goBack() {
+    this.slotsStore.setStep("main");
+  }
 }
 
 export default SlotMachineController;
