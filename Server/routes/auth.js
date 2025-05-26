@@ -1,6 +1,8 @@
 import { generateAccessToken } from "../utilis/jwt.js";
 import verifySignature from "../utilis/verifySignature.js";
 
+const isProd = process.env.IS_PROD === "true" ? true : false;
+
 export const auth = async (req, res) => {
   const { address, signature, message } = req.body;
 
@@ -15,7 +17,7 @@ export const auth = async (req, res) => {
 
   res.cookie("authToken", accessToken, {
     httpOnly: true,
-    secure: false,
+    secure: isProd,
     sameSite: "Lax",
     maxAge: 24 * 60 * 60 * 1000,
   });
@@ -27,7 +29,7 @@ export const logOut = async (req, res) => {
   try {
     res.clearCookie("authToken", {
       httpOnly: true,
-      secure: false,
+      secure: isProd,
       sameSite: "Lax",
     });
     return res.json({ success: true, message: "User logged out" });
