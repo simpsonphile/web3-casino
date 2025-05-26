@@ -1,18 +1,23 @@
 {
   "name": "hardhat-project",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.6",
     "prettier": "^3.3.3",
     "prettier-plugin-solidity": "^1.4.1",
+    "rimraf": "^6.0.1",
     "solhint": "^5.0.3",
-    "solhint-plugin-prettier": "^0.1.0",
-    "rimraf": "^6.0.1"
+    "solhint-plugin-prettier": "^0.1.0"
   },
   "scripts": {
     "start": "npx hardhat node",
     "deploy": "rimraf ./ignition/deployments && npx hardhat run ./ignition/scripts/deploy.js --network localhost",
     "test": "npx hardhat test",
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol"
+  },
+  "dependencies": {
+    "chai-as-promised": "^7.1.2",
+    "get-func-name": "^2.0.2"
   }
 }

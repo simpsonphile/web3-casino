@@ -29,6 +29,10 @@ const getDefaultKeyConfig = () => ({
   slotMachine: {
     exit: ["KeyE"],
     spin: ["KeyS"],
+    increaseBet: ["ArrowUp"],
+    decreaseBet: ["ArrowDown"],
+    help: ["KeyH"],
+    goBack: ["KeyB"],
   },
   atm: {
     exit: ["KeyE"],

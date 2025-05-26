@@ -1,8 +1,8 @@
-const hre = require('hardhat');
-const CasinoModule = require('../modules/Casino.js');
-const BlackjackModule = require('../modules/Blackjack.js');
-const SlotsModule = require('../modules/Slots.js');
-const PlinkoModule = require('../modules/Plinko.js');
+const hre = require("hardhat");
+const CasinoModule = require("../modules/Casino.js");
+const BlackjackModule = require("../modules/Blackjack.js");
+const SlotsModule = require("../modules/Slots.js");
+const PlinkoModule = require("../modules/Plinko.js");
 
 async function main() {
   const { casino } = await hre.ignition.deploy(CasinoModule);
@@ -43,8 +43,8 @@ async function main() {
     casino.addSubOwner(game.target).then((tx) =>
       tx.wait().then(() => {
         console.log(`${game.target} added as subOwner to Casino`);
-      }),
-    ),
+      })
+    )
   );
 
   await Promise.all(addSubOwners);
