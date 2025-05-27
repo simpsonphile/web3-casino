@@ -21,20 +21,20 @@ This starts the server, including the database connection, API routes, and WebSo
 
 > **Note:** MongoDB must be installed locally, or a MongoDB connection URI should be set in your `.env` file.
 
-### 4. (Optional) Smart Contracts
-
-These steps are optional and not required for the app to function currently.
-
-Start a local blockchain server:
+### 4. Start the Local Blockchain Server
 
     npm run contracts:start
 
-Deploy smart contracts to the local blockchain:
+### 5. Deploy Smart Contracts
 
     npm run contracts:deploy
 
-### 5. Start the Frontend
+### 6. Generate Contract Hooks
 
-This launches the front-end application.
+Generates React hooks based on the ABIs of your smart contracts. These hooks are used in the front-end for interacting with the blockchain.
+
+    npm run contract-hooks:generate
+
+### 7. Start the Frontend
 
     npm run dev
