@@ -13,6 +13,7 @@ import GameTooltip from "../GameTooltip";
 import BlackjackUI from "../../BlackjackUI";
 import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import AssetsLoadingScreen from "../AssetsLoadingScreen";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -119,6 +120,8 @@ const GameContainer = () => {
 
       <BlackjackUI />
       <SlotsUI />
+
+      <AssetsLoadingScreen />
     </div>
   );
 };

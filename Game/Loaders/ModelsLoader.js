@@ -8,8 +8,10 @@ const dracoLoader = new DRACOLoader();
 const ktx2Loader = new KTX2Loader();
 
 class ModelsLoader {
-  constructor() {
+  constructor({ onProgressUpdate, onLoaded }) {
     this.models = {};
+    this.onLoaded = onLoaded;
+    this.onProgressUpdate = onProgressUpdate;
 
     ktx2Loader.setTranscoderPath("/ktx2/");
     dracoLoader.setDecoderPath("/draco/");
@@ -29,7 +31,7 @@ class ModelsLoader {
             gltf.scene.receiveShadow = true;
             resolve();
           },
-          null,
+          (event) => this?.onProgressUpdate(name, event.loaded, event.total),
           (error) => {
             console.warn(`Error while loading model: ${name}`, error);
           }
@@ -38,6 +40,8 @@ class ModelsLoader {
     });
 
     await Promise.all(promises);
+
+    this?.onLoaded?.();
   }
 }
 

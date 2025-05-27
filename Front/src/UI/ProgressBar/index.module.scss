@@ -1,0 +1,24 @@
+.ProgressBar {
+  width: 200px;
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ProgressBarBar {
+  height: 100%;
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  white-space: nowrap;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProgressBarLabel {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
