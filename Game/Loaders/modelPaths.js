@@ -4,8 +4,6 @@ import cards from "@Assets/models/cards.glb";
 import chips from "@Assets/models/chips.glb";
 import world from "@Assets/models/world.glb";
 
-console.log(business_man);
-
 export const modelPaths = {
   business_man,
   casual_man,
