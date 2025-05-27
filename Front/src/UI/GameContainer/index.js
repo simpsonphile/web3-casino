@@ -13,6 +13,7 @@ import BlackjackUI from "../../BlackjackUI";
 import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
+import styles from "./index.module.scss";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -91,7 +92,7 @@ const GameContainer = () => {
     return () => window.removeEventListener("keydown", handleOnKeyDown);
   }, [isGameInit, isMenuVisible, keyConfig]);
   return (
-    <div>
+    <div className={styles.GameContainer}>
       {isMenuVisible && isConnected && (
         <Menu
           isGameInit={isGameInit}
