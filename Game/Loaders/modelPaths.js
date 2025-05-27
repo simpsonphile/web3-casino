@@ -1,9 +1,17 @@
+import business_man from "@Assets/models/business-man.glb";
+import casual_man from "@Assets/models/casual-man.glb";
+import cards from "@Assets/models/cards.glb";
+import chips from "@Assets/models/chips.glb";
+import world from "@Assets/models/world.glb";
+
+console.log(business_man);
+
 export const modelPaths = {
-  business_man: "game-assets/models/business-man.glb",
-  casual_man: "game-assets/models/casual-man.glb",
-  cards: "game-assets/models/cards.glb",
-  chips: "game-assets/models/chips.glb",
-  world: "game-assets/models/world.glb", // raw model
+  business_man,
+  casual_man,
+  cards,
+  chips,
+  world, // raw model
   // world: "game-assets/models/world-geometry-optimized.glb", // only geometry optimized
   // world: "game-assets/models/world-optimized.glb", // everything optimized
 };

@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 export default defineConfig(() => {
   dotenv.config();
   return {
+    assetsInclude: ["**/*.glb", "**.*.mp3"],
     root: "./Front",
     plugins: [
       {
@@ -27,6 +28,7 @@ export default defineConfig(() => {
         "@Game": path.resolve(__dirname, "./Game"),
         "@Common": path.resolve(__dirname, "./Common"),
         "@Front": path.resolve(__dirname, "./Front/src"),
+        "@Assets": path.resolve(__dirname, "./Front/assets"),
       },
     },
     optimizeDeps: {
