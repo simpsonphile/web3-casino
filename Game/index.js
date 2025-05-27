@@ -397,8 +397,6 @@ class Game {
     this.initOnScreenResize();
     this.initControls();
     this.initRaycaster();
-
-    this.pointerLock.requestPointerLock();
     this.updateUpdater();
   }
 }

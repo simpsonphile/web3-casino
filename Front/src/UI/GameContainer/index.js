@@ -7,7 +7,6 @@ import Remote from "@Common/Remote";
 import SoundPlayer from "@Common/SoundPlayer";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
-import styles from "./index.module.scss";
 import AtmModal from "../AtmModal";
 import GameTooltip from "../GameTooltip";
 import BlackjackUI from "../../BlackjackUI";
@@ -92,7 +91,7 @@ const GameContainer = () => {
     return () => window.removeEventListener("keydown", handleOnKeyDown);
   }, [isGameInit, isMenuVisible, keyConfig]);
   return (
-    <div className={styles.GameContainer}>
+    <div>
       {isMenuVisible && isConnected && (
         <Menu
           isGameInit={isGameInit}

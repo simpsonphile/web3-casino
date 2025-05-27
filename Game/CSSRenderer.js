@@ -6,6 +6,7 @@ class CSSRenderer extends CSS3DRenderer {
     this.setSize(window.innerWidth, window.innerHeight);
     this.domElement.style.position = "absolute";
     this.domElement.style.top = "0";
+    this.domElement.style.pointerEvents = "none";
     document.body.appendChild(this.domElement);
   }
 }
