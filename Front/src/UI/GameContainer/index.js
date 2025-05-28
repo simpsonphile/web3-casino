@@ -7,12 +7,13 @@ import Remote from "@Common/Remote";
 import SoundPlayer from "@Common/SoundPlayer";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
-import styles from "./index.module.scss";
 import AtmModal from "../AtmModal";
 import GameTooltip from "../GameTooltip";
 import BlackjackUI from "../../BlackjackUI";
 import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import AssetsLoadingScreen from "../AssetsLoadingScreen";
+import styles from "./index.module.scss";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -119,6 +120,8 @@ const GameContainer = () => {
 
       <BlackjackUI />
       <SlotsUI />
+
+      <AssetsLoadingScreen />
     </div>
   );
 };

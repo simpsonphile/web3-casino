@@ -1,9 +1,7 @@
-const API_BASE_PATH = "http://127.0.0.1:2567";
-
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: API_BASE_PATH,
+  baseURL: import.meta.env.VITE_SERVER_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

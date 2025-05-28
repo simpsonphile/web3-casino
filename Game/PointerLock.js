@@ -5,7 +5,8 @@ class PointerLock {
   }
 
   init() {
-    this.domElement.addEventListener("click", async () => {
+    document.addEventListener("click", async () => {
+      if (window.commandManager.checkIfModeEnabled("menu")) return;
       await this.domElement.requestPointerLock();
       this.controlsEnabled = true;
       this.onChange(true);

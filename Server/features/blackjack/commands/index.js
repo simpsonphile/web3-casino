@@ -1,5 +1,5 @@
 import { BetCommand } from "./BetCommand.js";
-import { StartGameCommand } from "./startGameCommand.js";
+import { StartGameCommand } from "./StartGameCommand.js";
 import { DealInitialCardsCommand } from "./DealInitialCardsCommand.js";
 import { UpdateStepCommand } from "./UpdateStepCommand.js";
 import { HitCommand } from "./HitCommand.js";

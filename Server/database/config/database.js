@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 // MongoDB connection URI
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/casino"; // Replace with your MongoDB URI
 
 const connectDB = async () => {
+  const mongoURI = process.env.MONGO_DB_URI;
   try {
     await mongoose.connect(mongoURI);
     console.log("MongoDB Connected");

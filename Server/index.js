@@ -15,6 +15,12 @@ import {
   logOut,
 } from "./routes/index.js";
 import connectDB from "./database/config/database.js";
+import dotenv from "dotenv";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const { Server } = colyseus;
 
@@ -24,7 +30,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:3000",
+    origin: process.env.FRONT_URL,
     methods: ["POST", "GET"],
     allowedHeaders: ["Content-Type"],
     credentials: true,
@@ -34,7 +40,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000"); // Client's origin
+  res.header("Access-Control-Allow-Origin", process.env.FRONT_URL); // Client's origin
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();

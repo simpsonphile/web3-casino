@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import LightmapApplier from "./LightmapApplier";
+import lightmap from "@Assets/lightmap.png";
 
 class World {
   constructor() {
@@ -15,7 +16,7 @@ class World {
 
   applyLightmap() {
     const textureLoader = new THREE.TextureLoader();
-    const lightMapTexture = textureLoader.load("game-assets/lightmap.png");
+    const lightMapTexture = textureLoader.load(lightmap);
 
     lightMapTexture.flipY = false;
     lightMapTexture.channel = 1;

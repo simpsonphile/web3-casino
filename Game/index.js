@@ -31,6 +31,7 @@ import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import { initStoreRegistry } from "./storeRegistry";
+import ProgressLoader from "./ProgressLoader";
 
 class Game {
   constructor({ onPause, repo, showTooltip, hideTooltip }) {
@@ -112,7 +113,13 @@ class Game {
   }
 
   async initModels() {
-    this.models = new ModelsLoader();
+    const { setProgress, setLoading } = window.progressStore.getState();
+    setLoading(true);
+    const progressLoader = new ProgressLoader(setProgress);
+    this.models = new ModelsLoader({
+      onProgressUpdate: progressLoader.update.bind(progressLoader),
+      onLoaded: () => setLoading(false),
+    });
 
     await this.models.load();
     window.models = this.models.models;
@@ -390,8 +397,6 @@ class Game {
     this.initOnScreenResize();
     this.initControls();
     this.initRaycaster();
-
-    this.pointerLock.requestPointerLock();
     this.updateUpdater();
   }
 }
