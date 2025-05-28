@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 // MongoDB connection URI
 
 const connectDB = async () => {
-  const mongoURI = process.env.MONGO_DB_URL;
+  const mongoURI = process.env.MONGO_DB_URI;
   try {
     await mongoose.connect(mongoURI);
     console.log("MongoDB Connected");
