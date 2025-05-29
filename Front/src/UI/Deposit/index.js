@@ -5,7 +5,7 @@ import { parseEther } from "viem";
 import Modal from "../Modal";
 
 const Deposit = ({ isOpen, setIsOpen }) => {
-  const { writeContract, status } = useWriteCasinoDeposit({});
+  const { writeContract } = useWriteCasinoDeposit({});
   const [value, setValue] = useState("0");
 
   const onDeposit = () =>

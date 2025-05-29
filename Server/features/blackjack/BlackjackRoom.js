@@ -76,7 +76,7 @@ class BlackjackRoom extends AuthRoom {
     this.dispatcher.dispatch(new JoinCommand(), { client, options });
   }
 
-  onLeave(client, consented) {
+  onLeave(client) {
     this.state.removePlayer(client.sessionId);
 
     this.broadcast(SERVER_MESSAGES.BLACKJACK_DELETE_PLAYER, client.sessionId);

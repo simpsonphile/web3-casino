@@ -20,7 +20,7 @@ class InteractionHandler {
   }
 
   checkIfInteractionExists(type, name) {
-    return this._handlers[type].hasOwnProperty(name);
+    return Object.hasOwn(this._handlers[type], name);
   }
 
   isObjectInteractive(object) {
@@ -36,7 +36,7 @@ class InteractionHandler {
       console.warn("not proper type of interaction");
     }
 
-    if (this._handlers[type].hasOwnProperty(name)) {
+    if (Object.hasOwn(this._handlers[type], name)) {
       console.warn(`handler ${name} exists`);
       return;
     }

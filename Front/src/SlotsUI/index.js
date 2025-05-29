@@ -4,7 +4,7 @@ import Help from "./Help";
 import styles from "./index.module.scss";
 
 const SlotsUI = () => {
-  const { isVisible, step, bet } = useSlotsStore();
+  const { isVisible, step } = useSlotsStore();
 
   if (!isVisible) return null;
 

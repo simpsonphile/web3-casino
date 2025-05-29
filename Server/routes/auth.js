@@ -33,7 +33,7 @@ export const logOut = async (req, res) => {
       sameSite: isProd ? "None" : "Lax",
     });
     return res.json({ success: true, message: "User logged out" });
-  } catch (err) {
+  } catch {
     return res.status(500);
   }
 };

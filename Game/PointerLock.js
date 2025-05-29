@@ -46,8 +46,7 @@ class PointerLock {
   }
 
   onPointerLockChange() {
-    if (document.pointerLockElement === this.domElement) {
-    } else {
+    if (document.pointerLockElement !== this.domElement) {
       this.controlsEnabled = false;
       this.onChange(false);
     }

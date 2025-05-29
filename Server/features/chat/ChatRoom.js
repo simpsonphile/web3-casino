@@ -4,7 +4,7 @@ import ChatState from "./ChatState.js";
 import User from "../../database/models/User.js";
 
 class ChatRoom extends AuthRoom {
-  onCreate(options) {
+  onCreate() {
     this.setState(new ChatState());
 
     this.onMessage(CLIENT_MESSAGES.MESSAGE, (client, message) => {
@@ -26,7 +26,7 @@ class ChatRoom extends AuthRoom {
     });
   }
 
-  onLeave(client, consented) {
+  onLeave(client) {
     this.state.removeUser(client.sessionId);
   }
 

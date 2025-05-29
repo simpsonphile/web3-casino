@@ -23,7 +23,7 @@ export const useSlotsStore = create((set) => ({
     })),
 
   reset: () =>
-    set((state) => ({
+    set(() => ({
       ...defaultState,
       // If you want to keep some property from current state, add here
       // id: state.id,

@@ -73,7 +73,7 @@ const combinations = slotCombinations({
 console.log(symbols);
 const prep = (weightedDict) => {
   console.log(weightedDict);
-  const keys = Object.keys(weightedDict);
+  // const keys = Object.keys(weightedDict);
   const weights = Object.values(weightedDict);
   let cumulativeWeights = [];
   let cumulativeSum = 0;
@@ -84,17 +84,17 @@ const prep = (weightedDict) => {
 
   console.log(cumulativeWeights);
 
-  const spin = () => {
-    const randomNum = Math.random();
-    let key;
+  // const spin = () => {
+  //   const randomNum = Math.random();
+  //   let key;
 
-    for (let i = 0; i < cumulativeWeights.length; i++) {
-      if (randomNum < cumulativeWeights[i]) {
-        key = keys[i];
-        break;
-      }
-    }
-  };
+  //   for (let i = 0; i < cumulativeWeights.length; i++) {
+  //     if (randomNum < cumulativeWeights[i]) {
+  //       key = keys[i];
+  //       break;
+  //     }
+  //   }
+  // };
 };
 
 prep(combinations);

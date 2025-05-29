@@ -50,7 +50,7 @@ const NumericKeypad = ({ value, onChange, onEnter, max }) => {
         <Input value={value} max={max} />
       </GridItem>
       {keys.map((key) => (
-        <Button>{key}</Button>
+        <Button key={key}>{key}</Button>
       ))}
     </Grid>
   );

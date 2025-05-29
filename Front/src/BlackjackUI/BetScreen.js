@@ -28,7 +28,7 @@ const BetScreen = () => {
       <Grid gap={3} templateColumns="repeat(4, 1fr)" textAlign="center">
         {Object.entries(chipColorNominalsMap)
           .sort(([_, a], [__, b]) => a - b)
-          .map(([name, value], i) => (
+          .map(([name], i) => (
             <Box
               key={name}
               display="flex"

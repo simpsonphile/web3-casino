@@ -46,6 +46,8 @@ Menu.MainMenu = ({ onResumeClick, isGameInit, setCurrentMenu }) => {
   );
 };
 
+Menu.MainMenu.displayName = "MainMenu";
+
 Menu.KeyConfigMenu = KeyConfigMenu;
 
 export default Menu;

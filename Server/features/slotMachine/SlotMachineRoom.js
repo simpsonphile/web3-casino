@@ -1,9 +1,10 @@
 import AuthRoom from "./AuthRoom.js";
-import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../messageTypes.js";
+import { CLIENT_MESSAGES } from "../messageTypes.js";
 import SlotMachineState from "../states/SlotMachineState.js";
 
 import { Dispatcher } from "@colyseus/command";
 import { SpinCommand } from "./commands/SpinCommand.js";
+import User from "../../database/models/User.js";
 
 class SlotMachineRoom extends AuthRoom {
   onCreate() {
@@ -13,7 +14,6 @@ class SlotMachineRoom extends AuthRoom {
     this.onMessage(CLIENT_MESSAGES.SPIN, (bet) => {
       this.dispatcher.dispatch(new SpinCommand(), {
         bet,
-        client,
       });
     });
   }
@@ -30,7 +30,7 @@ class SlotMachineRoom extends AuthRoom {
     this.state.balance = user.balance;
   }
 
-  onLeave(client, consented) {
+  onLeave() {
     this.state.player = null;
   }
 

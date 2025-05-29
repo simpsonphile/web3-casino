@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 module.exports = {
   displayName: "Contract-hooks",
   preset: "../jest.preset.js",
