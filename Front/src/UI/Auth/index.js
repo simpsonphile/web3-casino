@@ -3,6 +3,7 @@ import { registerNickname } from "../../api";
 import useAuth from "./useAuth";
 import styles from "./index.module.scss";
 import { Button, Input } from "@chakra-ui/react";
+import { toaster } from "../toaster";
 
 const Auth = ({ children }) => {
   const { step, signMessage, refresh } = useAuth();
@@ -28,18 +29,36 @@ Auth.Login = ({ signMessage }) => {
   );
 };
 
+Auth.Login.displayName = "AuthLogin";
+
 Auth.Register = ({ onSuccess }) => {
   const [nickname, setNickname] = useState("");
 
   const register = () => {
-    registerNickname(nickname).then((res) => {
-      if (res.data.success) {
-        console.log("success");
-        onSuccess();
-      } else {
-        console.log("exist other TODO input red");
-      }
-    });
+    registerNickname(nickname)
+      .then((res) => {
+        if (res.data.success) {
+          toaster.create({
+            title: "Success",
+            description: res.data.message,
+            type: "success",
+          });
+          onSuccess();
+        } else {
+          toaster.create({
+            title: "Error",
+            description: "Something went wrong",
+            type: "error",
+          });
+        }
+      })
+      .catch((res) => {
+        toaster.create({
+          title: "Error",
+          description: res.response.data.message,
+          type: "error",
+        });
+      });
   };
   return (
     <div className={styles.Auth}>
@@ -48,5 +67,7 @@ Auth.Register = ({ onSuccess }) => {
     </div>
   );
 };
+
+Auth.Register.displayName = "AuthRegister";
 
 export default Auth;
