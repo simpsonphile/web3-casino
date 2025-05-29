@@ -48,7 +48,28 @@ export default defineConfig([
     },
     rules: {
       ...js.configs.recommended.rules,
-      "no-console": "warn",
+      "no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+    },
+  },
+  {
+    ignores,
+    files: ["Front/**/*.js"],
+    rules: {
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
+  {
+    files: ["Contracts/test/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        it: "readonly",
+        ethers: "readonly",
+        describe: "readonly",
+      },
     },
   },
 ]);
