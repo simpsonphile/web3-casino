@@ -1,5 +1,3 @@
-import styles from "./index.module.scss";
-import KeyboardKey from "../UI/KeyboardKey";
 const PayoutsTable = () => {
   return (
     <div>

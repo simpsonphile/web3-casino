@@ -8,7 +8,6 @@ import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
 import World from "./World";
 import PointerLock from "./PointerLock";
-import Collisions from "./Collisions";
 import CommandManager from "./CommandManager";
 import Neons from "./Neons";
 import Raycaster from "./Raycaster";
@@ -71,7 +70,7 @@ class Game {
       },
       onDeletePlayer: (room, id) => this.players.deletePlayer(id),
       onFirstPlayersData: (room, allPlayers) => {
-        const { [room.sessionId]: you, ...players } = allPlayers;
+        const { [room.sessionId]: _, ...players } = allPlayers;
         this.players.createNewPlayers(players);
       },
       onPlayerData: (room, players) => this.players.updatePlayers(players),
@@ -330,7 +329,7 @@ class Game {
           this.hideTooltip();
         }
       },
-      onMouseClick: (event) => {
+      onMouseClick: () => {
         const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
         const obj = intersect?.object;
         if (!obj) return;

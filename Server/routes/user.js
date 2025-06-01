@@ -14,7 +14,7 @@ export const checkWalletAddress = async (req, res) => {
 
     if (user) return res.json({ isAuthorized: true, exists: true, user });
     return res.json({ isAuthorized: true, exists: false });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -53,7 +53,7 @@ export const registerNickname = async (req, res) => {
       success: true,
       message: `User with nickname ${nickname} created successfully`,
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ message: "Server error" });
   }
 };

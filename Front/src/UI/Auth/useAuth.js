@@ -49,7 +49,7 @@ const useAuth = () => {
     if (step !== "Auth") return;
 
     auth(address, signature, message)
-      .then((res) => {
+      .then(() => {
         refresh();
       })
       .catch((reason) => console.error(reason));

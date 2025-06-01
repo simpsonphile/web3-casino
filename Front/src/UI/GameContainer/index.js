@@ -51,7 +51,6 @@ const GameContainer = () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
         repo,
-        onAtmExit: () => setIsAtmOpen(false),
         showTooltip: (text) => {
           setTooltipVisible(true);
           setTooltipText(text);

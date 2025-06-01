@@ -54,7 +54,7 @@ class SlotMachineView {
   }
 
   update(delta) {
-    this.reels.forEach((reel, i) => {
+    this.reels.forEach((reel) => {
       if (!reel.isSpinning) return;
 
       reel.progress += delta * this.getSpeed(reel.progress);

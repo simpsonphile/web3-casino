@@ -6,12 +6,15 @@ const Tabs = ({ list, content, ...rest }) => {
     <ChakraTabs.Root {...rest}>
       <ChakraTabs.List>
         {list.map((li) => (
-          <ChakraTabs.Trigger value={li}>{li}</ChakraTabs.Trigger>
+          <ChakraTabs.Trigger key={li} value={li}>
+            {li}
+          </ChakraTabs.Trigger>
         ))}
       </ChakraTabs.List>
 
       {content.map((item) => (
         <ChakraTabs.Content
+          key={item.value}
           value={item.value}
           className={styles.MenuTabContent}
         >

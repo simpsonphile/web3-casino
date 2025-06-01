@@ -3,7 +3,7 @@ export const countCardPoints = (cards) => {
   let aces = 0;
 
   cards.forEach((card) => {
-    const [suit, rank] = card.split("_");
+    const [_, rank] = card.split("_");
 
     if (["j", "q", "k"].includes(rank)) points += 10;
     else if (rank === "ace") {

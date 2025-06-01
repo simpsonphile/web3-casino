@@ -9,7 +9,7 @@ class Remote {
   }
 
   add(name, Class, data) {
-    if (this._remote.hasOwnProperty(name)) {
+    if (Object.hasOwn(this._remote, name)) {
       console.error(`${name} already exist in remote`);
       return;
     }
@@ -22,7 +22,7 @@ class Remote {
   }
 
   get(property) {
-    if (!this._remote.hasOwnProperty(property)) {
+    if (!Object.hasOwn(this._remote, property)) {
       console.error(`${property} does'nt exist in remote`);
       return;
     }

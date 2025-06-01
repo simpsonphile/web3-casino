@@ -72,7 +72,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
         content={Object.entries(state).map(([name, values]) => ({
           value: name,
           children: Object.entries(values).map(([settingsName, keys]) => (
-            <div className={styles.MenuSubsection}>
+            <div className={styles.MenuSubsection} key={settingsName}>
               <Heading as="p" size="md">
                 {settingsName}
               </Heading>

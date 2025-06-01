@@ -6,6 +6,7 @@ import { config } from "./dappConfig";
 import AppContent from "./AppContent";
 import { UserProvider } from "./context/UserContext";
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { Toaster } from "./UI/toaster";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ function App() {
           <UserProvider>
             <ChakraProvider value={defaultSystem}>
               <AppContent />
+              <Toaster />
             </ChakraProvider>
           </UserProvider>
         </RainbowKitProvider>

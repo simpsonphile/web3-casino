@@ -58,7 +58,7 @@ class GameRoom extends AuthRoom {
     client.send(SERVER_MESSAGES.PLAYER_DATA, { position: user.position });
   }
 
-  onLeave(client, consented) {
+  onLeave(client) {
     this.state.removePlayer(client.sessionId);
     this.broadcast(SERVER_MESSAGES.DELETE_PLAYER, client.sessionId);
     console.log(`Player ${client.sessionId} left the game.`);

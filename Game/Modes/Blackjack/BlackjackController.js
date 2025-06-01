@@ -50,7 +50,7 @@ class BlackjackController {
   }
 
   buildCurrentTable(data) {
-    const { [this.sessionId]: you, ...them } = data.currentGame;
+    const { [this.sessionId]: _, ...them } = data.currentGame;
 
     Object.entries(them).forEach(([id, player]) => {
       this.getCurrentView().createPlayer(id);

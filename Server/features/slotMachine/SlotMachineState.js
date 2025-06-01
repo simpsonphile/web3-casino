@@ -1,4 +1,4 @@
-import { ArraySchema, MapSchema, Schema, defineTypes } from "@colyseus/schema";
+import { Schema, defineTypes } from "@colyseus/schema";
 
 class SlotMachineState extends Schema {
   constructor() {
