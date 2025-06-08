@@ -14,6 +14,7 @@ import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
+import TokenBalance from "../TokenBalance";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -92,6 +93,8 @@ const GameContainer = () => {
   }, [isGameInit, isMenuVisible, keyConfig]);
   return (
     <div className={styles.GameContainer}>
+      <TokenBalance />
+
       {isMenuVisible && isConnected && (
         <Menu
           isGameInit={isGameInit}

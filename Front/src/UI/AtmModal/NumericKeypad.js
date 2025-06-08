@@ -1,10 +1,8 @@
-import { Grid, GridItem, Input } from "@chakra-ui/react";
-import Button from "../Button";
+import { Grid, GridItem, Input, InputGroup } from "@chakra-ui/react";
 import { useEffect } from "react";
+import CasinoChip from "../CasinoChip";
 
-const NumericKeypad = ({ value, onChange, onEnter, max }) => {
-  const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "b"];
-
+const NumericKeypad = ({ value, onChange, onEnter, max, isWithdraw }) => {
   useEffect(() => {
     const onKeyDown = (e) => {
       let x = -1;
@@ -44,14 +42,30 @@ const NumericKeypad = ({ value, onChange, onEnter, max }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [value]);
 
+  const tokenInput = (
+    <InputGroup
+      startAddon={<CasinoChip size="xs" color="red" hasValue={false} />}
+    >
+      <Input value={value} max={max} />
+    </InputGroup>
+  );
+
+  const nativeTokenInput = (
+    <InputGroup startAddon="ETH">
+      <Input value={value / 10000} max={max / 10000} />
+    </InputGroup>
+  );
+
   return (
     <Grid gap={2} templateColumns="repeat(3, 1fr)">
       <GridItem colSpan={3}>
-        <Input value={value} max={max} />
+        you send:
+        {isWithdraw ? tokenInput : nativeTokenInput}
       </GridItem>
-      {keys.map((key) => (
-        <Button key={key}>{key}</Button>
-      ))}
+      <GridItem colSpan={3}>
+        and get:
+        {isWithdraw ? nativeTokenInput : tokenInput}
+      </GridItem>
     </Grid>
   );
 };

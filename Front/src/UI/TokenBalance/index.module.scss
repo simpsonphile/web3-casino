@@ -1,0 +1,18 @@
+.TokenBalance {
+  position: fixed;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: space-between;
+  min-width: 200px;
+  padding: 0.4rem 0.8rem;
+
+  background: linear-gradient(to bottom right, #504a4a, #1a1a1a);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: white;
+  border-radius: 0.8rem;
+}

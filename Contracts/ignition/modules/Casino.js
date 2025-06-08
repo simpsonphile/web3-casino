@@ -1,9 +1,13 @@
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
 
 module.exports = buildModule("CasinoModule", (m) => {
-  const value = BigInt(11000000000000000000);
+  const casinoCoinAddress = m.getParameter("casinoCoinAddress");
 
-  const casino = m.contract("Casino", [], { value });
+  console.log(casinoCoinAddress, "siema");
+
+  const value = BigInt(10000000000000000);
+
+  const casino = m.contract("Casino", [casinoCoinAddress], { value });
 
   return { casino };
 });

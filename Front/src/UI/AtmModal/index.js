@@ -3,7 +3,6 @@ import Main from "./Main";
 
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
-import Balance from "../Balance";
 import { VStack } from "@chakra-ui/react";
 import { useAtmStore } from "../../stores/atmStore";
 
@@ -41,12 +40,7 @@ const AtmModal = () => {
       hasCloseInFooter={false}
       hasCloseInHeader={false}
     >
-      <VStack gap={3}>
-        <div>
-          Your deposit is currently <Balance />
-        </div>
-        {getModalContent()}
-      </VStack>
+      <VStack gap={3}>{getModalContent()}</VStack>
     </Modal>
   );
 };
