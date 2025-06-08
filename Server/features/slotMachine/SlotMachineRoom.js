@@ -23,8 +23,8 @@ class SlotMachineRoom extends AuthRoom {
       client.leave();
     }
 
-    const { address } = options;
-    const user = await User.findOne({ address });
+    const { address, asGuest, nickname } = options;
+    const user = asGuest ? { nickname } : await User.findOne({ address });
 
     this.state.player = client.sessionId;
     this.state.balance = user.balance;

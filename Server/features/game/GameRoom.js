@@ -38,8 +38,11 @@ class GameRoom extends AuthRoom {
   }
 
   async onJoin(client, options) {
-    const { address } = options;
-    const user = await User.findOne({ address });
+    const { address, asGuest, nickname } = options;
+
+    const user = asGuest
+      ? { nickname, position: { x: 72, y: 0, z: 40 } }
+      : await User.findOne({ address });
 
     this.state.addPlayer(client.sessionId, {
       nickname: user.nickname,

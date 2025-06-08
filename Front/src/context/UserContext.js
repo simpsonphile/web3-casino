@@ -1,7 +1,13 @@
 import { createContext, useContext, useReducer } from "react";
 
+function generateGuestNickname() {
+  const digits = Math.floor(1000000 + Math.random() * 9000000); // Ensures 7 digits
+  return "quest_" + digits;
+}
+
 const defaultState = {
   nickname: null,
+  asGuest: false,
 };
 
 const UserContext = createContext(defaultState);
@@ -13,6 +19,8 @@ const reducer = (state, action) => {
   switch (type) {
     case "setUser":
       return { ...payload };
+    case "setGuestUser":
+      return { asGuest: true, nickname: generateGuestNickname() };
     case "reset":
       return { ...defaultState };
     default:
