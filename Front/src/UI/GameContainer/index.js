@@ -15,6 +15,7 @@ import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
 import { useMessagesStore } from "../../stores/messagesStore";
 import { useUserStore } from "../../stores/userStore";
+import TokenBalance from "../TokenBalance";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -97,6 +98,8 @@ const GameContainer = () => {
 
   return (
     <div className={styles.GameContainer}>
+      <TokenBalance />
+
       {isMenuVisible && (isConnected || asGuest) && (
         <Menu
           isGameInit={isGameInit}

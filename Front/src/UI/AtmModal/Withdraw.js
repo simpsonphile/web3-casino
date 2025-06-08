@@ -1,5 +1,5 @@
 import NumericKeypad from "./NumericKeypad";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useReadCasinoGetBalance,
   useWriteCasinoWithdraw,
@@ -10,6 +10,8 @@ import Button from "../Button";
 import KeyboardKey from "../KeyboardKey";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
+import { toaster } from "../toaster";
+
 const Withdraw = () => {
   const { keyConfig } = useKeyConfigStore();
 
@@ -17,9 +19,19 @@ const Withdraw = () => {
 
   const { data } = useReadCasinoGetBalance();
 
-  const { writeContract } = useWriteCasinoWithdraw();
+  const { writeContract, isSuccess } = useWriteCasinoWithdraw();
 
   const send = () => writeContract({ args: [parseEther(value, "0")] });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toaster.create({
+        type: "success",
+        title: "Success",
+        description: "funds withdrawn to your wallet",
+      });
+    }
+  }, [isSuccess]);
 
   return (
     <Grid gap={2}>
@@ -29,6 +41,7 @@ const Withdraw = () => {
           value={value}
           onChange={setValue}
           onEnter={send}
+          isWithdraw
         />
       </GridItem>
 
