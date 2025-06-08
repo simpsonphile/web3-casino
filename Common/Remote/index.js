@@ -2,7 +2,7 @@ import { Client } from "colyseus.js";
 
 class Remote {
   constructor({ address }) {
-    this._client = new Client("ws://localhost:2567");
+    this._client = new Client(import.meta.env.VITE_WEBSOCKET_URL);
     window.client = this._client;
     this._remote = {};
     this.address = address;

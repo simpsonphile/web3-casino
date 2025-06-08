@@ -69,4 +69,6 @@ gameServer.define("blackjack", BlackjackRoom).filterBy(["id"]);
 
 // Start the server
 gameServer.listen(port);
-console.log(`Server listening on ws://127.0.0.1:${port}`);
+
+console.log(`Websocket Server listening on ${process.env.VITE_WEBSOCKET_URL}`);
+console.log(`Server listening on ${process.env.VITE_SERVER_URL}`);
