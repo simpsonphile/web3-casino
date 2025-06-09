@@ -16,8 +16,6 @@ class Remote {
       return;
     }
 
-    console.log("add", this.asGuest, this.nickname);
-
     this._remote[name] = new Class({
       ...data,
       client: this._client,

@@ -29,7 +29,6 @@ const GameContainer = () => {
   const [tooltipText, setTooltipText] = useState("");
 
   useEffect(() => {
-    console.log(asGuest, nickname);
     const repo = new Remote({ address, asGuest, nickname });
 
     repo.add("chat", RemoteChat, {
@@ -51,7 +50,6 @@ const GameContainer = () => {
   useEffect(() => {
     if (!!gameInstance || !keyConfig || !repo) return;
     const initGame = async () => {
-      console.log("game init");
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
         repo,
