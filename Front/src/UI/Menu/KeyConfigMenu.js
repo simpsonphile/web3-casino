@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import Button from "../Button";
 import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
@@ -64,7 +64,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
   }, [current, JSON.stringify(state)]);
 
   return (
-    <div ref={ref} className={styles.Menu}>
+    <Fragment ref={ref}>
       <Tabs
         variant="enclosed"
         defaultValue={Object.keys(state)[0]}
@@ -100,7 +100,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
         </Button>
         <Button onClick={resetKeys}>Reset to default</Button>
       </HStack>
-    </div>
+    </Fragment>
   );
 };
 

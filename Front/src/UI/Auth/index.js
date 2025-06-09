@@ -4,11 +4,14 @@ import useAuth from "./useAuth";
 import styles from "./index.module.scss";
 import { Button, Input } from "@chakra-ui/react";
 import { toaster } from "../toaster";
+import Welcome from "../Welcome";
 
 const Auth = ({ children }) => {
-  const { step, signMessage, refresh } = useAuth();
+  const { step, signMessage, refresh, setStep } = useAuth();
 
   switch (step) {
+    case "Start":
+      return <Auth.Start onGuestPlaySelection={() => setStep("Authorize")} />;
     case "Auth":
       return <Auth.Login signMessage={signMessage} />;
     case "Register":
@@ -20,6 +23,9 @@ const Auth = ({ children }) => {
       return null;
   }
 };
+
+Auth.Start = Welcome;
+Auth.Start.displayName = "AuthStart";
 
 Auth.Login = ({ signMessage }) => {
   return (

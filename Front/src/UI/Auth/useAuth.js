@@ -8,7 +8,7 @@ const message = "auth me";
 const useAuth = () => {
   const [wasConnected, setWasConnected] = useState(false);
   const { isConnected, address } = useAccount();
-  const [step, setStep] = useState("Pending");
+  const [step, setStep] = useState("Start");
   const [updateRefreshKey, setUpdateRefreshKey] = useState(0);
 
   const { signMessage, data: signature } = useSignMessage();
@@ -40,13 +40,12 @@ const useAuth = () => {
         if (user) dispatch({ type: "setUser", payload: user });
       })
       .catch(() => {
-        setStep("Auth");
+        signMessage({ message });
       });
   }, [address, updateRefreshKey, isConnected]);
 
   useEffect(() => {
     if (!signature) return;
-    if (step !== "Auth") return;
 
     auth(address, signature, message)
       .then(() => {
@@ -59,6 +58,7 @@ const useAuth = () => {
     refresh,
     step,
     signMessage: () => signMessage({ message }),
+    setStep,
   };
 };
 

@@ -5,44 +5,59 @@ import KeyConfigMenu from "./KeyConfigMenu";
 import { useUserContext } from "../../context/UserContext";
 import { Heading } from "@chakra-ui/react";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import Logo from "../Logo";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import Header from "../Header";
 
 const Menu = ({ onResumeClick, isGameInit, onKeyConfigUpdate }) => {
   const { keyConfig } = useKeyConfigStore();
   const [currentMenu, setCurrentMenu] = useState("main");
+  const { isConnected } = useAccount();
 
-  switch (currentMenu) {
-    case "keyConfig": {
-      return (
-        <Menu.KeyConfigMenu
-          setCurrentMenu={setCurrentMenu}
-          keyConfig={keyConfig}
-          onKeyConfigUpdate={onKeyConfigUpdate}
-        />
-      );
+  const content = () => {
+    switch (currentMenu) {
+      case "keyConfig": {
+        return (
+          <Menu.KeyConfigMenu
+            setCurrentMenu={setCurrentMenu}
+            keyConfig={keyConfig}
+            onKeyConfigUpdate={onKeyConfigUpdate}
+          />
+        );
+      }
+      default:
+      case "main": {
+        return (
+          <Menu.MainMenu
+            onResumeClick={onResumeClick}
+            isGameInit={isGameInit}
+            setCurrentMenu={setCurrentMenu}
+          />
+        );
+      }
     }
-    default:
-    case "main": {
-      return (
-        <Menu.MainMenu
-          onResumeClick={onResumeClick}
-          isGameInit={isGameInit}
-          setCurrentMenu={setCurrentMenu}
-        />
-      );
-    }
-  }
+  };
+
+  return (
+    <div className={styles.Menu}>
+      <Header>{isConnected && <ConnectButton />}</Header>
+      <Logo />
+      {content()}
+    </div>
+  );
 };
 
 Menu.MainMenu = ({ onResumeClick, isGameInit, setCurrentMenu }) => {
   const { nickname } = useUserContext();
 
   return (
-    <div className={styles.Menu}>
+    <>
       <Heading>Hi, {nickname}!</Heading>
 
       <Button onClick={onResumeClick}>{isGameInit ? "Resume" : "Play"}</Button>
       <Button onClick={() => setCurrentMenu("keyConfig")}>Key Config</Button>
-    </div>
+    </>
   );
 };
 
