@@ -18,7 +18,6 @@ class ChatRoom extends AuthRoom {
 
   async onJoin(client, options) {
     const { address, asGuest, nickname } = options;
-    // const user = await User.findOne({ address });
     const user = asGuest ? { nickname } : await User.findOne({ address });
 
     this.state.addUser(client.sessionId, user.nickname);
