@@ -12,9 +12,11 @@ body {
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #0b0f1a;
+  color: white;
 }
 
-body:after {
+body.cursor-locked:after {
   content: "+";
   position: absolute;
   top: 0;
