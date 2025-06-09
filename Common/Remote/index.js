@@ -1,11 +1,13 @@
 import { Client } from "colyseus.js";
 
 class Remote {
-  constructor({ address }) {
+  constructor({ address, nickname, asGuest }) {
     this._client = new Client(import.meta.env.VITE_WEBSOCKET_URL);
     window.client = this._client;
     this._remote = {};
     this.address = address;
+    this.nickname = nickname;
+    this.asGuest = asGuest;
   }
 
   add(name, Class, data) {
@@ -17,7 +19,11 @@ class Remote {
     this._remote[name] = new Class({
       ...data,
       client: this._client,
-      address: this.address,
+      options: {
+        address: this.address,
+        asGuest: this.asGuest,
+        nickname: this.nickname,
+      },
     });
   }
 

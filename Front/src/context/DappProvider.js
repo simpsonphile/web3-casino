@@ -1,8 +1,9 @@
 import { http } from "wagmi";
 import { hardhat } from "wagmi/chains";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
 
-export const config = getDefaultConfig({
+const config = getDefaultConfig({
   appName: "Casino",
   projectId: "1", // todo
   chains: [hardhat],
@@ -10,3 +11,9 @@ export const config = getDefaultConfig({
     [hardhat.id]: http(),
   },
 });
+
+const DappProvider = ({ children }) => {
+  return <WagmiProvider config={config}>{children}</WagmiProvider>;
+};
+
+export default DappProvider;

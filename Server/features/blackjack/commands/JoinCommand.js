@@ -5,8 +5,8 @@ import User from "../../../database/models/User.js";
 
 export class JoinCommand extends Command {
   async execute({ client, options }) {
-    const { address } = options;
-    const user = await User.findOne({ address });
+    const { address, asGuest, nickname } = options;
+    const user = asGuest ? { nickname } : await User.findOne({ address });
 
     this.state.addPlayer(client.sessionId, user.nickname);
 

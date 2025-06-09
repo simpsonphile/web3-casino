@@ -14,9 +14,11 @@ import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
+import { useUserContext } from "../../context/UserContext";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
+  const { asGuest, nickname } = useUserContext();
   const [gameInstance, setGameInstance] = useState();
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
@@ -27,7 +29,7 @@ const GameContainer = () => {
   const [tooltipText, setTooltipText] = useState("");
 
   useEffect(() => {
-    const repo = new Remote({ address });
+    const repo = new Remote({ address, asGuest, nickname });
 
     repo.add("chat", RemoteChat, {
       onNewMessage: (_, newMessage) =>
@@ -92,7 +94,7 @@ const GameContainer = () => {
   }, [isGameInit, isMenuVisible, keyConfig]);
   return (
     <div className={styles.GameContainer}>
-      {isMenuVisible && isConnected && (
+      {isMenuVisible && (isConnected || asGuest) && (
         <Menu
           isGameInit={isGameInit}
           onResumeClick={onResumeClick}

@@ -8,7 +8,7 @@ class RemotePlayers {
     onFirstPlayersData,
     onDeletePlayer,
     onMainPlayerData,
-    address,
+    options,
   }) {
     this._client = client;
     this._onPlayerData = onPlayerData;
@@ -16,14 +16,12 @@ class RemotePlayers {
     this._onNewPlayer = onNewPlayer;
     this._onDeletePlayer = onDeletePlayer;
     this._onMainPlayerData = onMainPlayerData;
-    this.address = address;
+    this.options = options;
     this.isFirstPlayersData = true;
   }
 
   async connect() {
-    this._room = await this._client.joinOrCreate("game_room", {
-      address: this.address,
-    });
+    this._room = await this._client.joinOrCreate("game_room", this.options);
 
     this.sessionId = this._room.sessionId;
 

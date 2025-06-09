@@ -49,6 +49,9 @@ class PointerLock {
     if (document.pointerLockElement !== this.domElement) {
       this.controlsEnabled = false;
       this.onChange(false);
+      document.body.classList.remove("cursor-locked");
+    } else {
+      document.body.classList.add("cursor-locked");
     }
   }
 

@@ -17,8 +17,9 @@ class ChatRoom extends AuthRoom {
   }
 
   async onJoin(client, options) {
-    const { address } = options;
-    const user = await User.findOne({ address });
+    const { address, asGuest, nickname } = options;
+    const user = asGuest ? { nickname } : await User.findOne({ address });
+
     this.state.addUser(client.sessionId, user.nickname);
     this.state.addJoinMessage(client.sessionId);
     this.broadcast(SERVER_MESSAGES.NEW_MESSAGE, this.state.getLastMessage(), {

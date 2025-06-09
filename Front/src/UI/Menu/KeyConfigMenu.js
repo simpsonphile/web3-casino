@@ -1,9 +1,9 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import Button from "../Button";
 import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
 import { Heading, HStack } from "@chakra-ui/react";
-import { getReadableKey } from "../../utils/keyboard";
+import KeyChangeButton from "./KeyChangeButton";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
 const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
@@ -64,7 +64,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
   }, [current, JSON.stringify(state)]);
 
   return (
-    <div ref={ref} className={styles.Menu}>
+    <Fragment ref={ref}>
       <Tabs
         variant="enclosed"
         defaultValue={Object.keys(state)[0]}
@@ -77,19 +77,18 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
                 {settingsName}
               </Heading>
               <div className={styles.MenuSubsectionBtns}>
-                {keys.map((key, i) => (
-                  <Button
-                    variant="outline"
-                    isKeyConfig
-                    isActive={`${name}.${settingsName}.${i}` === current}
-                    key={`${name}.${settingsName}.${i}`}
-                    onClick={() => setCurrent(`${name}.${settingsName}.${i}`)}
-                  >
-                    {`${name}.${settingsName}.${i}` === current
-                      ? "press any key"
-                      : getReadableKey(key)}
-                  </Button>
-                ))}
+                {keys.map((key, i) => {
+                  const keyCode = `${name}.${settingsName}.${i}`;
+                  return (
+                    <KeyChangeButton
+                      key={keyCode}
+                      isActive={keyCode === current}
+                      onClick={() => setCurrent(keyCode)}
+                    >
+                      {key}
+                    </KeyChangeButton>
+                  );
+                })}
               </div>
             </div>
           )),
@@ -101,7 +100,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
         </Button>
         <Button onClick={resetKeys}>Reset to default</Button>
       </HStack>
-    </div>
+    </Fragment>
   );
 };
 

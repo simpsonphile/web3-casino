@@ -1,9 +1,9 @@
 import { SERVER_MESSAGES, CLIENT_MESSAGES } from "../../Server/messageTypes";
 
 class RemoteBlackjack {
-  constructor({ client, address }) {
+  constructor({ client, options }) {
     this._client = client;
-    this.address = address;
+    this.options = options;
   }
 
   async connect({
@@ -24,7 +24,7 @@ class RemoteBlackjack {
     onDeletePlayer,
   }) {
     this._room = await this._client.joinOrCreate("blackjack", {
-      address: this.address,
+      ...this.options,
       id,
     });
     this.sessionId = this._room.sessionId;
