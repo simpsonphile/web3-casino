@@ -16,6 +16,7 @@ import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
 import { useUserContext } from "../../context/UserContext";
 import CommandManager from "../../../../Game/CommandManager";
+import { useMessagesStore } from "../../stores/messagesStore";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -24,11 +25,11 @@ const GameContainer = () => {
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const [repo, setRepo] = useState(null);
-  const [messages, setMessages] = useState([]);
   const { keyConfig } = useKeyConfigStore();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
   const [isChatInit, setIsChatInit] = useState(false);
+  const { messages, addMessage } = useMessagesStore();
 
   useEffect(() => {
     const repo = new Remote({ address, asGuest, nickname });
@@ -41,7 +42,7 @@ const GameContainer = () => {
     if (isGameInit && repo) {
       repo.add("chat", RemoteChat, {
         onNewMessage: (_, newMessage) => {
-          setMessages((prev) => [...prev, newMessage]);
+          addMessage(newMessage);
         },
       });
       repo.get("chat").connect();
