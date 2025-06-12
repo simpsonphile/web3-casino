@@ -7,22 +7,24 @@ class ChatRoom extends AuthRoom {
   onCreate() {
     this.setState(new ChatState());
 
-    this.onMessage(CLIENT_MESSAGES.MESSAGE, (client, message) => {
-      this.state.addMessage(client.sessionId, message);
+    this.onMessage(CLIENT_MESSAGES.MESSAGE, (client, messageTxt) => {
+      const message = this.state.addMessage(client.sessionId, messageTxt);
 
       if (!message.value) return;
 
-      this.broadcast(SERVER_MESSAGES.NEW_MESSAGE, this.state.getLastMessage());
+      this.broadcast(SERVER_MESSAGES.NEW_MESSAGE, message);
     });
   }
 
   async onJoin(client, options) {
     const { address, asGuest, nickname } = options;
-    const user = asGuest ? { nickname } : await User.findOne({ address });
+    const user = asGuest
+      ? { nickname, id: nickname }
+      : await User.findOne({ address });
 
-    this.state.addUser(client.sessionId, user.nickname);
-    this.state.addJoinMessage(client.sessionId);
-    this.broadcast(SERVER_MESSAGES.NEW_MESSAGE, this.state.getLastMessage(), {
+    this.state.addUser(client.sessionId, user);
+    const message = this.state.addJoinMessage(client.sessionId);
+    this.broadcast(SERVER_MESSAGES.NEW_MESSAGE, message, {
       except: client,
     });
   }

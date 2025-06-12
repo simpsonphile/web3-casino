@@ -1,13 +1,15 @@
 import { Schema, defineTypes } from "@colyseus/schema";
 
 class ChatUser extends Schema {
-  constructor({ nickname }) {
+  constructor({ id, nickname }) {
     super();
+    this.id = id;
     this.nickname = nickname;
   }
 }
 
 defineTypes(ChatUser, {
+  id: "string",
   nickname: "string",
 });
 

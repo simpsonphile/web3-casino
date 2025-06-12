@@ -4,14 +4,14 @@ class RemotePlayers {
   constructor({
     client,
     onNewPlayer,
-    onPlayerData,
+    onPlayersData,
     onFirstPlayersData,
     onDeletePlayer,
     onMainPlayerData,
     options,
   }) {
     this._client = client;
-    this._onPlayerData = onPlayerData;
+    this._onPlayersData = onPlayersData;
     this._onFirstPlayersData = onFirstPlayersData;
     this._onNewPlayer = onNewPlayer;
     this._onDeletePlayer = onDeletePlayer;
@@ -30,7 +30,7 @@ class RemotePlayers {
         this._onFirstPlayersData(this._room, data);
         this.isFirstPlayersData = false;
       } else {
-        this._onPlayerData(this._room, data);
+        this._onPlayersData(this._room, data);
       }
     });
 

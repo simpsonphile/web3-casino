@@ -9,7 +9,6 @@ class ChatBubble extends CSS3DObject {
     super(div);
 
     this.position.copy(position);
-    this.position.y += 3.5;
     this.scale.set(0.025, 0.025, 0.025);
   }
 }

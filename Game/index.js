@@ -56,9 +56,11 @@ class Game {
     this.players = new Players();
     window.scene.add(this.players.playersGroup);
     window.cssScene.add(this.players.nicknamesGroup);
+    window.cssScene.add(this.players.messagesGroup);
     window.repo.add("players", RemotePlayers, {
       onMainPlayerData: (room, data) => {
-        const { position } = data;
+        const { id, position } = data;
+        this.player.id = id;
         this.player.moveTo(position);
       },
       onNewPlayer: (room, data) => {
@@ -67,10 +69,10 @@ class Game {
       },
       onDeletePlayer: (room, id) => this.players.deletePlayer(id),
       onFirstPlayersData: (room, allPlayers) => {
-        const { [room.sessionId]: _, ...players } = allPlayers;
+        const { [this.player.id]: _, ...players } = allPlayers;
         this.players.createNewPlayers(players);
       },
-      onPlayerData: (room, players) => this.players.updatePlayers(players),
+      onPlayersData: (room, players) => this.players.updatePlayers(players),
     });
 
     window.repo.get("players").connect();

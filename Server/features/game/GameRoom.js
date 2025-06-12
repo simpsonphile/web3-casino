@@ -41,10 +41,11 @@ class GameRoom extends AuthRoom {
     const { address, asGuest, nickname } = options;
 
     const user = asGuest
-      ? { nickname, position: { x: 72, y: 0, z: 40 } }
+      ? { nickname, position: { x: 72, y: 0, z: 40 }, id: nickname }
       : await User.findOne({ address });
 
     this.state.addPlayer(client.sessionId, {
+      id: user.id,
       nickname: user.nickname,
       position: user.position,
     });
@@ -52,13 +53,15 @@ class GameRoom extends AuthRoom {
     this.broadcast(
       SERVER_MESSAGES.NEW_PLAYER,
       {
-        id: client.sessionId,
-        ...this.state.players[client.sessionId],
+        ...this.state.players[user.id],
       },
       { except: client }
     );
 
-    client.send(SERVER_MESSAGES.PLAYER_DATA, { position: user.position });
+    client.send(SERVER_MESSAGES.PLAYER_DATA, {
+      id: user.id,
+      position: user.position,
+    });
   }
 
   onLeave(client) {

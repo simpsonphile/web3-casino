@@ -5,42 +5,53 @@ class GameState extends Schema {
   constructor() {
     super();
     this.players = {};
+    this.sessionIdToPlayerId = {};
   }
 
-  addPlayer(id, { nickname, position }) {
-    this.players[id] = new Player({ nickname, position });
+  getPlayerId(sessionId) {
+    return this.sessionIdToPlayerId[sessionId];
   }
 
-  removePlayer(id) {
-    delete this.players[id]; // todo .remove
+  addPlayer(sessionId, { id, nickname, position }) {
+    this.players[id] = new Player({ id, nickname, position });
+    this.sessionIdToPlayerId[sessionId] = id;
   }
 
-  updatePosition(id, pos) {
+  removePlayer(sessionId) {
+    delete this.players[this.getPlayerId(sessionId)];
+  }
+
+  updatePosition(sessionId, pos) {
+    const id = this.getPlayerId(sessionId);
     const player = this.players[id];
     player.position.x = pos.x;
     player.position.y = pos.y;
     player.position.z = pos.z;
   }
 
-  updateRotation(id, rotation) {
+  updateRotation(sessionId, rotation) {
+    const id = this.getPlayerId(sessionId);
     const player = this.players[id];
     player.rotation.x = rotation.x;
     player.rotation.y = rotation.y;
     player.rotation.z = rotation.z;
   }
 
-  updateAnimation(id, animation) {
+  updateAnimation(sessionId, animation) {
+    const id = this.getPlayerId(sessionId);
     const player = this.players[id];
     player.animation = animation;
   }
 
-  updateNickname(id, nickname) {
+  updateNickname(sessionId, nickname) {
+    const id = this.getPlayerId(sessionId);
     const player = this.player[id];
     player.nickname = nickname;
   }
 }
 
 defineTypes(GameState, {
+  sessionIdToPlayerId: { map: "string" },
   players: { map: Player },
 });
 
