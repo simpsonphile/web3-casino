@@ -48,3 +48,22 @@ code {
   padding: 2px 4px;
   font-size: 10px;
 }
+
+/* Target scrollbar for WebKit browsers */
+::-webkit-scrollbar {
+  width: 8px; /* vertical scrollbar */
+  height: 8px; /* horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* or any bg */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #50fa7b; /* mint green */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #41d17b;
+}
