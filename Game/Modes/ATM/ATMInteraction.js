@@ -9,7 +9,7 @@ class ATMInteraction {
 
   onMouseOver(data) {
     if (data.distance > 5) return;
-    if (!this.game.commandManager.checkIfModeEnabled("movement")) return;
+    if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
     this.game.showTooltip("use?");
   }
@@ -26,7 +26,7 @@ class ATMInteraction {
     newPosition.y = 0;
     this.game.player.moveTo(newPosition);
 
-    this.game.commandManager.setMode(["atm"]);
+    window.commandManager.setMode(["atm"]);
     this.game.interactionHandler.setState(false);
     this.atmStore.setIsVisible(true);
   }

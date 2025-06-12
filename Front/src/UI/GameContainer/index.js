@@ -15,6 +15,7 @@ import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
 import { useUserContext } from "../../context/UserContext";
+import CommandManager from "../../../../Game/CommandManager";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -27,18 +28,31 @@ const GameContainer = () => {
   const { keyConfig } = useKeyConfigStore();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
+  const [isChatInit, setIsChatInit] = useState(false);
 
   useEffect(() => {
     const repo = new Remote({ address, asGuest, nickname });
 
-    repo.add("chat", RemoteChat, {
-      onNewMessage: (_, newMessage) =>
-        setMessages((prev) => [...prev, newMessage]),
-    });
-
-    repo.get("chat").connect();
-
     setRepo(repo);
+    window.repo = repo;
+  }, []);
+
+  useEffect(() => {
+    if (isGameInit && repo) {
+      repo.add("chat", RemoteChat, {
+        onNewMessage: (_, newMessage) => {
+          setMessages((prev) => [...prev, newMessage]);
+        },
+      });
+      repo.get("chat").connect();
+      setIsChatInit(true);
+    }
+  }, [gameInstance, isGameInit, repo]);
+
+  useEffect(() => {
+    const commandManager = new CommandManager();
+
+    window.commandManager = commandManager;
   }, []);
 
   useEffect(() => {
@@ -52,7 +66,6 @@ const GameContainer = () => {
     const initGame = async () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
-        repo,
         showTooltip: (text) => {
           setTooltipVisible(true);
           setTooltipText(text);
@@ -107,7 +120,7 @@ const GameContainer = () => {
       )}
 
       <Footer>
-        {!!repo && (
+        {isChatInit && (
           <Chat
             onSend={repo.get("chat").sendMessage.bind(repo.get("chat"))}
             messages={messages}
