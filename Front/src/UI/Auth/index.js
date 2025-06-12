@@ -5,6 +5,7 @@ import styles from "./index.module.scss";
 import { Button, Input } from "@chakra-ui/react";
 import { toaster } from "../toaster";
 import Welcome from "../Welcome";
+import AuthSignWallet from "./AuthSignWallet";
 
 const Auth = ({ children }) => {
   const { step, signMessage, refresh, setStep } = useAuth();
@@ -12,7 +13,7 @@ const Auth = ({ children }) => {
   switch (step) {
     case "Start":
       return <Auth.Start onGuestPlaySelection={() => setStep("Authorize")} />;
-    case "Auth":
+    case "SignWallet":
       return <Auth.Login signMessage={signMessage} />;
     case "Register":
       return <Auth.Register onSuccess={refresh} />;
@@ -27,15 +28,7 @@ const Auth = ({ children }) => {
 Auth.Start = Welcome;
 Auth.Start.displayName = "AuthStart";
 
-Auth.Login = ({ signMessage }) => {
-  return (
-    <div className={styles.Auth}>
-      <Button onClick={signMessage}>sign me</Button>
-    </div>
-  );
-};
-
-Auth.Login.displayName = "AuthLogin";
+Auth.Login = AuthSignWallet;
 
 Auth.Register = ({ onSuccess }) => {
   const [nickname, setNickname] = useState("");

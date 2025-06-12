@@ -8,7 +8,7 @@ const message = "auth me";
 const useAuth = () => {
   const [wasConnected, setWasConnected] = useState(false);
   const { isConnected, address } = useAccount();
-  const [step, setStep] = useState("Start");
+  const [step, setStep] = useState("Pending");
   const [updateRefreshKey, setUpdateRefreshKey] = useState(0);
 
   const { signMessage, data: signature } = useSignMessage();
@@ -29,6 +29,12 @@ const useAuth = () => {
   }, [isConnected]);
 
   useEffect(() => {
+    if (!isConnected && !wasConnected) {
+      setStep("Start");
+    }
+  }, [isConnected, wasConnected]);
+
+  useEffect(() => {
     if (!isConnected) return;
     checkIfAddressExist()
       .then((res) => {
@@ -40,7 +46,7 @@ const useAuth = () => {
         if (user) dispatch({ type: "setUser", payload: user });
       })
       .catch(() => {
-        signMessage({ message });
+        setStep("SignWallet");
       });
   }, [address, updateRefreshKey, isConnected]);
 
