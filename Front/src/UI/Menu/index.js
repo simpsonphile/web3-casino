@@ -55,8 +55,12 @@ Menu.MainMenu = ({ onResumeClick, isGameInit, setCurrentMenu }) => {
     <>
       <Heading>Hi, {nickname}!</Heading>
 
-      <Button onClick={onResumeClick}>{isGameInit ? "Resume" : "Play"}</Button>
-      <Button onClick={() => setCurrentMenu("keyConfig")}>Key Config</Button>
+      <Button onClick={onResumeClick}>
+        {isGameInit ? t("menu.resume") : t("menu.play")}
+      </Button>
+      <Button onClick={() => setCurrentMenu("keyConfig")}>
+        {t("menu.keyConfig")}
+      </Button>
     </>
   );
 };

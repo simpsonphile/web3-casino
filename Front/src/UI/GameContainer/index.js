@@ -4,7 +4,6 @@ import Menu from "../Menu";
 import Chat from "../Chat";
 import RemoteChat from "@Common/Remote/Chat";
 import Remote from "@Common/Remote";
-import SoundPlayer from "@Common/SoundPlayer";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
 import AtmModal from "../AtmModal";
@@ -15,7 +14,6 @@ import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
 import { useUserContext } from "../../context/UserContext";
-import CommandManager from "../../../../Game/CommandManager";
 import { useMessagesStore } from "../../stores/messagesStore";
 
 const GameContainer = () => {
@@ -24,7 +22,6 @@ const GameContainer = () => {
   const [gameInstance, setGameInstance] = useState();
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
-  const [repo, setRepo] = useState(null);
   const { keyConfig } = useKeyConfigStore();
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
@@ -34,36 +31,23 @@ const GameContainer = () => {
   useEffect(() => {
     const repo = new Remote({ address, asGuest, nickname });
 
-    setRepo(repo);
     window.repo = repo;
   }, []);
 
   useEffect(() => {
-    if (isGameInit && repo) {
-      repo.add("chat", RemoteChat, {
+    if (isGameInit && window.repo) {
+      window.repo.add("chat", RemoteChat, {
         onNewMessage: (_, newMessage) => {
           addMessage(newMessage);
         },
       });
-      repo.get("chat").connect();
+      window.repo.get("chat").connect();
       setIsChatInit(true);
     }
-  }, [gameInstance, isGameInit, repo]);
+  }, [gameInstance, isGameInit, window.repo]);
 
   useEffect(() => {
-    const commandManager = new CommandManager();
-
-    window.commandManager = commandManager;
-  }, []);
-
-  useEffect(() => {
-    const soundPlayer = new SoundPlayer();
-    soundPlayer.loadSounds();
-    window.soundPlayer = soundPlayer;
-  }, []);
-
-  useEffect(() => {
-    if (!!gameInstance || !keyConfig || !repo) return;
+    if (!!gameInstance || !keyConfig || !window.repo) return;
     const initGame = async () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
@@ -81,7 +65,7 @@ const GameContainer = () => {
     };
 
     initGame();
-  }, [gameInstance, keyConfig, !!repo]);
+  }, [gameInstance, keyConfig, !!window.repo]);
 
   const onResumeClick = () => {
     if (!isGameInit) {
@@ -128,7 +112,9 @@ const GameContainer = () => {
       <Footer>
         {isChatInit && (
           <Chat
-            onSend={repo.get("chat").sendMessage.bind(repo.get("chat"))}
+            onSend={window.repo
+              .get("chat")
+              .sendMessage.bind(window.repo.get("chat"))}
             messages={messages}
           />
         )}

@@ -15,7 +15,7 @@ const BetScreen = () => {
   if (hasBeaten) {
     return (
       <Heading size="xl" color="white" textAlign="center" mb={2}>
-        Other players still betting
+        {t("blackjackWaitingForPlayers")}
       </Heading>
     );
   }
@@ -23,7 +23,7 @@ const BetScreen = () => {
   return (
     <div className={styles.BetScreen}>
       <Heading size="xl" color="white" textAlign="center" mb={2}>
-        Place Your Bet ({bet})
+        {t("blackjackPlaceYourBet", { bet })}
       </Heading>
       <Grid gap={3} templateColumns="repeat(4, 1fr)" textAlign="center">
         {Object.entries(chipColorNominalsMap)

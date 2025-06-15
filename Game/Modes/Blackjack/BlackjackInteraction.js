@@ -9,7 +9,7 @@ class BlackjackInteraction {
     if (data.distance > 6) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip("wanna join blackjack game?");
+    this.game.showTooltip(t("blackjackTableHover"));
   }
 
   getObj(obj) {

@@ -11,7 +11,7 @@ class ATMInteraction {
     if (data.distance > 5) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip("use?");
+    this.game.showTooltip(t("casinoKioskHover"));
   }
 
   onClick(data) {

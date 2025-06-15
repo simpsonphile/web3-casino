@@ -11,7 +11,7 @@ class SlotMachineInteraction {
     if (data.distance > 6) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip("wanna play slots?");
+    this.game.showTooltip(t("slotsMachineHover"));
   }
 
   getObj(obj) {
