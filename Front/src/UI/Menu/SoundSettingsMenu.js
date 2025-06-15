@@ -4,7 +4,7 @@ import Button from "../Button";
 import { useSoundStore } from "@Front/stores/soundStore";
 
 const SoundSettings = ({ setCurrentMenu }) => {
-  const { uiVolume, worldVolume, setUiVolume, setWorldVolume } =
+  const { uiVolume, worldVolume, setUiVolume, setWorldVolume, reset } =
     useSoundStore();
 
   return (
@@ -25,7 +25,7 @@ const SoundSettings = ({ setCurrentMenu }) => {
         <Button variant="subtle" onClick={() => setCurrentMenu("main")}>
           {t("menu.back")}
         </Button>
-        <Button>{t("menu.resetToDefault")}</Button>
+        <Button onClick={reset}>{t("menu.resetToDefault")}</Button>
       </ButtonGroup>
     </VStack>
   );
