@@ -345,7 +345,7 @@ class Game {
     });
 
     this.pointerLock = new PointerLock({
-      domElement: this.renderer.domElement,
+      domElement: window.document.body,
       onChange: (state) => {
         this.controls.setControlsEnabled.bind(this.controls)(state);
         if (!state) {
@@ -358,9 +358,12 @@ class Game {
       },
     });
     this.pointerLock.init();
+    this.pointerLock.requestPointerLock();
   }
 
   async init() {
+    this.initControls();
+
     this.initStats();
     this.initCamerasManager();
     this.initScene();
@@ -391,7 +394,6 @@ class Game {
     this.initSlotMachine();
 
     this.initOnScreenResize();
-    this.initControls();
     this.initRaycaster();
     this.updateUpdater();
   }
