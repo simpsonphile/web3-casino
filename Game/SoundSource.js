@@ -1,21 +1,23 @@
 import * as THREE from "three";
 
+// todo In moment of writing i think that we should agregate all SoundSources to one 3DSoundManager
+// implement subscription to world volume
 class SoundSource {
-  constructor(target, songName, listener) {
+  constructor(target, soundName, listener) {
     this.positionalAudio = new THREE.PositionalAudio(listener);
-    this.loadSound(songName);
+    this.loadSound(soundName);
 
     target.add(this.positionalAudio);
   }
 
-  loadSound(songName) {
-    const buffer = window.sounds[songName];
+  loadSound(soundName) {
+    const buffer = window.sounds[soundName];
     if (buffer) {
       this.positionalAudio.setBuffer(buffer);
       this.positionalAudio.setLoop(true); // Set to true if you want to loop the sound
       this.positionalAudio.setVolume(1); // Set initial volume
     } else {
-      console.error(`Failed to load sound: ${songName}`);
+      console.error(`Failed to load sound: ${soundName}`);
     }
   }
 

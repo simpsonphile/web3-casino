@@ -1,12 +1,33 @@
 import defaultSoundPaths from "./soundPaths";
 
 class SoundPlayer {
-  constructor() {}
+  constructor() {
+    this.subscribeToVolumeChange();
+  }
+
+  getCurrentVolume() {
+    return window.soundStore.getState().uiVolume;
+  }
+
+  subscribeToVolumeChange() {
+    window.soundStore.subscribe((state, prevState) => {
+      if (state.uiVolume === prevState.uiVolume) return;
+      this.updateVolumes(state.uiVolume);
+    });
+  }
 
   loadSounds(soundPaths = defaultSoundPaths) {
     this.sounds = {};
+    const currentVolume = this.getCurrentVolume();
     Object.entries(soundPaths).forEach(([name, path]) => {
       this.sounds[name] = new Audio(path);
+      this.sounds[name].volume = currentVolume;
+    });
+  }
+
+  updateVolumes(newVolume) {
+    Object.values(this.sounds).forEach((audio) => {
+      audio.volume = newVolume;
     });
   }
 

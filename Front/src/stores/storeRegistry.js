@@ -1,9 +1,10 @@
-import { useBlackjackStore } from "@Front/stores/blackjackStore";
-import { useSlotsStore } from "@Front/stores/slotsStore";
-import { useKeyConfigStore } from "@Front/stores/keyConfigStore";
-import { useAtmStore } from "@Front/stores/atmStore";
-import { useProgressStore } from "@Front/stores/progressStore";
-import { useMessagesStore } from "@Front/stores/messagesStore";
+import { useBlackjackStore } from "./blackjackStore";
+import { useSlotsStore } from "./slotsStore";
+import { useKeyConfigStore } from "./keyConfigStore";
+import { useAtmStore } from "./atmStore";
+import { useProgressStore } from "./progressStore";
+import { useMessagesStore } from "./messagesStore";
+import { useSoundStore } from "./soundStore";
 
 export function initStoreRegistry() {
   if (typeof window !== "undefined") {
@@ -13,5 +14,6 @@ export function initStoreRegistry() {
     window.atmStore = window.atmStore || useAtmStore;
     window.progressStore = window.progressStore || useProgressStore;
     window.messagesStore = window.messagesStore || useMessagesStore;
+    window.soundStore = window.soundStore || useSoundStore;
   }
 }

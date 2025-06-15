@@ -28,7 +28,6 @@ import ActorCamera from "./ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
-import { initStoreRegistry } from "./storeRegistry";
 import ProgressLoader from "./ProgressLoader";
 
 class Game {
@@ -364,7 +363,6 @@ class Game {
   }
 
   async init() {
-    initStoreRegistry();
     this.initStats();
     this.initCamerasManager();
     this.initScene();

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, Fragment } from "react";
 import Button from "../Button";
 import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
-import { Heading, HStack } from "@chakra-ui/react";
+import { ButtonGroup, Heading } from "@chakra-ui/react";
 import KeyChangeButton from "./KeyChangeButton";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
@@ -94,12 +94,12 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
           )),
         }))}
       />
-      <HStack>
+      <ButtonGroup>
         <Button variant="subtle" onClick={() => setCurrentMenu("main")}>
           {t("menu.back")}
         </Button>
         <Button onClick={resetKeys}>{t("menu.resetToDefault")}</Button>
-      </HStack>
+      </ButtonGroup>
     </div>
   );
 };

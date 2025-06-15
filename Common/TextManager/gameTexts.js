@@ -16,6 +16,7 @@ const gameTexts = {
       back: "Back",
       keyConfig: "Key Config",
       resetToDefault: "Reset to default",
+      soundSettings: "Sound Settings",
     },
   },
 };

@@ -7,12 +7,20 @@ import DappProvider from "./context/DappProvider";
 import { UserProvider } from "./context/UserContext";
 import AppContent from "./AppContent";
 import { Toaster } from "./UI/toaster";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CommandManager from "@Game/CommandManager";
+import { initStoreRegistry } from "./stores/storeRegistry";
 
 const queryClient = new QueryClient();
 
 function App() {
+  const [isStoreRegistryInit, setIsStoreRegistryInit] = useState(false);
+
+  useEffect(() => {
+    initStoreRegistry();
+    setIsStoreRegistryInit(true);
+  }, []);
+
   useEffect(() => {
     const textManager = new TextManager();
 
@@ -21,10 +29,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!isStoreRegistryInit) return;
     const soundPlayer = new SoundPlayer();
     soundPlayer.loadSounds();
     window.soundPlayer = soundPlayer;
-  }, []);
+  }, [isStoreRegistryInit]);
 
   useEffect(() => {
     const commandManager = new CommandManager();
