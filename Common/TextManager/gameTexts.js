@@ -18,6 +18,14 @@ const gameTexts = {
       resetToDefault: "Reset to default",
       soundSettings: "Sound Settings",
     },
+
+    auth: {
+      register: {
+        createYourNickname: "Create your nickname",
+        createYourNicknameDescription:
+          "This nickname will be shown to other players in the casino. Choose wisely!",
+      },
+    },
   },
 };
 

@@ -6,7 +6,7 @@ import styles from "./index.module.scss";
 const AuthSignWallet = ({ signMessage }) => {
   const { address } = useAccount();
   return (
-    <div className={styles.AuthSignWallet}>
+    <div className={styles.Auth}>
       <Heading>Verify Wallet Ownership</Heading>
       <Paragraph textAlign="center">
         To continue, please sign a message using your wallet to prove you own
