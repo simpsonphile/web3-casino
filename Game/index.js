@@ -344,10 +344,16 @@ class Game {
       },
     });
 
+    this.controls.setControlsEnabled(this.pointerLock.isPointerLocked());
+  }
+
+  initPointerLock() {
     this.pointerLock = new PointerLock({
       domElement: window.document.body,
       onChange: (state) => {
-        this.controls.setControlsEnabled.bind(this.controls)(state);
+        if (this.controls) {
+          this.controls.setControlsEnabled.bind(this.controls)(state);
+        }
         if (!state) {
           this._onPause();
           window.commandManager.setMode("menu");
@@ -362,8 +368,7 @@ class Game {
   }
 
   async init() {
-    this.initControls();
-
+    this.initPointerLock();
     this.initStats();
     this.initCamerasManager();
     this.initScene();
@@ -394,6 +399,7 @@ class Game {
     this.initSlotMachine();
 
     this.initOnScreenResize();
+    this.initControls();
     this.initRaycaster();
     this.updateUpdater();
   }

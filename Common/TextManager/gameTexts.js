@@ -8,7 +8,9 @@ const gameTexts = {
     blackjackPlaceYourBet: "Place your bet ({bet})",
 
     slotsMachineHover: "Play Slots",
+
     casinoKioskHover: "Manage Your Account",
+    casinoKioskHoverGuest: "Kiosk not available for guest users",
 
     menu: {
       play: "Play",

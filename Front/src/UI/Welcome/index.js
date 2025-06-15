@@ -1,18 +1,15 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useUserContext } from "../../context/UserContext";
 import styles from "./index.module.scss";
 import Button from "../Button";
 import Paragraph from "../Paragraph";
 import { ButtonGroup } from "@chakra-ui/react";
+import { useUserStore } from "../../stores/userStore";
 
 const Welcome = ({ onGuestPlaySelection }) => {
-  const { dispatch } = useUserContext();
+  const { setGuestUser } = useUserStore();
 
   const setupGuest = () => {
-    dispatch({
-      type: "setGuestUser",
-    });
-
+    setGuestUser();
     onGuestPlaySelection();
   };
 

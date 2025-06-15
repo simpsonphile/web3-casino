@@ -2,7 +2,6 @@ import { useState } from "react";
 import styles from "./Menu.module.scss";
 import Button from "../Button";
 import KeyConfigMenu from "./KeyConfigMenu";
-import { useUserContext } from "../../context/UserContext";
 import { Heading, VStack } from "@chakra-ui/react";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import Logo from "../Logo";
@@ -10,6 +9,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Header from "../Header";
 import SoundSettings from "./SoundSettingsMenu";
+import { useUserStore } from "../../stores/userStore";
 
 const Menu = ({ onResumeClick, isGameInit, onKeyConfigUpdate }) => {
   const { keyConfig } = useKeyConfigStore();
@@ -55,7 +55,7 @@ const Menu = ({ onResumeClick, isGameInit, onKeyConfigUpdate }) => {
 Menu.SoundMenu = SoundSettings;
 
 Menu.MainMenu = ({ onResumeClick, isGameInit, setCurrentMenu }) => {
-  const { nickname } = useUserContext();
+  const { nickname } = useUserStore();
 
   return (
     <>

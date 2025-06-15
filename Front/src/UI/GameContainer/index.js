@@ -13,12 +13,12 @@ import SlotsUI from "../../SlotsUI";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 import AssetsLoadingScreen from "../AssetsLoadingScreen";
 import styles from "./index.module.scss";
-import { useUserContext } from "../../context/UserContext";
 import { useMessagesStore } from "../../stores/messagesStore";
+import { useUserStore } from "../../stores/userStore";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
-  const { asGuest, nickname } = useUserContext();
+  const { asGuest, nickname } = useUserStore();
   const [gameInstance, setGameInstance] = useState();
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);

@@ -5,6 +5,7 @@ import { useAtmStore } from "./atmStore";
 import { useProgressStore } from "./progressStore";
 import { useMessagesStore } from "./messagesStore";
 import { useSoundStore } from "./soundStore";
+import { useUserStore } from "./userStore";
 
 export function initStoreRegistry() {
   if (typeof window !== "undefined") {
@@ -15,5 +16,6 @@ export function initStoreRegistry() {
     window.progressStore = window.progressStore || useProgressStore;
     window.messagesStore = window.messagesStore || useMessagesStore;
     window.soundStore = window.soundStore || useSoundStore;
+    window.userStore = window.userStore || useUserStore;
   }
 }
