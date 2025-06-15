@@ -32,10 +32,11 @@ import { initStoreRegistry } from "./storeRegistry";
 import ProgressLoader from "./ProgressLoader";
 
 class Game {
-  constructor({ onPause, showTooltip, hideTooltip }) {
+  constructor({ onPause, onResume, showTooltip, hideTooltip }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
+    this._onResume = onResume;
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
@@ -79,7 +80,6 @@ class Game {
   }
 
   resumeGame() {
-    window.commandManager.setToPrevMode();
     this.pointerLock.requestPointerLock();
   }
 
@@ -352,6 +352,11 @@ class Game {
         if (!state) {
           this._onPause();
           window.commandManager.setMode("menu");
+        } else {
+          if (window.commandManager.getMode().includes("menu")) {
+            window.commandManager.setToPrevMode();
+            this._onResume();
+          }
         }
       },
     });

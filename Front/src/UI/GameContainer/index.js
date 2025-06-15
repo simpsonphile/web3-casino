@@ -67,6 +67,7 @@ const GameContainer = () => {
     const initGame = async () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
+        onResume: () => setIsMenuVisible(false),
         showTooltip: (text) => {
           setTooltipVisible(true);
           setTooltipText(text);
@@ -85,20 +86,23 @@ const GameContainer = () => {
   const onResumeClick = () => {
     if (!isGameInit) {
       gameInstance.init();
+      setIsMenuVisible(false);
       setIsGameInit(true);
     } else {
       gameInstance.resumeGame();
     }
-    setIsMenuVisible(false);
   };
 
   useEffect(() => {
     const handleOnKeyDown = (event) => {
-      if (event.code === "Escape" && isMenuVisible && isGameInit) {
-        setTimeout(() => {
-          gameInstance.resumeGame();
-          setIsMenuVisible(false);
-        }, 100);
+      if (
+        event.code === "Escape" &&
+        !isMenuVisible &&
+        isGameInit &&
+        !gameInstance.pointerLock.isPointerLocked()
+      ) {
+        window.commandManager.setMode("menu");
+        setIsMenuVisible(true);
       }
     };
 
@@ -106,6 +110,7 @@ const GameContainer = () => {
 
     return () => window.removeEventListener("keydown", handleOnKeyDown);
   }, [isGameInit, isMenuVisible, keyConfig]);
+
   return (
     <div className={styles.GameContainer}>
       {isMenuVisible && (isConnected || asGuest) && (
