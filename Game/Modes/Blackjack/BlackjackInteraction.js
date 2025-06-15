@@ -18,7 +18,7 @@ class BlackjackInteraction {
   }
 
   onClick(data) {
-    if (window.commandManager.getMode().includes("blackjack")) return;
+    if (window.commandManager.checkIfModeEnabled("blackjack")) return;
     if (data.distance > 6) return;
 
     const obj = this.getObj(data.object);

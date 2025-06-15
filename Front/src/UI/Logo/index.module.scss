@@ -1,4 +1,5 @@
 .Logo {
+  position: relative;
   font-size: 40px;
   font-family: "Orbitron";
   color: white;
@@ -8,6 +9,15 @@
     0 0 10px #00ffad,
     0 0 20px #00ffad,
     0 0 40px #00ffad;
+
+  &:after {
+    content: "Pre-alpha";
+    font-size: 10px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 .LogoAnimated {

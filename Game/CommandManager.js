@@ -11,13 +11,12 @@ const getEmptyCommands = () => ({
   slotMachine: {},
   cameraTransition: {},
   zoom: {},
+  chat: {},
 });
 
 class CommandManager {
   constructor() {
-    this._prevMode = null;
-    this._mode = ["movement"];
-
+    this._modeStack = [["movement"]];
     this._commands = getEmptyCommands();
   }
 
@@ -25,33 +24,45 @@ class CommandManager {
     this._commands = getEmptyCommands();
   }
 
-  checkIfModeEnabled(str) {
-    return this._mode.includes(str);
+  checkIfModeEnabled(mode) {
+    return this.getMode().includes(mode);
   }
 
   getMode() {
-    return this._mode;
+    return this._modeStack[this._modeStack.length - 1] || [];
   }
 
-  getPrevMode() {
-    return this._prevMode;
-  }
-
-  setToPrevMode() {
-    this._mode = this._prevMode;
+  getModeStack() {
+    return [...this._modeStack];
   }
 
   checkIfModeExist(mode) {
-    if (!Object.keys(this._commands).includes(mode))
-      console.warn(`Mode ${mode} does not exist`);
-
+    const keys = Object.keys(this._commands);
+    const allValid = (Array.isArray(mode) ? mode : [mode]).every((m) =>
+      keys.includes(m)
+    );
+    if (!allValid) {
+      console.warn(`One or more modes do not exist:`, mode);
+      return false;
+    }
     return true;
+  }
+
+  hasModeInStack(mode) {
+    return this._modeStack.some((modeGroup) => modeGroup.includes(mode));
   }
 
   setMode(mode) {
     if (!this.checkIfModeExist(mode)) return;
-    this._prevMode = this._mode;
-    this._mode = Array.isArray(mode) ? mode : [mode];
+    this._modeStack.push(Array.isArray(mode) ? mode : [mode]);
+  }
+
+  popMode() {
+    if (this._modeStack.length > 1) {
+      this._modeStack.pop();
+    } else {
+      console.warn("Cannot pop initial mode");
+    }
   }
 
   addCommand(mode, actionName, keys, downCommandFn, upCommandFn) {
@@ -59,22 +70,24 @@ class CommandManager {
       this._commands[mode] = {};
     }
 
-    keys.forEach((key) => {
+    getKeys(keys).forEach((key) => {
       this._commands[mode][key] = { actionName, downCommandFn, upCommandFn };
     });
   }
 
   executeDown(keys) {
+    const modes = this.getMode();
     getKeys(keys).forEach((key) => {
-      this._mode.forEach((mode) => {
+      modes.forEach((mode) => {
         this._commands[mode]?.[key]?.downCommandFn?.();
       });
     });
   }
 
   executeUp(keys) {
+    const modes = this.getMode();
     getKeys(keys).forEach((key) => {
-      this._mode.forEach((mode) => {
+      modes.forEach((mode) => {
         this._commands[mode]?.[key]?.upCommandFn?.();
       });
     });

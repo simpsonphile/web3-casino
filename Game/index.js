@@ -351,11 +351,9 @@ class Game {
         if (!state) {
           this._onPause();
           window.commandManager.setMode("menu");
-        } else {
-          if (window.commandManager.getMode().includes("menu")) {
-            window.commandManager.setToPrevMode();
-            this._onResume();
-          }
+        } else if (window.commandManager.hasModeInStack("menu")) {
+          window.commandManager.popMode();
+          this._onResume();
         }
       },
     });

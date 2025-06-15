@@ -36,7 +36,6 @@ const Register = ({ onSuccess }) => {
       });
   };
 
-  console.log(window.t);
   return (
     <div className={styles.Auth}>
       <Heading size="lg">{t("auth.register.createYourNickname")}</Heading>
