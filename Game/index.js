@@ -8,7 +8,7 @@ import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
 import World from "./World";
 import PointerLock from "./PointerLock";
-import Neons from "./Neons";
+import NeonManager from "./NeonManager";
 import Raycaster from "./Raycaster";
 import InteractionHandler from "./InteractionHandler";
 import CamerasManager from "./CamerasManager";
@@ -211,8 +211,8 @@ class Game {
     this.renderer.render();
   }
 
-  initNeons() {
-    this.neonsManager = new Neons();
+  initNeonManager() {
+    this.neonManager = new NeonManager();
   }
 
   initUpdater() {
@@ -225,7 +225,7 @@ class Game {
     this.deltaUpdater.add(this.player.update.bind(this.player));
     this.deltaUpdater.add(this.players.update.bind(this.players));
     this.deltaUpdater.add(
-      this.neonsManager.update.bind(this.neonsManager),
+      this.neonManager.update.bind(this.neonManager),
       false
     );
     this.deltaUpdater.add(this.camerasManager.update.bind(this.camerasManager));
@@ -390,7 +390,7 @@ class Game {
     this.initStairs();
     this.initPlayer();
     this.initClient();
-    this.initNeons();
+    this.initNeonManager();
 
     this.initCommandsManager();
     this.addCommands();
