@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 
 class SlotMachineView {
   constructor({ object3d, onReelStart, onReelStop, onSpinStop }) {
@@ -18,70 +19,49 @@ class SlotMachineView {
     });
   }
 
+  isSpinning() {
+    return this.reelSpinningCount > 0;
+  }
+
   spin(combination) {
-    if (this.isSpinning) return;
+    if (this.isSpinning()) return;
+    this.reelSpinningCount = this.reels.length;
     const symbols = combination.split(",");
-    const additionalRotations = 2 * Math.PI * Math.floor(Math.random() * 2) + 3;
+    const duration = Math.floor(Math.random() * 4) + 2;
 
     this.reels.forEach(({ el }, i) => {
       const finalAngle =
-        additionalRotations +
-        // 2 * i * Math.PI +
-        (Math.PI / 10) * Number(symbols[i]);
-      this.reels[i].progress = i * -0.2;
+        Math.PI * 2 * duration + (Math.PI / 10) * Number(symbols[i]);
+
+      const startAngle = new THREE.Euler().setFromQuaternion(
+        el.quaternion,
+        "XYZ"
+      ).x;
+
+      const data = { angle: startAngle };
+
+      gsap.to(data, {
+        angle: finalAngle,
+        duration,
+        delay: i * 0.2,
+        ease: "back.inOut(0.5)",
+        onUpdate: () => {
+          el.rotation.x = data.angle;
+        },
+        onStart: () => {
+          this._onReelStart();
+        },
+        onComplete: () => {
+          this.reels[i].isSpinning = false;
+          this.reelSpinningCount--;
+          this._onReelStop();
+          if (this.reelSpinningCount === 0) {
+            this._onSpinStop?.();
+          }
+        },
+      });
+
       this.reels[i].isSpinning = true;
-      this.reels[i].hasStarted = false;
-      this.reels[i].finalAngle = finalAngle;
-      this.reels[i].startAngle = el.quaternion.angleTo(
-        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0)
-      );
-    });
-  }
-
-  getSpeed(progress) {
-    let speed;
-    if (progress < 0) {
-      speed = 0.3;
-    } else if (progress < 0.3) {
-      speed = THREE.MathUtils.lerp(0, 1, progress / 0.3);
-    } else if (progress < 0.6) {
-      speed = 1;
-    } else {
-      speed = THREE.MathUtils.lerp(1, 0, (progress - 0.6) / 0.4);
-    }
-
-    return Math.max(0.02, speed);
-  }
-
-  update(delta) {
-    this.reels.forEach((reel) => {
-      if (!reel.isSpinning) return;
-
-      reel.progress += delta * this.getSpeed(reel.progress);
-
-      if (reel.progress >= 1) {
-        reel.isSpinning = false;
-        this._onReelStop();
-        return;
-      }
-
-      const { el, startAngle, finalAngle, hasStarted } = reel;
-
-      if (!hasStarted && reel.progress >= 0) {
-        reel.hasStarted = true;
-        this._onReelStart();
-      }
-
-      const currentAngle = THREE.MathUtils.lerp(
-        startAngle,
-        finalAngle,
-        Math.min(Math.max(0, reel.progress), 1)
-      );
-      const quaternion = new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(1, 0, 0),
-        currentAngle
-      );
-      el.quaternion.copy(quaternion);
     });
   }
 }

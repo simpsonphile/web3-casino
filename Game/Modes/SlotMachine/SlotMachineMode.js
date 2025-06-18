@@ -1,7 +1,6 @@
 import SlotMachineCommands from "./SlotMachineCommands";
 import SlotMachineController from "./SlotMachineController";
 import SlotMachineInteraction from "./SlotMachineInteraction";
-// import SlotMachineView from "./SlotMachineView";
 
 class SlotMachineMode {
   constructor({ game }) {
@@ -16,10 +15,6 @@ class SlotMachineMode {
     });
     this.slotMachineCommands = new SlotMachineCommands(
       this.slotMachineController
-    );
-
-    window.deltaUpdater.add(
-      this.slotMachineController.update.bind(this.slotMachineController)
     );
   }
 }

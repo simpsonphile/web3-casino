@@ -1,7 +1,10 @@
+import { Howl } from "howler";
 import defaultSoundPaths from "./soundPaths";
 
 class SoundPlayer {
   constructor() {
+    this.sounds = {};
+    this.loadSounds();
     this.subscribeToVolumeChange();
   }
 
@@ -17,29 +20,31 @@ class SoundPlayer {
   }
 
   loadSounds(soundPaths = defaultSoundPaths) {
+    const volume = this.getCurrentVolume();
     this.sounds = {};
-    const currentVolume = this.getCurrentVolume();
+
     Object.entries(soundPaths).forEach(([name, path]) => {
-      this.sounds[name] = new Audio(path);
-      this.sounds[name].volume = currentVolume;
+      this.sounds[name] = new Howl({
+        src: [path],
+        volume,
+      });
     });
   }
 
   updateVolumes(newVolume) {
-    Object.values(this.sounds).forEach((audio) => {
-      audio.volume = newVolume;
+    Object.values(this.sounds).forEach((howl) => {
+      howl.volume(newVolume);
     });
   }
 
   playSound(name) {
-    if (this.sounds[name]) {
-      this.sounds[name].currentTime = 0; // Reset to start
-      this.sounds[name].play().catch((error) => {
-        console.error(`Error playing sound ${name}:`, error);
-      });
-    } else {
+    const sound = this.sounds[name];
+    if (!sound) {
       console.error(`Sound "${name}" not found!`);
+      return;
     }
+
+    sound.play();
   }
 }
 
