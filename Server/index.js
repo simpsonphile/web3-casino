@@ -53,6 +53,11 @@ const server = http.createServer(app);
 app.use("/colyseus", monitor());
 
 app.post("/auth", auth);
+
+app.get("/ping", async (req, res) => {
+  res.json({ status: "awake" });
+});
+
 app.get("/check-wallet-address", checkWalletAddress);
 app.post("/register-nickname", registerNickname);
 app.post("/log-out", logOut);

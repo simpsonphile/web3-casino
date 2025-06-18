@@ -5,6 +5,10 @@ class SlotMachineController {
     this.slotsStore = window.slotsStore.getState();
   }
 
+  getSlotStoreState() {
+    return window.slotsStore.getState();
+  }
+
   _onReelStart() {
     window.soundPlayer.playSound("reelStart");
   }
@@ -28,11 +32,6 @@ class SlotMachineController {
     this.view.spin(combination);
   }
 
-  update(delta) {
-    if (!this.view) return;
-    this.view.update(delta);
-  }
-
   leave() {
     this.slotsStore.setVisible(false);
   }
@@ -44,7 +43,7 @@ class SlotMachineController {
     this.slotsStore.increaseBet();
   }
   decreaseBet() {
-    if (this.slotsStore.bet > 0) {
+    if (this.getSlotStoreState().bet > 0) {
       this.slotsStore.decreaseBet();
     }
   }

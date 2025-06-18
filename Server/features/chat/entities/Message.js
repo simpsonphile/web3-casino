@@ -1,8 +1,9 @@
 import { Schema, defineTypes } from "@colyseus/schema";
 
 class Message extends Schema {
-  constructor({ nickname, value, type = "normal" }) {
+  constructor({ playerId, nickname, value, type = "normal" }) {
     super();
+    this.playerId = playerId;
     this.nickname = nickname;
     this.timestamp = new Date().getTime();
     this.value = value;
@@ -11,6 +12,7 @@ class Message extends Schema {
 }
 
 defineTypes(Message, {
+  playerId: "string",
   nickname: "string",
   timestamp: "number",
   value: "string",

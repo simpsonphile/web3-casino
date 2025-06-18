@@ -8,6 +8,8 @@ const apiClient = axios.create({
   },
 });
 
+export const ping = () => apiClient.get("/ping");
+
 export const auth = (address, signature, message) =>
   apiClient.post(`/auth`, {
     address,

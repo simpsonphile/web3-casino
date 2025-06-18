@@ -10,7 +10,7 @@ const KeyChangeButton = ({ children, isActive, onClick }) => {
       isActive={isActive}
       onClick={onClick}
     >
-      {isActive ? "press any key" : getReadableKey(children)}
+      {isActive ? t("menu.pressAnyKey") : getReadableKey(children)}
     </Button>
   );
 };

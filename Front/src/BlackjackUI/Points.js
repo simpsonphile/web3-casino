@@ -8,10 +8,14 @@ const Points = () => {
   return (
     <div>
       <Heading size="xl" color="white" textAlign="center">
-        Your current points: {countCardPoints(cards)}
+        {t("blackjackHandValue", {
+          value: countCardPoints(cards),
+        })}
       </Heading>
       <Heading size="xl" color="white" textAlign="center">
-        Dealer points: {countCardPoints(dealerCards)}
+        {t("blackjackDealerHandValue", {
+          value: countCardPoints(dealerCards),
+        })}
       </Heading>
     </div>
   );

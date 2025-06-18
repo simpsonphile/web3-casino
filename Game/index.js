@@ -8,8 +8,7 @@ import ModelsLoader from "./Loaders/ModelsLoader";
 import SoundLoader from "./Loaders/SoundLoader";
 import World from "./World";
 import PointerLock from "./PointerLock";
-import CommandManager from "./CommandManager";
-import Neons from "./Neons";
+import NeonManager from "./NeonManager";
 import Raycaster from "./Raycaster";
 import InteractionHandler from "./InteractionHandler";
 import CamerasManager from "./CamerasManager";
@@ -29,16 +28,14 @@ import ActorCamera from "./ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
-import { initStoreRegistry } from "./storeRegistry";
 import ProgressLoader from "./ProgressLoader";
 
 class Game {
-  constructor({ onPause, repo, showTooltip, hideTooltip }) {
+  constructor({ onPause, onResume, showTooltip, hideTooltip }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
-    this._repo = repo;
-    window.repo = this._repo;
+    this._onResume = onResume;
 
     this.showTooltip = showTooltip;
     this.hideTooltip = hideTooltip;
@@ -59,9 +56,11 @@ class Game {
     this.players = new Players();
     window.scene.add(this.players.playersGroup);
     window.cssScene.add(this.players.nicknamesGroup);
-    this._repo.add("players", RemotePlayers, {
+    window.cssScene.add(this.players.messagesGroup);
+    window.repo.add("players", RemotePlayers, {
       onMainPlayerData: (room, data) => {
-        const { position } = data;
+        const { id, position } = data;
+        this.player.id = id;
         this.player.moveTo(position);
       },
       onNewPlayer: (room, data) => {
@@ -70,17 +69,16 @@ class Game {
       },
       onDeletePlayer: (room, id) => this.players.deletePlayer(id),
       onFirstPlayersData: (room, allPlayers) => {
-        const { [room.sessionId]: _, ...players } = allPlayers;
+        const { [this.player.id]: _, ...players } = allPlayers;
         this.players.createNewPlayers(players);
       },
-      onPlayerData: (room, players) => this.players.updatePlayers(players),
+      onPlayersData: (room, players) => this.players.updatePlayers(players),
     });
 
-    this._repo.get("players").connect();
+    window.repo.get("players").connect();
   }
 
   resumeGame() {
-    this.commandManager.setToPrevMode();
     this.pointerLock.requestPointerLock();
   }
 
@@ -175,13 +173,13 @@ class Game {
         };
       },
       onAfterMovement: (position) => {
-        this._repo.get("players").updatePosition(position);
+        window.repo.get("players").updatePosition(position);
       },
       onRotation: (rotation) => {
-        this._repo.get("players").updateRotation(rotation);
+        window.repo.get("players").updateRotation(rotation);
       },
       onAnimation: (animation) => {
-        this._repo.get("players").updateAnimation(animation);
+        window.repo.get("players").updateAnimation(animation);
       },
     });
 
@@ -213,8 +211,8 @@ class Game {
     this.renderer.render();
   }
 
-  initNeons() {
-    this.neonsManager = new Neons();
+  initNeonManager() {
+    this.neonManager = new NeonManager();
   }
 
   initUpdater() {
@@ -227,7 +225,7 @@ class Game {
     this.deltaUpdater.add(this.player.update.bind(this.player));
     this.deltaUpdater.add(this.players.update.bind(this.players));
     this.deltaUpdater.add(
-      this.neonsManager.update.bind(this.neonsManager),
+      this.neonManager.update.bind(this.neonManager),
       false
     );
     this.deltaUpdater.add(this.camerasManager.update.bind(this.camerasManager));
@@ -286,16 +284,13 @@ class Game {
   }
 
   initCommandsManager() {
-    this.commandManager = new CommandManager();
-    window.commandManager = this.commandManager;
-
     window.camerasManager.setOnCameraTransitioning(() => {
-      this.commandManager.setMode("cameraTransition");
+      window.commandManager.setMode("cameraTransition");
     });
   }
 
   addCommands() {
-    this.commandManager.resetCommands();
+    window.commandManager.resetCommands();
 
     // todo move to modes
     new ZoomCommands();
@@ -309,10 +304,10 @@ class Game {
   initControls() {
     this.controls = new Controls({
       onKeyDown: (keys) => {
-        this.commandManager.executeDown(keys);
+        window.commandManager.executeDown(keys);
       },
       onKeyUp: (key) => {
-        this.commandManager.executeUp(key);
+        window.commandManager.executeUp(key);
       },
       onMouseMove: (event) => {
         this.player.rotateBy(event.movementX, event.movementY);
@@ -342,28 +337,38 @@ class Game {
       },
       onWheel: (dir) => {
         if (dir === "up") {
-          this.commandManager.executeDown("wheelUp");
+          window.commandManager.executeDown("wheelUp");
         } else {
-          this.commandManager.executeDown("wheelDown");
+          window.commandManager.executeDown("wheelDown");
         }
       },
     });
 
+    this.controls.setControlsEnabled(this.pointerLock.isPointerLocked());
+  }
+
+  initPointerLock() {
     this.pointerLock = new PointerLock({
-      domElement: this.renderer.domElement,
+      domElement: window.document.body,
       onChange: (state) => {
-        this.controls.setControlsEnabled.bind(this.controls)(state);
+        if (this.controls) {
+          this.controls.setControlsEnabled.bind(this.controls)(state);
+        }
         if (!state) {
           this._onPause();
-          this.commandManager.setMode("menu");
+          window.commandManager.setMode("menu");
+        } else if (window.commandManager.hasModeInStack("menu")) {
+          window.commandManager.popMode();
+          this._onResume();
         }
       },
     });
     this.pointerLock.init();
+    this.pointerLock.requestPointerLock();
   }
 
   async init() {
-    initStoreRegistry();
+    this.initPointerLock();
     this.initStats();
     this.initCamerasManager();
     this.initScene();
@@ -385,7 +390,7 @@ class Game {
     this.initStairs();
     this.initPlayer();
     this.initClient();
-    this.initNeons();
+    this.initNeonManager();
 
     this.initCommandsManager();
     this.addCommands();

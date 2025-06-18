@@ -28,6 +28,8 @@
     "ethers": "^6.13.4",
     "express": "^4.21.1",
     "gltfpack": "^0.22.0",
+    "gsap": "^3.13.0",
+    "howler": "^2.2.4",
     "html-webpack-plugin": "^5.6.3",
     "jsonwebtoken": "^9.0.2",
     "meshoptimizer": "^0.22.0",

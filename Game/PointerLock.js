@@ -4,12 +4,19 @@ class PointerLock {
     this.onChange = onChange;
   }
 
+  _canRequestLock() {
+    const now = performance.now();
+
+    return !(
+      this.lastPointerLockActivationTimestamp !== null &&
+      now - this.lastPointerLockActivationTimestamp < 1000
+    );
+  }
+
   init() {
     document.addEventListener("click", async () => {
       if (window.commandManager.checkIfModeEnabled("menu")) return;
-      await this.domElement.requestPointerLock();
-      this.controlsEnabled = true;
-      this.onChange(true);
+      this.requestPointerLock();
     });
 
     document.addEventListener(
@@ -26,14 +33,8 @@ class PointerLock {
   }
 
   requestPointerLock() {
-    if (this.domElement.requestPointerLock) {
-      this.domElement.requestPointerLock();
-    } else if (this.domElement.msRequestPointerLock) {
-      // For Internet Explorer
-      this.domElement.msRequestPointerLock();
-    }
-
-    this.onChange(true);
+    if (!this._canRequestLock()) return;
+    this.domElement.requestPointerLock();
   }
 
   exitPointerLock() {
@@ -45,13 +46,18 @@ class PointerLock {
     }
   }
 
+  isPointerLocked() {
+    return document.pointerLockElement === this.domElement;
+  }
+
   onPointerLockChange() {
-    if (document.pointerLockElement !== this.domElement) {
-      this.controlsEnabled = false;
-      this.onChange(false);
+    this.lastPointerLockActivationTimestamp = performance.now();
+    if (!this.isPointerLocked()) {
       document.body.classList.remove("cursor-locked");
+      this.onChange(false);
     } else {
       document.body.classList.add("cursor-locked");
+      this.onChange(true);
     }
   }
 

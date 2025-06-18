@@ -62,6 +62,12 @@ export default defineConfig([
     },
   },
   {
+    files: ["Front/**/*.js", "Game/**/*.js"],
+    globals: {
+      t: "readonly",
+    },
+  },
+  {
     files: ["Contracts/test/**/*.js"],
     languageOptions: {
       globals: {

@@ -15,7 +15,17 @@ const Chat = ({ onSend, messages }) => {
         !!keyConfig &&
         keyConfig.get().navigation.showChat.includes(event.code)
       ) {
-        setIsVisible((prev) => !prev);
+        setIsVisible((prev) => {
+          if (prev && window.commandManager.checkIfModeEnabled("chat")) {
+            window.commandManager.popMode();
+            return !prev;
+          } else if (!window.commandManager.hasModeInStack("chat")) {
+            window.commandManager.setMode("chat");
+            return !prev;
+          }
+
+          return prev;
+        });
         if (!isVisible) {
           setTimeout(() => {
             textRef.current.focus();

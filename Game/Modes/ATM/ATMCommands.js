@@ -2,7 +2,6 @@ class ATMCommands {
   constructor({ controller }) {
     this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
     this.atmStore = window.atmStore.getState();
-    console.log(this.atmStore);
     this.controller = controller;
 
     this.addCommands();

@@ -5,17 +5,24 @@ class ATMInteraction {
     this.game = game;
     this.registerInteractions();
     this.atmStore = window.atmStore.getState();
+    this.userStore = window.userStore.getState();
+  }
+
+  isAllowed() {
+    return !this.userStore.asGuest;
   }
 
   onMouseOver(data) {
     if (data.distance > 5) return;
-    if (!this.game.commandManager.checkIfModeEnabled("movement")) return;
+    if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip("use?");
+    this.game.showTooltip(
+      this.isAllowed() ? t("casinoKioskHover") : t("casinoKioskHoverGuest")
+    );
   }
 
   onClick(data) {
-    if (data.distance > 5) return;
+    if (data.distance > 5 || !this.isAllowed()) return;
 
     const obj = data.object.parent;
 
@@ -26,7 +33,7 @@ class ATMInteraction {
     newPosition.y = 0;
     this.game.player.moveTo(newPosition);
 
-    this.game.commandManager.setMode(["atm"]);
+    window.commandManager.setMode(["atm"]);
     this.game.interactionHandler.setState(false);
     this.atmStore.setIsVisible(true);
   }

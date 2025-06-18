@@ -9,9 +9,9 @@ class SlotMachineInteraction {
 
   onMouseOver(data) {
     if (data.distance > 6) return;
-    if (!this.game.commandManager.checkIfModeEnabled("movement")) return;
+    if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip("wanna play slots?");
+    this.game.showTooltip(t("slotsMachineHover"));
   }
 
   getObj(obj) {
@@ -26,7 +26,7 @@ class SlotMachineInteraction {
     const seatPos = new THREE.Vector3(0, 0, -1.5);
     seatPos.applyMatrix4(obj.matrixWorld);
 
-    this.game.commandManager.setMode(["slotMachine"]);
+    window.commandManager.setMode(["slotMachine"]);
 
     this.game.player.switchCameraMode("first-person");
     seatPos.y = 0;

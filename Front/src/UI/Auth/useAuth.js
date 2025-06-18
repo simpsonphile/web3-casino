@@ -1,19 +1,19 @@
 import { useAccount, useSignMessage } from "wagmi";
 import { auth, checkIfAddressExist, logOut } from "../../api";
 import { useEffect, useState } from "react";
-import { useUserContext } from "../../context/UserContext";
+import { useUserStore } from "../../stores/userStore";
 
 const message = "auth me";
 
 const useAuth = () => {
   const [wasConnected, setWasConnected] = useState(false);
   const { isConnected, address } = useAccount();
-  const [step, setStep] = useState("Start");
+  const [step, setStep] = useState("Pending");
   const [updateRefreshKey, setUpdateRefreshKey] = useState(0);
 
   const { signMessage, data: signature } = useSignMessage();
 
-  const { dispatch } = useUserContext();
+  const { setUser } = useUserStore();
 
   const refresh = () => setUpdateRefreshKey((prev) => prev + 1);
 
@@ -29,6 +29,12 @@ const useAuth = () => {
   }, [isConnected]);
 
   useEffect(() => {
+    if (!isConnected && !wasConnected) {
+      setStep("Start");
+    }
+  }, [isConnected, wasConnected]);
+
+  useEffect(() => {
     if (!isConnected) return;
     checkIfAddressExist()
       .then((res) => {
@@ -37,10 +43,10 @@ const useAuth = () => {
 
         setStep(type);
 
-        if (user) dispatch({ type: "setUser", payload: user });
+        if (user) setUser(user);
       })
       .catch(() => {
-        signMessage({ message });
+        setStep("SignWallet");
       });
   }, [address, updateRefreshKey, isConnected]);
 

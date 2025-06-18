@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, Fragment } from "react";
 import Button from "../Button";
 import styles from "./Menu.module.scss";
 import Tabs from "./Tabs";
-import { Heading, HStack } from "@chakra-ui/react";
+import { ButtonGroup, Heading } from "@chakra-ui/react";
 import KeyChangeButton from "./KeyChangeButton";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
 
@@ -64,7 +64,7 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
   }, [current, JSON.stringify(state)]);
 
   return (
-    <Fragment ref={ref}>
+    <div ref={ref} style={{ display: "contents" }}>
       <Tabs
         variant="enclosed"
         defaultValue={Object.keys(state)[0]}
@@ -94,13 +94,13 @@ const KeyConfigMenu = ({ setCurrentMenu, onKeyConfigUpdate }) => {
           )),
         }))}
       />
-      <HStack>
+      <ButtonGroup>
         <Button variant="subtle" onClick={() => setCurrentMenu("main")}>
-          Back
+          {t("menu.back")}
         </Button>
-        <Button onClick={resetKeys}>Reset to default</Button>
-      </HStack>
-    </Fragment>
+        <Button onClick={resetKeys}>{t("menu.resetToDefault")}</Button>
+      </ButtonGroup>
+    </div>
   );
 };
 

@@ -16,7 +16,9 @@ const NewPlayerJoined = () => {
     return (
       <div className={styles.NewPlayerJoined}>
         <Heading color="white" size="lg" textAlign="center">
-          {newPlayer} joined the game!
+          {t("blackjackPlayerJoin", {
+            playerName: newPlayer,
+          })}
         </Heading>
       </div>
     );

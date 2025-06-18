@@ -9,36 +9,41 @@ class ChatState extends Schema {
     this.nextId = 0;
   }
 
-  getLastMessage() {
-    return this.messages[this.messages.length - 1];
+  getUser(sessionId) {
+    const user = this.users[sessionId];
+
+    if (user.id) return user;
+
+    console.error(`no user with sessionId ${sessionId}`);
   }
 
-  getNickname(id) {
-    const user = this.users[id];
-
-    if (user.nickname) return user.nickname;
-
-    console.error(`no user or user with id ${id} has no nickname`);
-  }
-
-  addMessage(clientId, { value }) {
+  addMessage(sessionId, { value }) {
     if (!value) return;
-    const nickname = this.getNickname(clientId);
-    if (!nickname) return;
-    this.messages.push(new Message({ nickname, value }));
+    const { id, nickname } = this.getUser(sessionId) || {};
+    if (!id) return;
+    const message = new Message({ playerId: id, nickname, value });
+    this.messages.push(message);
+
+    return message;
   }
 
-  addJoinMessage(clientId) {
-    const nickname = this.getNickname(clientId);
-    this.messages.push(new Message({ nickname, type: "join" }));
+  addJoinMessage(sessionId) {
+    const { id, nickname } = this.getUser(sessionId) || {};
+    const message = new Message({ playerId: id, nickname, type: "join" });
+    this.messages.push(message);
+
+    return message;
   }
 
-  addUser(id, nickname) {
-    this.users[id] = new ChatUser({ nickname });
+  addUser(sessionId, user) {
+    this.users[sessionId] = new ChatUser({
+      nickname: user.nickname,
+      id: user.id,
+    });
   }
 
   removeUser(id) {
-    delete this.users[id]; // todo .remove
+    delete this.users[id];
   }
 }
 
