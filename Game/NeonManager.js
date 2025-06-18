@@ -33,22 +33,59 @@ class NeonManager {
   }
 
   addNeon(child) {
+    child.material = child.material.clone();
+
     this.neons.push({
       object: child,
       startingEmissiveIntensity: child.material.emissiveIntensity,
       id: child.id,
       offset: Math.random() * 100 * Math.PI,
       speed: Math.random(),
+      flickerMult: Math.random() * 0.8 + 0.6,
+      blinkTimer: 0,
+      blinkCooldown: Math.random() * 10 + 5,
+      isBlinking: false,
+      blinkDuration: 0.1 + Math.random() * 0.2,
+      shouldBlink: Math.random() < 0.15,
     });
   }
 
   update(timestamp) {
     this.neons.forEach((neon, i) => {
-      const startingIntensity = neon.startingEmissiveIntensity;
+      const {
+        object,
+        startingEmissiveIntensity,
+        offset,
+        speed,
+        flickerMult,
+        isBlinking,
+        blinkCooldown,
+        blinkDuration,
+        shouldBlink,
+      } = neon;
+      const startingIntensity = startingEmissiveIntensity;
       const min = startingIntensity * 0.3;
       const max = startingIntensity * 1.1;
-      const offset = neon.offset;
-      const speed = neon.speed;
+
+      if (shouldBlink) {
+        neon.blinkTimer += 1 / 60;
+
+        if (!isBlinking && neon.blinkTimer > blinkCooldown) {
+          neon.isBlinking = true;
+          neon.blinkTimer = 0;
+        }
+
+        if (isBlinking && neon.blinkTimer > blinkDuration) {
+          neon.isBlinking = false;
+          neon.blinkTimer = 0;
+          neon.blinkCooldown = Math.random() * 10 + 5; // reset cooldown
+        }
+
+        if (neon.isBlinking) {
+          object.material.emissiveIntensity = 0;
+          return;
+        }
+      }
 
       const base = getBasePulse(timestamp * speed, offset);
       const baseIntensity = min + (max - min) * base;
@@ -61,7 +98,8 @@ class NeonManager {
       const jitter =
         Math.random() < 0.02 ? (Math.random() - 0.5) * 0.6 * max : 0;
 
-      neon.object.material.emissiveIntensity = baseIntensity + flicker + jitter;
+      object.material.emissiveIntensity =
+        baseIntensity + flicker * flickerMult + jitter;
     });
   }
 }
