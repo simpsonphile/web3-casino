@@ -2,10 +2,17 @@ import * as THREE from "three";
 
 const POSSIBLE_MODES = ["third-person", "first-person", "top-down"];
 
+const FOV_MODE_MAP = {
+  "third-person": 75,
+  "first-person": 45,
+  "top-down": 75,
+};
+
 class ActorCamera extends THREE.PerspectiveCamera {
-  constructor({ fov, aspect, near, far, target }) {
-    super(fov, aspect, near, far);
+  constructor({ aspect, near, far, target }) {
+    super(FOV_MODE_MAP["third-person"], aspect, near, far);
     this.target = target;
+    this.layers.enable(1);
 
     this.yaw = 0;
     this.pitch = 0;
@@ -14,7 +21,7 @@ class ActorCamera extends THREE.PerspectiveCamera {
     this.yawQuat = new THREE.Quaternion();
     this.mouseSensitivity = 0.002;
 
-    this.firstPersonOffset = new THREE.Vector3(0, 1.8, -0.2);
+    this.firstPersonOffset = new THREE.Vector3(0, 0, 0);
     this.thirdPersonOffset = new THREE.Vector3(0, 2, 4);
     this.topDownOffset = new THREE.Vector3(0, 3.5, 0);
 
@@ -27,6 +34,9 @@ class ActorCamera extends THREE.PerspectiveCamera {
     }
 
     this.mode = newMode;
+
+    this.fov = FOV_MODE_MAP[newMode];
+    this.updateProjectionMatrix();
   }
 
   updateCameraRotation(deltaX, deltaY) {
@@ -48,10 +58,13 @@ class ActorCamera extends THREE.PerspectiveCamera {
   positionCamera() {
     if (this.mode === "third-person") {
       this.positionCameraBehindActor();
+      this.target.visible = true;
     } else if (this.mode === "first-person") {
       this.positionCameraFromActorEyes();
+      this.target.visible = false;
     } else if (this.mode === "top-down") {
       this.positionCameraAtTopOfActor();
+      this.target.visible = true;
     }
   }
 
@@ -68,11 +81,11 @@ class ActorCamera extends THREE.PerspectiveCamera {
   }
 
   positionCameraFromActorEyes() {
-    // works shity
     const cameraOffset = this.firstPersonOffset.clone();
-    cameraOffset.applyQuaternion(this.rotationQuat); // Align with player's orientation
-    this.position.copy(this.target.position).add(cameraOffset);
-    this.quaternion.copy(this.rotationQuat);
+    cameraOffset.applyQuaternion(this.rotationQuat);
+    const newPos = this.target.position.clone();
+    newPos.add(new THREE.Vector3(0, 1.6, 0));
+    this.position.copy(newPos).add(cameraOffset);
   }
 }
 

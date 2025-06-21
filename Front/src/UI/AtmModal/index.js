@@ -33,6 +33,7 @@ const AtmModal = () => {
     }
   };
 
+  // make it dark
   return (
     <Modal
       title={getModalTitle()}

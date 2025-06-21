@@ -135,10 +135,9 @@ class Game {
 
   initActorCamera() {
     this.actorCamera = new ActorCamera({
-      fov: 70,
       aspect: this.width / this.height,
       near: 0.01,
-      far: 1024,
+      far: 100,
     });
 
     window.camerasManager.addCamera("thirdPerson", this.actorCamera);
@@ -146,7 +145,7 @@ class Game {
 
   initAudioListener() {
     this.audioListener = new THREE.AudioListener();
-    this.camerasManager.getCamera("thirdPerson").add(this.audioListener);
+    window.player.model.add(this.audioListener);
     window.audioListener = this.audioListener;
   }
 
@@ -374,7 +373,6 @@ class Game {
     this.initScene();
     this.initCSSScene();
     this.initActorCamera();
-    this.initAudioListener();
     this.initZoomCamera();
     this.initUpdater();
     this.initCSSRenderer();
@@ -385,10 +383,11 @@ class Game {
 
     this.initInteractionHandler();
 
+    this.initPlayer();
+    this.initAudioListener();
     this.initWorld();
     this.initCollisions();
     this.initStairs();
-    this.initPlayer();
     this.initClient();
     this.initNeonManager();
 

@@ -13,19 +13,7 @@ class SlotMachineCommands {
       this.keys.slotMachine.spin,
       null,
       () => {
-        const getRandomBetween = (min, max) => {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
-
-        const slots = [
-          getRandomBetween(0, 14),
-          getRandomBetween(0, 14),
-          getRandomBetween(0, 14),
-          getRandomBetween(0, 14),
-          getRandomBetween(0, 14),
-        ];
-
-        this.slotMachineController.spin(slots.join(","));
+        this.slotMachineController.spinRand();
       }
     );
 
@@ -45,6 +33,7 @@ class SlotMachineCommands {
       "slotMachine",
       "increaseBet",
       this.keys.slotMachine.increaseBet,
+      null,
       () => {
         this.slotMachineController.increaseBet();
       }
@@ -53,6 +42,7 @@ class SlotMachineCommands {
       "slotMachine",
       "decreaseBet",
       this.keys.slotMachine.decreaseBet,
+      null,
       () => {
         this.slotMachineController.decreaseBet();
       }

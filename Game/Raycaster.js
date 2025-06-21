@@ -4,6 +4,7 @@ class Raycaster {
   constructor() {
     this.pointer = new THREE.Vector2(0, 0);
     this.raycaster = new THREE.Raycaster();
+    this.raycaster.layers.set(0);
   }
 
   getInstancedObjectPosition(intersect) {

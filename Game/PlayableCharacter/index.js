@@ -11,6 +11,7 @@ class PlayableCharacter {
     onAfterMovement,
   }) {
     this.model = model;
+    this.model.traverse((child) => child.layers.set(2));
     this._animation = new PlayableCharacterAnimation({
       model,
       onAnimation,

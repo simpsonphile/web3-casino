@@ -5,7 +5,7 @@ import lightmap from "@Assets/lightmap.png";
 class World {
   constructor() {
     this.loadLevel();
-    this.applyLightmap();
+    // this.applyLightmap();
     this.applyLight();
   }
 
