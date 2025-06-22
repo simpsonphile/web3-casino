@@ -4,7 +4,7 @@ const POSSIBLE_MODES = ["third-person", "first-person", "top-down"];
 
 const FOV_MODE_MAP = {
   "third-person": 75,
-  "first-person": 45,
+  "first-person": 60,
   "top-down": 75,
 };
 

@@ -4,30 +4,17 @@ import Chip from "../../Models/Chip";
 import { getChipsForBet, groupChips } from "./helpers";
 import BusinessMan from "../../Models/BusinessMan";
 
-const slots = [
-  new THREE.Vector3(-0.14, 0.1, 0.85),
-  new THREE.Vector3(0.32, 0.1, 0.54),
-  new THREE.Vector3(0.53, 0.1, 0.017),
-  new THREE.Vector3(0.39, 0.1, -0.53),
-  new THREE.Vector3(-0.03, 0.1, -0.88),
-];
-
-const slotRotations = [
-  new THREE.Euler(0, 0.47, 0),
-  new THREE.Euler(0, 0.94, 0),
-  new THREE.Euler(0, 1.57, 0),
-  new THREE.Euler(-Math.PI, 0.94, -Math.PI),
-  new THREE.Euler(-Math.PI, 0.47, -Math.PI),
-];
+import { seatPositions, seatRotations } from "./seatTransforms";
 
 class BlackjackView {
   constructor({ object3d }) {
     this.object3d = object3d;
+    this.worldPosition = this.getWorldPosition();
     this.group = new THREE.Group();
     this.height = this.object3d.getHeight();
 
     this.players = {};
-    this.playersOrder = [];
+    this.playerSeats = [null, null, null, null, null];
 
     this.dealerHand = [];
     this.dealerMeshGroup = new THREE.Group();
@@ -40,7 +27,17 @@ class BlackjackView {
     this._prepareNpc();
   }
 
-  createPlayer(id) {
+  getWorldPosition() {
+    const worldPosition = new THREE.Vector3();
+    this.object3d.getWorldPosition(worldPosition);
+    return worldPosition;
+  }
+
+  canJoinTable() {
+    return this.playerSeats.map(Boolean).some((val) => val === false);
+  }
+
+  preparePlayer(id) {
     const meshGroup = new THREE.Group();
     this.players[id] = {
       bet: 0,
@@ -48,17 +45,35 @@ class BlackjackView {
       meshGroup,
     };
 
-    if (!this.playersOrder.includes(id)) {
-      this.playersOrder.push(id);
-    }
-    const index = this.playersOrder.indexOf(id);
-    const pos = slots[index];
-    const rotation = slotRotations[index];
+    const index = this.playerSeats.indexOf(id);
+    const pos = seatPositions[index];
+    const rotation = seatRotations[index];
     const quat = new THREE.Quaternion().setFromEuler(rotation);
     meshGroup.position.copy(pos);
     meshGroup.applyQuaternion(quat);
     meshGroup.applyMatrix4(this.object3d.matrixWorld);
     this.group.add(meshGroup);
+  }
+
+  seatPlayerOnFirstFreeSeat(id) {
+    const index = this.playerSeats.findIndex((seat) => seat === null);
+
+    if (index !== -1) this.playerSeats[index] = id;
+  }
+
+  createPlayer(id) {
+    if (!this.canJoinTable()) {
+      console.error("attempt to create player while table is full");
+      return;
+    }
+
+    if (this.playerSeats.includes(id)) {
+      console.error("attempt to create player that already exist in table");
+      return;
+    }
+
+    this.seatPlayerOnFirstFreeSeat(id);
+    this.preparePlayer(id);
   }
 
   cleanPlayerMeshGroup(id) {
@@ -69,7 +84,7 @@ class BlackjackView {
 
   resetPlayer(id) {
     this.cleanPlayerMeshGroup(id);
-    this.createPlayer(id);
+    this.preparePlayer(id);
   }
 
   resetDealer() {
@@ -81,7 +96,7 @@ class BlackjackView {
   }
 
   resetTable() {
-    this.playersOrder.forEach((id) => {
+    this.playerSeats.filter(Boolean).forEach((id) => {
       this.resetPlayer(id);
     });
     this.resetDealer();
@@ -96,14 +111,14 @@ class BlackjackView {
     this.npc.position.copy(v);
 
     this.npc.runIdleAnimation();
-    this.npc.lookAtY(this.object3d.position);
+    this.npc.lookAtY(this.worldPosition);
     this.group.add(this.npc);
 
     window.deltaUpdater.add(this.npc.updateMixer.bind(this.npc));
   }
 
-  createCard(cardName, index) {
-    const card = new Card({ name: cardName });
+  createCard(name, index) {
+    const card = new Card({ name });
     card.position.x -= index * 0.02;
     card.position.z += index * 0.02;
     card.position.y -= index * 0.0001;
@@ -160,14 +175,14 @@ class BlackjackView {
     const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(quat);
     const movedPos = meshGroup.position
       .clone()
-      .add(forward.multiplyScalar(1.2));
+      .add(forward.multiplyScalar(0.4));
     movedPos.y -= this.height;
     return movedPos;
   }
 
   deletePlayer(id) {
-    const index = this.playersOrder.indexOf(id);
-    this.playersOrder.splice(index, 1);
+    const index = this.playerSeats.indexOf(id);
+    this.playerSeats[index] = null;
 
     this.cleanPlayerMeshGroup(id);
 

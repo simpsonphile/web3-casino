@@ -23,6 +23,21 @@ class BlackjackController {
     return this.views[this.currentViewName];
   }
 
+  getView(name) {
+    return this.views[name];
+  }
+
+  canJoinTable(name) {
+    const view = this.getView(name);
+
+    if (!view) {
+      console.error(`no such table name: ${name}`);
+      return;
+    }
+
+    return view.canJoinTable();
+  }
+
   join({ objectName, roomId, afterJoin }) {
     this.currentViewName = objectName;
     this._afterJoin = afterJoin;
@@ -183,9 +198,11 @@ class BlackjackController {
   hit() {
     this.getRemote().hit();
   }
+
   stand() {
     this.getRemote().stand();
   }
+
   double() {
     this.getRemote().double();
   }

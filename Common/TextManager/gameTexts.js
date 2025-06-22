@@ -1,6 +1,7 @@
 const gameTexts = {
   en: {
     blackjackTableHover: "Join Blackjack Table",
+    blackjackTableHoverFull: "table is full",
     blackjackPlayerJoin: "{newPlayer} joined the game!",
     blackjackHandValue: "Your hand value: {value}",
     blackjackDealerHandValue: "Dealer hand value: {value}",
