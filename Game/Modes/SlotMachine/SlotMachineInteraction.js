@@ -11,7 +11,7 @@ class SlotMachineInteraction {
     if (data.distance > 6) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip(t("slotsMachineHover"));
+    window.showTooltip(t("slotsMachineHover"));
   }
 
   getObj(obj) {
@@ -37,7 +37,7 @@ class SlotMachineInteraction {
 
   onMouseOverSpin() {
     if (!window.commandManager.checkIfModeEnabled("slotMachine")) return;
-    this.game.showTooltip("click to spin");
+    window.showTooltip("click to spin");
   }
 
   onClickSpin() {
@@ -47,7 +47,7 @@ class SlotMachineInteraction {
 
   onMouseOverAutoSpin() {
     if (!window.commandManager.checkIfModeEnabled("slotMachine")) return;
-    this.game.showTooltip("click to auto spin");
+    window.showTooltip("click to auto spin");
   }
 
   onClickAutoSpin() {
@@ -57,7 +57,7 @@ class SlotMachineInteraction {
 
   onMouseOverRaise() {
     if (!window.commandManager.checkIfModeEnabled("slotMachine")) return;
-    this.game.showTooltip("click to raise bet");
+    window.showTooltip("click to raise bet");
   }
 
   onClickRaise() {
@@ -67,7 +67,7 @@ class SlotMachineInteraction {
 
   onMouseOverDecrease() {
     if (!window.commandManager.checkIfModeEnabled("slotMachine")) return;
-    this.game.showTooltip("click to decrease bet");
+    window.showTooltip("click to decrease bet");
   }
 
   onClickDecrease() {

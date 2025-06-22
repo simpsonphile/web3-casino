@@ -24,8 +24,6 @@ const GameContainer = () => {
   const [isGameInit, setIsGameInit] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(true);
   const { keyConfig } = useKeyConfigStore();
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipText, setTooltipText] = useState("");
   const [isChatInit, setIsChatInit] = useState(false);
   const { messages, addMessage } = useMessagesStore();
 
@@ -53,14 +51,6 @@ const GameContainer = () => {
       const game = new Game({
         onPause: () => setIsMenuVisible(true),
         onResume: () => setIsMenuVisible(false),
-        showTooltip: (text) => {
-          setTooltipVisible(true);
-          setTooltipText(text);
-        },
-        hideTooltip: () => {
-          setTooltipVisible(false);
-          setTooltipText("");
-        },
       });
       setGameInstance(game);
     };
@@ -125,7 +115,7 @@ const GameContainer = () => {
 
       <AtmModal />
 
-      {tooltipVisible && <GameTooltip>{tooltipText}</GameTooltip>}
+      <GameTooltip />
 
       <BlackjackUI />
       <SlotsUI />

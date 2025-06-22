@@ -31,14 +31,11 @@ import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import ProgressLoader from "./ProgressLoader";
 
 class Game {
-  constructor({ onPause, onResume, showTooltip, hideTooltip }) {
+  constructor({ onPause, onResume }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
     this._onResume = onResume;
-
-    this.showTooltip = showTooltip;
-    this.hideTooltip = hideTooltip;
   }
 
   initCSSRenderer() {
@@ -320,7 +317,7 @@ class Game {
             intersect
           );
         } else {
-          this.hideTooltip();
+          window.hideTooltip();
         }
       },
       onMouseClick: () => {
@@ -332,7 +329,7 @@ class Game {
           "mouseClick",
           intersect
         );
-        this.hideTooltip();
+        window.hideTooltip();
       },
       onWheel: (dir) => {
         if (dir === "up") {

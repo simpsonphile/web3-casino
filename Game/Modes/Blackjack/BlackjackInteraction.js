@@ -17,7 +17,7 @@ class BlackjackInteraction {
     const obj = this.getObj(data.object);
     const canJoin = this.controller.canJoinTable(obj.name);
 
-    this.game.showTooltip(
+    window.showTooltip(
       canJoin ? t("blackjackTableHover") : t("blackjackTableHoverFull")
     );
   }
