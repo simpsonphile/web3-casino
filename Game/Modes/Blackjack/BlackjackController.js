@@ -208,7 +208,9 @@ class BlackjackController {
   }
 
   leave() {
-    this.getCurrentView().deletePlayer(this.getRemote().sessionId);
+    const view = this.getCurrentView();
+    view.deletePlayer(this.getRemote().sessionId);
+    view.resetTable();
     this.getRemote().disconnect();
     this.blackjackStore.setVisible(false);
   }

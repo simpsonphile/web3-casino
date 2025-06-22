@@ -78,7 +78,6 @@ class BlackjackView {
 
   cleanPlayerMeshGroup(id) {
     const { meshGroup } = this.players[id];
-
     this.group.remove(meshGroup);
   }
 
