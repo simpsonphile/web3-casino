@@ -40,10 +40,13 @@ class ActorCamera extends THREE.PerspectiveCamera {
   }
 
   updateCameraRotation(deltaX, deltaY) {
+    const minPitch = THREE.MathUtils.degToRad(-60);
+    const maxPitch = THREE.MathUtils.degToRad(15);
+
     this.yaw -= deltaX * this.mouseSensitivity;
     this.pitch -= deltaY * this.mouseSensitivity;
 
-    this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
+    this.pitch = Math.max(minPitch, Math.min(maxPitch, this.pitch));
 
     this.yawQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
     this.pitchQuat.setFromAxisAngle(new THREE.Vector3(1, 0, 0), this.pitch);
