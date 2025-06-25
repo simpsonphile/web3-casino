@@ -20,23 +20,36 @@ class Collisions {
   // Method to add a Box3 to the appropriate segment
   add(object) {
     if (!(object instanceof THREE.Object3D)) {
-      console.warn("Added object is not an instance of THREE.Box3");
+      console.warn("Added object is not an instance of THREE.Object3D");
       return;
     }
 
     const box = new THREE.Box3().setFromObject(object);
+    const min = box.min;
+    const max = box.max;
 
-    // Calculate segment coordinates for the box's center
-    const center = box.getCenter(new THREE.Vector3());
-    const segmentKey = this.getSegmentCoordinates(center);
+    const segSize = this.segmentSize;
 
-    // Initialize the segment if it doesn't exist
-    if (!this.segments.has(segmentKey)) {
-      this.segments.set(segmentKey, []);
+    const minX = Math.floor(min.x / segSize);
+    const maxX = Math.floor(max.x / segSize);
+    const minY = Math.floor(min.y / segSize);
+    const maxY = Math.floor(max.y / segSize);
+    const minZ = Math.floor(min.z / segSize);
+    const maxZ = Math.floor(max.z / segSize);
+
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        for (let z = minZ; z <= maxZ; z++) {
+          const key = this.getSegmentCoordinates(
+            new THREE.Vector3(x * segSize, y * segSize, z * segSize)
+          );
+          if (!this.segments.has(key)) {
+            this.segments.set(key, []);
+          }
+          this.segments.get(key).push(box);
+        }
+      }
     }
-
-    // Add the box to the appropriate segment
-    this.segments.get(segmentKey).push(box);
   }
 
   // Method to check for collisions with the given object
