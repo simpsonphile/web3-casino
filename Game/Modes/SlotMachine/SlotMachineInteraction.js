@@ -21,6 +21,7 @@ class SlotMachineInteraction {
 
   onClick(data) {
     if (data.distance > 6) return;
+    if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
     const obj = this.getObj(data.object);
     const seatPos = new THREE.Vector3(0, 0, -0.5);
