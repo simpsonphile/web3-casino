@@ -1,26 +1,25 @@
-import NumericKeypad from "./NumericKeypad";
 import { useEffect, useState } from "react";
 import {
   useReadCasinoGetBalance,
+  useReadCasinoNativeToChipRate,
   useWriteCasinoWithdraw,
 } from "../../../../Contract-hooks/generated";
 import { parseEther, formatEther } from "viem";
-import { Grid, GridItem } from "@chakra-ui/react";
-import Button from "../Button";
-import KeyboardKey from "../KeyboardKey";
-import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import { Field, Grid, GridItem } from "@chakra-ui/react";
 
 import { toaster } from "../toaster";
+import InputToken from "../InputToken";
+import InputWithCurrency from "../InputWithCurrency";
+import useKeyPress from "./useKeyPress";
+import Footer from "./Footer";
 
 const Withdraw = () => {
-  const { keyConfig } = useKeyConfigStore();
-
   const [value, setValue] = useState("0");
-
-  const { data } = useReadCasinoGetBalance();
+  const { data: balance } = useReadCasinoGetBalance();
+  const { data: rate } = useReadCasinoNativeToChipRate();
+  const isLoaded = typeof balance === "bigint" && typeof rate === "bigint";
 
   const { writeContract, isSuccess } = useWriteCasinoWithdraw();
-
   const send = () => writeContract({ args: [parseEther(value, "0")] });
 
   useEffect(() => {
@@ -33,25 +32,36 @@ const Withdraw = () => {
     }
   }, [isSuccess]);
 
+  useKeyPress({
+    value,
+    onEnter: send,
+    onChange: setValue,
+    max: formatEther(balance),
+    hasDecimals: false,
+  });
+
+  if (!isLoaded) return null;
+  const valueInCurrency = value * Number(formatEther(rate));
+
   return (
     <Grid gap={2}>
-      <GridItem colSpan="2">
-        <NumericKeypad
-          max={data ? formatEther(data) : 0}
-          value={value}
-          onChange={setValue}
-          onEnter={send}
-          isWithdraw
-        />
+      <GridItem>
+        <Field.Root>
+          <Field.Label>You give (max: {formatEther(balance)})</Field.Label>
+          <InputToken value={value} readOnly></InputToken>
+        </Field.Root>
       </GridItem>
 
-      <Button variant="subtle">
-        Exit <KeyboardKey code={keyConfig?.get?.()?.atm?.exit?.[0]} />
-      </Button>
+      <GridItem>
+        <Field.Root>
+          <Field.Label>You get</Field.Label>
+          <InputWithCurrency value={valueInCurrency} readOnly />
+        </Field.Root>
+      </GridItem>
 
-      <Button>
-        Ok <KeyboardKey code={keyConfig?.get?.()?.atm?.accept?.[0]} />
-      </Button>
+      <GridItem>
+        <Footer />
+      </GridItem>
     </Grid>
   );
 };

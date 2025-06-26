@@ -1,4 +1,4 @@
-import { Grid, Heading } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import Button from "../Button";
 import KeyboardKey from "../KeyboardKey";
 import { useKeyConfigStore } from "../../stores/keyConfigStore";
@@ -10,7 +10,6 @@ const Main = () => {
   return (
     <div>
       <Grid gap={2}>
-        <Heading>Casino Kiosk</Heading>
         <Paragraph>Please select an option below</Paragraph>
         <Button>
           Cash Out <KeyboardKey code={keyConfig?.get?.()?.atm?.withdraw?.[0]} />

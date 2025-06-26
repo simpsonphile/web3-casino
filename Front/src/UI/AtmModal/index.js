@@ -3,8 +3,8 @@ import Main from "./Main";
 
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
-import { VStack } from "@chakra-ui/react";
 import { useAtmStore } from "../../stores/atmStore";
+import { Heading } from "@chakra-ui/react";
 
 const AtmModal = () => {
   const { isVisible, step } = useAtmStore();
@@ -13,11 +13,11 @@ const AtmModal = () => {
     switch (step) {
       case "main":
       default:
-        return "Welcome Sraka";
+        return "Casino Kiosk";
       case "deposit":
-        return "Deposit";
+        return "Buy Tokens";
       case "withdraw":
-        return "Withdraw";
+        return "Cash Out";
     }
   };
 
@@ -33,15 +33,10 @@ const AtmModal = () => {
     }
   };
 
-  // make it dark
   return (
-    <Modal
-      title={getModalTitle()}
-      isOpen={isVisible}
-      hasCloseInFooter={false}
-      hasCloseInHeader={false}
-    >
-      <VStack gap={3}>{getModalContent()}</VStack>
+    <Modal isOpen={isVisible} hasCloseInFooter={false} hasCloseInHeader={false}>
+      <Heading>{getModalTitle()}</Heading>
+      {getModalContent()}
     </Modal>
   );
 };

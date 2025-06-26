@@ -1,75 +1,62 @@
 import { useAccount, useBalance } from "wagmi";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   useReadCasinoNativeToChipRate,
   useWriteCasinoDeposit,
 } from "../../../../Contract-hooks/generated";
 import { formatEther, parseEther } from "viem";
-import { Grid, GridItem } from "@chakra-ui/react";
-import Button from "../Button";
-import KeyboardKey from "../KeyboardKey";
-import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import { Field, Grid, GridItem } from "@chakra-ui/react";
 import InputWithCurrency from "../InputWithCurrency";
 import InputToken from "../InputToken";
+import useKeyPress from "./useKeyPress";
+import Footer from "./Footer";
 
 const Deposit = () => {
-  const inputRef = useRef();
-  const { keyConfig } = useKeyConfigStore();
-  const keys = keyConfig.get().atm;
   const [value, setValue] = useState("0");
   const { address } = useAccount();
   const { data: balance } = useBalance({ address });
   const { data: rate } = useReadCasinoNativeToChipRate();
+  const max = balance.value ? formatEther(balance.value) : 0;
+
+  const isLoaded =
+    typeof balance.value === "bigint" && typeof rate === "bigint";
 
   const { writeContract } = useWriteCasinoDeposit();
 
   const send = () => {
-    console.log("we should send");
+    console.log("we should send", parseEther(value));
     writeContract({ value: parseEther(value) });
   };
 
-  useEffect(() => {
-    const method = (e) => {
-      console.log(e, value);
-      if (e.key === keys.accept && value) send();
-    };
+  useKeyPress({ value, onChange: setValue, onEnter: send, max });
 
-    document.addEventListener("keyup", method);
-
-    return () => document.removeEventListener("keyup", method);
-  }, []);
-
-  useEffect(() => {
-    if (document.activeElement === inputRef.current) {
-      inputRef.current?.focus();
-    }
-  }, [inputRef.current]);
+  if (!isLoaded) return null;
 
   return (
     <Grid gap={2}>
-      <GridItem colSpan="2">
-        {/* <NumericKeypad
-          max={formatEther(data.value)}
-          value={value}
-          onChange={setValue}
-          onEnter={send}
-        /> */}
-        <InputWithCurrency
-          ref={inputRef}
-          value={value}
-          onChange={setValue}
-          max={formatEther(balance.value)}
-        />
-        <InputToken value={value / formatEther(rate)} />
+      <GridItem>
+        <Field.Root>
+          <Field.Label>
+            You give (max: {formatEther(balance.value)})
+          </Field.Label>
+          <InputWithCurrency
+            value={value}
+            max={formatEther(balance.value)}
+            readOnly
+          />
+        </Field.Root>
       </GridItem>
 
-      <Button variant="subtle">
-        Exit <KeyboardKey code={keys.exit?.[0]} />
-      </Button>
+      <GridItem>
+        <Field.Root>
+          <Field.Label>You get</Field.Label>
+          <InputToken value={value / formatEther(rate)} readOnly />
+        </Field.Root>
+      </GridItem>
 
-      <Button>
-        Ok <KeyboardKey code={keys.accept?.[0]} />
-      </Button>
+      <GridItem>
+        <Footer />
+      </GridItem>
     </Grid>
   );
 };
