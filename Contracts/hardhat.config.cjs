@@ -8,7 +8,7 @@ module.exports = {
   networks: {
     sepolia: {
       url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.POLYGON_MUMBAI_PRIVATE_KEY],
+      accounts: [process.env.CONTRACT_OWNER_PRIVATE_KEY],
     },
   },
 };

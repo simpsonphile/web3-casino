@@ -11,6 +11,7 @@ const ignores = [
   "Front/public/**",
   "Contract-hooks/**",
   "Contracts/typechain-types/**",
+  "Contracts/typechain-js/**",
 ];
 
 export default defineConfig([
@@ -75,6 +76,15 @@ export default defineConfig([
         it: "readonly",
         ethers: "readonly",
         describe: "readonly",
+      },
+    },
+  },
+  {
+    files: ["Server/**/*.js"],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
       },
     },
   },

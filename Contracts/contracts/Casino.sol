@@ -68,10 +68,14 @@ contract Casino {
             casinoToken.balanceOf(msg.sender) >= amount,
             "Insufficient balance"
         );
+        uint256 nativeAmount = amount / NATIVE_TO_CHIP_RATE;
+        require(nativeAmount > 0, "Amount too low to convert");
+        require(
+            address(this).balance >= nativeAmount,
+            "Insufficient contract balance"
+        );
 
         casinoToken.burnFrom(msg.sender, amount);
-
-        uint256 nativeAmount = amount / NATIVE_TO_CHIP_RATE;
 
         payable(msg.sender).transfer(nativeAmount);
 
@@ -79,7 +83,7 @@ contract Casino {
     }
 
     function getCasinoBalance() public view returns (uint256) {
-        return casinoToken.balanceOf(address(this));
+        return address(this).balance;
     }
 
     function getBalance() public view returns (uint256) {
