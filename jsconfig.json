@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@Game/*": ["./Game/*"],
+      "@Common/*": ["./Common/*"],
+      "@Front/*": ["./Front/src/*"],
+      "@Assets/*": ["./Front/assets/*"],
+      "@MiniGames/*": ["./Mini-games/*"]
+    }
+  }
+}
