@@ -24,7 +24,7 @@ class InteractionHandler {
   }
 
   isObjectInteractive(object) {
-    return object?.userData?.isInteractive;
+    return !!this.getObjectInteractionType(object);
   }
 
   getObjectInteractionType(object) {
