@@ -34,6 +34,17 @@ const getDefaultKeyConfig = () => ({
     help: ["KeyH"],
     goBack: ["KeyB"],
   },
+  plinkoMachine: {
+    exit: ["KeyE"],
+    play: ["KeyS"],
+    increaseBet: ["ArrowUp"],
+    decreaseBet: ["ArrowDown"],
+    increaseBalls: ["ArrowRight"],
+    decreaseBalls: ["ArrowLeft"],
+    changeDifficulty: ["KeyD"],
+    help: ["KeyH"],
+    goBack: ["KeyB"],
+  },
   atm: {
     exit: ["KeyE"],
     withdraw: ["KeyQ"],
