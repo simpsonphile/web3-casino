@@ -29,6 +29,7 @@ import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import ProgressLoader from "./ProgressLoader";
+import PlinkoMachineMode from "./Modes/Plinko/PlinkoMachineMode";
 
 class Game {
   constructor({ onPause, onResume }) {
@@ -274,6 +275,10 @@ class Game {
     }).init();
   }
 
+  initPlinkoMachine() {
+    new PlinkoMachineMode({ game: this }).init();
+  }
+
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
     window.interactionHandler = this.interactionHandler;
@@ -393,6 +398,7 @@ class Game {
     this.initATM();
     this.initBlackjack();
     this.initSlotMachine();
+    this.initPlinkoMachine();
 
     this.initOnScreenResize();
     this.initControls();
