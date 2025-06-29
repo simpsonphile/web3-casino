@@ -9,6 +9,7 @@ const getEmptyCommands = () => ({
   menu: {},
   blackjack: {},
   slotMachine: {},
+  plinkoMachine: {},
   cameraTransition: {},
   zoom: {},
   chat: {},
