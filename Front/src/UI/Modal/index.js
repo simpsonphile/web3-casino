@@ -1,14 +1,4 @@
-import {
-  Button,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  Box,
-} from "@chakra-ui/react";
+import { Button, DialogCloseTrigger, Dialog } from "@chakra-ui/react";
 
 const Modal = ({
   isOpen,
@@ -22,42 +12,29 @@ const Modal = ({
 }) => {
   if (!isOpen) return null;
   return (
-    <Box
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0,0,0,0.2)",
-        display: "flex",
-        alignContent: "center",
-        justifyContent: "center",
-      }}
+    <Dialog.Root
+      centered
+      open={isOpen}
+      onOpenChange={(e) => onOpenChange(e.open)}
       {...rest}
     >
-      <DialogRoot
-        centered
-        open={isOpen}
-        onOpenChange={(e) => onOpenChange(e.open)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            {hasCloseInHeader && <DialogCloseTrigger>x</DialogCloseTrigger>}
-          </DialogHeader>
-          <DialogBody>{children}</DialogBody>
-          <DialogFooter>
-            {hasCloseInFooter && (
-              <DialogCloseTrigger>
-                <Button variant="ghost">Close</Button>
-              </DialogCloseTrigger>
-            )}
-            {footerChildren}
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
-    </Box>
+      <Dialog.Backdrop />
+      <Dialog.Content background="#0b0f1a">
+        <Dialog.Header>
+          {title && <Dialog.Title>{title}</Dialog.Title>}
+          {hasCloseInHeader && <DialogCloseTrigger>x</DialogCloseTrigger>}
+        </Dialog.Header>
+        <Dialog.Body>{children}</Dialog.Body>
+        <Dialog.Footer>
+          {hasCloseInFooter && (
+            <Dialog.CloseTrigger>
+              <Button variant="ghost">Close</Button>
+            </Dialog.CloseTrigger>
+          )}
+          {footerChildren}
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
 

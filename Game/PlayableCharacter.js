@@ -11,6 +11,8 @@ class PlayableCharacter {
     onAnimation,
   }) {
     this.model = model;
+    this.model.traverse((child) => child.layers.set(1));
+
     this._isRunning = false;
     this._camera = camera;
     this._onBeforeMovement = onBeforeMovement;

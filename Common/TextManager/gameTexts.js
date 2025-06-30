@@ -1,6 +1,7 @@
 const gameTexts = {
   en: {
     blackjackTableHover: "Join Blackjack Table",
+    blackjackTableHoverFull: "table is full",
     blackjackPlayerJoin: "{newPlayer} joined the game!",
     blackjackHandValue: "Your hand value: {value}",
     blackjackDealerHandValue: "Dealer hand value: {value}",
@@ -11,6 +12,18 @@ const gameTexts = {
 
     casinoKioskHover: "Manage Your Account",
     casinoKioskHoverGuest: "Kiosk not available for guest users",
+
+    plinko: {
+      hover: "Play Plinko",
+      play: "play",
+      increaseBet: "increase bet",
+      decreaseBet: "decrease bet",
+      increaseBalls: "increase balls count",
+      decreaseBalls: "decrease balls count",
+      riskEasy: "set to low risk",
+      riskMedium: "set to medium risk",
+      riskHigh: "set to high risk",
+    },
 
     menu: {
       play: "Play",

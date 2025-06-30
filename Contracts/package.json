@@ -13,10 +13,12 @@
   "scripts": {
     "start": "npx hardhat node",
     "deploy": "rimraf ./ignition/deployments && npx hardhat run ./ignition/scripts/deploy.js --network localhost",
+    "deploy:testnet": "rimraf ./ignition/deployments && npx hardhat run ./ignition/scripts/deploy.js --network sepolia",
     "test": "npx hardhat test",
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0",
     "chai-as-promised": "^7.1.2",
     "get-func-name": "^2.0.2"
   }

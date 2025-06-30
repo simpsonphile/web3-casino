@@ -8,12 +8,6 @@ const BetScreen = () => {
 
   return (
     <div className={styles.slotUIBetScreen}>
-      <div className={styles.slotUIBalance}>
-        <Heading size="xl" color="white" textAlign="center" mb={2}>
-          <span>Balance: </span>
-          <span></span>
-        </Heading>
-      </div>
       <div className={styles.slotUIBet}>
         <Heading size="xl" color="white" textAlign="center" mb={2}>
           <span>Bet: </span>

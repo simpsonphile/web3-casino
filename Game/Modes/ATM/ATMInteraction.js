@@ -16,7 +16,7 @@ class ATMInteraction {
     if (data.distance > 5) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    this.game.showTooltip(
+    window.showTooltip(
       this.isAllowed() ? t("casinoKioskHover") : t("casinoKioskHoverGuest")
     );
   }

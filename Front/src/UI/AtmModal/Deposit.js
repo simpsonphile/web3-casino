@@ -1,43 +1,62 @@
 import { useAccount, useBalance } from "wagmi";
-import NumericKeypad from "./NumericKeypad";
 import { useState } from "react";
-import { useWriteCasinoDeposit } from "../../../../Contract-hooks/generated";
-import { parseEther, formatEther } from "viem";
-import { Grid, GridItem } from "@chakra-ui/react";
-import Button from "../Button";
-import KeyboardKey from "../KeyboardKey";
-import { useKeyConfigStore } from "../../stores/keyConfigStore";
+import {
+  useReadCasinoNativeToChipRate,
+  useWriteCasinoDeposit,
+} from "../../../../Contract-hooks/generated";
+import { formatEther, parseEther } from "viem";
+import { Field, Grid, GridItem } from "@chakra-ui/react";
+import InputWithCurrency from "../InputWithCurrency";
+import InputToken from "../InputToken";
+import useKeyPress from "./useKeyPress";
+import Footer from "./Footer";
 
 const Deposit = () => {
-  const { keyConfig } = useKeyConfigStore();
   const [value, setValue] = useState("0");
   const { address } = useAccount();
-  const { data } = useBalance({ address });
+  const { data: balance } = useBalance({ address });
+  const { data: rate } = useReadCasinoNativeToChipRate();
+  const max = balance.value ? formatEther(balance.value) : 0;
+
+  const isLoaded =
+    typeof balance.value === "bigint" && typeof rate === "bigint";
 
   const { writeContract } = useWriteCasinoDeposit();
 
   const send = () => {
+    console.log("we should send", parseEther(value));
     writeContract({ value: parseEther(value) });
   };
 
+  useKeyPress({ value, onChange: setValue, onEnter: send, max });
+
+  if (!isLoaded) return null;
+
   return (
     <Grid gap={2}>
-      <GridItem colSpan="2">
-        <NumericKeypad
-          max={formatEther(data.value)}
-          value={value}
-          onChange={setValue}
-          onEnter={send}
-        />
+      <GridItem>
+        <Field.Root>
+          <Field.Label>
+            You give (max: {formatEther(balance.value)})
+          </Field.Label>
+          <InputWithCurrency
+            value={value}
+            max={formatEther(balance.value)}
+            readOnly
+          />
+        </Field.Root>
       </GridItem>
 
-      <Button variant="subtle">
-        Exit <KeyboardKey code={keyConfig?.get?.()?.atm?.exit?.[0]} />
-      </Button>
+      <GridItem>
+        <Field.Root>
+          <Field.Label>You get</Field.Label>
+          <InputToken value={value / formatEther(rate)} readOnly />
+        </Field.Root>
+      </GridItem>
 
-      <Button>
-        Ok <KeyboardKey code={keyConfig?.get?.()?.atm?.accept?.[0]} />
-      </Button>
+      <GridItem>
+        <Footer />
+      </GridItem>
     </Grid>
   );
 };

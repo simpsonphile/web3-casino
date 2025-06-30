@@ -1,9 +1,11 @@
 import { create } from "zustand";
 
+const betSteps = [1, 5, 10, 25, 50, 100, 250];
+
 const defaultState = {
   isVisible: false,
   step: "main",
-  bet: 0,
+  bet: 1,
 };
 
 export const useSlotsStore = create((set) => ({
@@ -12,20 +14,32 @@ export const useSlotsStore = create((set) => ({
   setVisible: (isVisible) => set({ isVisible }),
   setStep: (step) => set({ step }),
   setBet: (bet) => set({ bet }),
-  increaseBet: (val = 1) => {
-    set((state) => ({
-      bet: state.bet + val,
-    }));
-  },
-  decreaseBet: (val = 1) =>
-    set((state) => ({
-      bet: Math.max(0, state.bet - val),
-    })),
+  increaseBet: () =>
+    set((state) => {
+      let currentBet = state.bet;
+      const currentIndex = betSteps.indexOf(currentBet);
+      if (currentIndex < betSteps.length - 1) {
+        currentBet = betSteps[currentIndex + 1];
+      }
+      return {
+        bet: currentBet,
+      };
+    }),
+
+  decreaseBet: () =>
+    set((state) => {
+      let currentBet = state.bet;
+      const currentIndex = betSteps.indexOf(currentBet);
+      if (currentIndex > 0) {
+        currentBet = betSteps[currentIndex - 1];
+      }
+      return {
+        bet: currentBet,
+      };
+    }),
 
   reset: () =>
     set(() => ({
       ...defaultState,
-      // If you want to keep some property from current state, add here
-      // id: state.id,
     })),
 }));

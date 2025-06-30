@@ -29,6 +29,7 @@ export default defineConfig(() => {
         "@Common": path.resolve(__dirname, "./Common"),
         "@Front": path.resolve(__dirname, "./Front/src"),
         "@Assets": path.resolve(__dirname, "./Front/assets"),
+        "@MiniGames": path.resolve(__dirname, "./Mini-games"),
       },
     },
     optimizeDeps: {

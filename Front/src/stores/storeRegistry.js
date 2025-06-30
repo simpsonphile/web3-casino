@@ -6,6 +6,7 @@ import { useProgressStore } from "./progressStore";
 import { useMessagesStore } from "./messagesStore";
 import { useSoundStore } from "./soundStore";
 import { useUserStore } from "./userStore";
+import { usePlinkoStore } from "./plinkoStore";
 
 export function initStoreRegistry() {
   if (typeof window !== "undefined") {
@@ -17,5 +18,6 @@ export function initStoreRegistry() {
     window.messagesStore = window.messagesStore || useMessagesStore;
     window.soundStore = window.soundStore || useSoundStore;
     window.userStore = window.userStore || useUserStore;
+    window.plinkoStore = window.plinkoStore || usePlinkoStore;
   }
 }

@@ -5,7 +5,7 @@ import lightmap from "@Assets/lightmap.png";
 class World {
   constructor() {
     this.loadLevel();
-    this.applyLightmap();
+    // this.applyLightmap();
     this.applyLight();
   }
 
@@ -27,7 +27,13 @@ class World {
   }
 
   applyLight() {
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    this.scene.traverse((child) => {
+      if (child.isLight) {
+        child.intensity /= 30;
+      }
+    });
+
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.1));
   }
 }
 export default World;

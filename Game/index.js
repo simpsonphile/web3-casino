@@ -29,16 +29,14 @@ import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import ProgressLoader from "./ProgressLoader";
+import PlinkoMachineMode from "./Modes/Plinko/PlinkoMachineMode";
 
 class Game {
-  constructor({ onPause, onResume, showTooltip, hideTooltip }) {
+  constructor({ onPause, onResume }) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this._onPause = onPause;
     this._onResume = onResume;
-
-    this.showTooltip = showTooltip;
-    this.hideTooltip = hideTooltip;
   }
 
   initCSSRenderer() {
@@ -135,10 +133,9 @@ class Game {
 
   initActorCamera() {
     this.actorCamera = new ActorCamera({
-      fov: 70,
       aspect: this.width / this.height,
       near: 0.01,
-      far: 1024,
+      far: 100,
     });
 
     window.camerasManager.addCamera("thirdPerson", this.actorCamera);
@@ -146,7 +143,7 @@ class Game {
 
   initAudioListener() {
     this.audioListener = new THREE.AudioListener();
-    this.camerasManager.getCamera("thirdPerson").add(this.audioListener);
+    window.player.model.add(this.audioListener);
     window.audioListener = this.audioListener;
   }
 
@@ -278,6 +275,10 @@ class Game {
     }).init();
   }
 
+  initPlinkoMachine() {
+    new PlinkoMachineMode({ game: this }).init();
+  }
+
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
     window.interactionHandler = this.interactionHandler;
@@ -321,7 +322,7 @@ class Game {
             intersect
           );
         } else {
-          this.hideTooltip();
+          window.hideTooltip();
         }
       },
       onMouseClick: () => {
@@ -333,7 +334,7 @@ class Game {
           "mouseClick",
           intersect
         );
-        this.hideTooltip();
+        window.hideTooltip();
       },
       onWheel: (dir) => {
         if (dir === "up") {
@@ -374,7 +375,6 @@ class Game {
     this.initScene();
     this.initCSSScene();
     this.initActorCamera();
-    this.initAudioListener();
     this.initZoomCamera();
     this.initUpdater();
     this.initCSSRenderer();
@@ -385,10 +385,11 @@ class Game {
 
     this.initInteractionHandler();
 
+    this.initPlayer();
+    this.initAudioListener();
     this.initWorld();
     this.initCollisions();
     this.initStairs();
-    this.initPlayer();
     this.initClient();
     this.initNeonManager();
 
@@ -397,6 +398,7 @@ class Game {
     this.initATM();
     this.initBlackjack();
     this.initSlotMachine();
+    this.initPlinkoMachine();
 
     this.initOnScreenResize();
     this.initControls();

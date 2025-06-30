@@ -3,6 +3,12 @@
 **Live version:**  
 [https://web3-casino.onrender.com](https://web3-casino.onrender.com)
 
+> 🦊 To use the app, you'll need:
+>
+> - A **Web3 wallet** like MetaMask installed in your browser
+> - A connected wallet with access to the **Sepolia test network**
+> - Some **Sepolia ETH** for interacting with smart contracts (you can get this from a Sepolia faucet)
+
 ## Getting Started Locally
 
 ### 1. Setup Environment Variables

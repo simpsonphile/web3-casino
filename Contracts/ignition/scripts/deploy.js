@@ -1,12 +1,24 @@
 const hre = require("hardhat");
+const CasinoCoinModule = require("../modules/CasinoCoin.js");
 const CasinoModule = require("../modules/Casino.js");
 const BlackjackModule = require("../modules/Blackjack.js");
 const SlotsModule = require("../modules/Slots.js");
 const PlinkoModule = require("../modules/Plinko.js");
 
 async function main() {
-  const { casino } = await hre.ignition.deploy(CasinoModule);
+  const { casinoCoin } = await hre.ignition.deploy(CasinoCoinModule);
+  console.log(`CasinoCoin deployed at: ${casinoCoin.target}`);
+
+  const { casino } = await hre.ignition.deploy(CasinoModule, {
+    parameters: {
+      CasinoModule: {
+        casinoCoinAddress: casinoCoin.target,
+      },
+    },
+  });
   console.log(`Casino contract deployed at: ${casino.target}`);
+
+  casinoCoin.transferOwnership(casino.target);
 
   const { blackjack } = await hre.ignition.deploy(BlackjackModule, {
     parameters: {
