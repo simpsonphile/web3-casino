@@ -28,6 +28,10 @@ class ActorCamera extends THREE.PerspectiveCamera {
     this.mode = "third-person";
   }
 
+  init() {
+    window.deltaUpdater.add(this.updateCamera.bind(this));
+  }
+
   switchMode(newMode) {
     if (!POSSIBLE_MODES.includes(newMode)) {
       throw Error(`no such actor camera mode: ${newMode}`);
@@ -45,17 +49,31 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
     this.yaw -= deltaX * this.mouseSensitivity;
     this.pitch -= deltaY * this.mouseSensitivity;
-
     this.pitch = Math.max(minPitch, Math.min(maxPitch, this.pitch));
 
+    // Compute target rotation
     this.yawQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
     this.pitchQuat.setFromAxisAngle(new THREE.Vector3(1, 0, 0), this.pitch);
 
     this.rotationQuat
       .identity()
       .multiplyQuaternions(this.yawQuat, this.pitchQuat);
+  }
 
-    this.quaternion.copy(this.rotationQuat);
+  updateCamera(deltaTime) {
+    const lagSpeed = 5.0; // Tweak as needed
+
+    // Initialize if needed
+    if (!this.rotationQuat) {
+      this.rotationQuat = this.quaternion.clone(); // match current rotation
+    }
+
+    this.quaternion.slerp(
+      this.rotationQuat,
+      1 - Math.exp(-lagSpeed * deltaTime)
+    );
+
+    this.positionCamera();
   }
 
   positionCamera() {
@@ -73,7 +91,7 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
   positionCameraBehindActor() {
     const cameraOffset = this.thirdPersonOffset.clone();
-    cameraOffset.applyQuaternion(this.rotationQuat);
+    cameraOffset.applyQuaternion(this.quaternion);
     this.position.copy(this.target.position).add(cameraOffset);
   }
 
@@ -85,7 +103,7 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
   positionCameraFromActorEyes() {
     const cameraOffset = this.firstPersonOffset.clone();
-    cameraOffset.applyQuaternion(this.rotationQuat);
+    cameraOffset.applyQuaternion(this.quaternion);
     const newPos = this.target.position.clone();
     newPos.add(new THREE.Vector3(0, 1.6, 0));
     this.position.copy(newPos).add(cameraOffset);
