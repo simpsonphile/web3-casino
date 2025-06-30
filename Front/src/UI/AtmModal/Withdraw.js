@@ -36,7 +36,7 @@ const Withdraw = () => {
     value,
     onEnter: send,
     onChange: setValue,
-    max: formatEther(balance),
+    max: balance ? formatEther(balance) : null,
     hasDecimals: false,
   });
 
