@@ -6,14 +6,15 @@ const GameTooltip = () => {
   const [tooltipText, setTooltipText] = useState("");
 
   useEffect(() => {
-    window.showTooltip = (txt) => {
-      setTooltipText(txt);
+    window.showTooltip = (text) => {
+      if (!text) return;
+
+      setTooltipText(text);
       setTooltipVisible(true);
     };
 
     window.hideTooltip = () => {
-      setTooltipText("");
-      setTooltipVisible(true);
+      setTooltipVisible(false);
     };
 
     return () => {
@@ -22,9 +23,13 @@ const GameTooltip = () => {
     };
   }, []);
 
-  if (!tooltipText || !tooltipVisible) return null;
+  const isVisible = tooltipVisible && !!tooltipText;
+  const classes = [
+    styles.GameTooltip,
+    isVisible ? styles.GameTooltipVisible : "",
+  ].join(" ");
 
-  return <div className={styles.GameTooltip}>{tooltipText}</div>;
+  return <div className={classes}>{tooltipText}</div>;
 };
 
 export default GameTooltip;

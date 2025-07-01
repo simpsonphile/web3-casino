@@ -3,10 +3,22 @@
   z-index: 100;
   top: calc(50% - 20px);
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -120%);
+  opacity: 0;
 
   padding: 8px 16px;
 
   background-color: #11001e;
   color: white;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
+}
+
+.GameTooltipVisible {
+  opacity: 1;
+  transform: translate(-50%, -100%);
 }
