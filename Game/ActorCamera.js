@@ -8,9 +8,26 @@ const FOV_MODE_MAP = {
   "top-down": 75,
 };
 
+const SPRINT_FOV_MODE_MAP = {
+  "third-person": 90,
+  "first-person": 90,
+  "top-down": 90,
+};
+
+const MIN_PITCH = -60;
+const MAX_PITCH = 15;
+
+const CAMERA_ROTATION_LAG_SPEED = 7.5;
+const FOV_LAG_SPEED = 10;
+const OFFSET_LERP_SPEED = 10;
+
 class ActorCamera extends THREE.PerspectiveCamera {
   constructor({ aspect, near, far, target }) {
     super(FOV_MODE_MAP["third-person"], aspect, near, far);
+    this.targetFov = FOV_MODE_MAP["third-person"];
+
+    this.currentOffset = new THREE.Vector3();
+
     this.target = target;
     this.layers.enable(1);
 
@@ -28,8 +45,14 @@ class ActorCamera extends THREE.PerspectiveCamera {
     this.mode = "third-person";
   }
 
-  init() {
-    window.deltaUpdater.add(this.updateCamera.bind(this));
+  initUpdate() {
+    window.deltaUpdater.add(this.update.bind(this));
+  }
+
+  updateTargetFov() {
+    this.targetFov = this.isSprinting
+      ? SPRINT_FOV_MODE_MAP[this.mode]
+      : FOV_MODE_MAP[this.mode];
   }
 
   switchMode(newMode) {
@@ -39,13 +62,19 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
     this.mode = newMode;
 
-    this.fov = FOV_MODE_MAP[newMode];
-    this.updateProjectionMatrix();
+    this.target.visible = newMode !== "first-person";
+
+    this.updateTargetFov();
+  }
+
+  setSprinting(isSprinting) {
+    this.isSprinting = isSprinting;
+    this.updateTargetFov();
   }
 
   updateCameraRotation(deltaX, deltaY) {
-    const minPitch = THREE.MathUtils.degToRad(-60);
-    const maxPitch = THREE.MathUtils.degToRad(15);
+    const minPitch = THREE.MathUtils.degToRad(MIN_PITCH);
+    const maxPitch = THREE.MathUtils.degToRad(MAX_PITCH);
 
     this.yaw -= deltaX * this.mouseSensitivity;
     this.pitch -= deltaY * this.mouseSensitivity;
@@ -60,53 +89,45 @@ class ActorCamera extends THREE.PerspectiveCamera {
       .multiplyQuaternions(this.yawQuat, this.pitchQuat);
   }
 
-  updateCamera(deltaTime) {
-    const lagSpeed = 5.0; // Tweak as needed
-
-    // Initialize if needed
-    if (!this.rotationQuat) {
-      this.rotationQuat = this.quaternion.clone(); // match current rotation
+  getOffset() {
+    switch (this.mode) {
+      case "third-person":
+        return this.thirdPersonOffset.clone().applyQuaternion(this.quaternion);
+      case "first-person":
+        return this.firstPersonOffset.clone().applyQuaternion(this.quaternion);
+      case "top-down":
+        return this.topDownOffset.clone();
+      default:
+        return new THREE.Vector3();
     }
+  }
 
+  getBasePosition() {
+    const playerPos = this.target.position.clone();
+    if (this.mode === "first-person") {
+      return playerPos.add(new THREE.Vector3(0, 1.6, 0));
+    }
+    return playerPos;
+  }
+
+  updateCameraPosition() {
+    this.position.copy(this.getBasePosition()).add(this.getOffset());
+  }
+
+  update(deltaTime) {
     this.quaternion.slerp(
       this.rotationQuat,
-      1 - Math.exp(-lagSpeed * deltaTime)
+      1 - Math.exp(-CAMERA_ROTATION_LAG_SPEED * deltaTime)
     );
 
-    this.positionCamera();
-  }
-
-  positionCamera() {
-    if (this.mode === "third-person") {
-      this.positionCameraBehindActor();
-      this.target.visible = true;
-    } else if (this.mode === "first-person") {
-      this.positionCameraFromActorEyes();
-      this.target.visible = false;
-    } else if (this.mode === "top-down") {
-      this.positionCameraAtTopOfActor();
-      this.target.visible = true;
+    if (this.fov !== this.targetFov) {
+      this.fov +=
+        (this.targetFov - this.fov) *
+        (1 - Math.exp(-FOV_LAG_SPEED * deltaTime));
+      this.updateProjectionMatrix();
     }
-  }
 
-  positionCameraBehindActor() {
-    const cameraOffset = this.thirdPersonOffset.clone();
-    cameraOffset.applyQuaternion(this.quaternion);
-    this.position.copy(this.target.position).add(cameraOffset);
-  }
-
-  positionCameraAtTopOfActor() {
-    const cameraOffset = this.topDownOffset.clone();
-    // cameraOffset.applyQuaternion(this.rotationQuat);
-    this.position.copy(this.target.position).add(cameraOffset);
-  }
-
-  positionCameraFromActorEyes() {
-    const cameraOffset = this.firstPersonOffset.clone();
-    cameraOffset.applyQuaternion(this.quaternion);
-    const newPos = this.target.position.clone();
-    newPos.add(new THREE.Vector3(0, 1.6, 0));
-    this.position.copy(newPos).add(cameraOffset);
+    this.updateCameraPosition();
   }
 }
 

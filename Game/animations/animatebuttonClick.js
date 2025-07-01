@@ -1,19 +1,15 @@
 import gsap from "gsap";
 import runNamedAnimation from "./runNamedAnimation";
 
-const animateButtonClick = (obj) => {
+const animateButtonClick = (obj, offset = 0.02) => {
   runNamedAnimation({
     obj,
     name: "click",
-    recordOriginal: (o) => {
-      console.log(o.position.y, o.userData.animation);
-
-      return { originalY: o.position.y };
-    },
+    recordOriginal: (o) => ({ originalY: o.position.y }),
     animate: (o, done) => {
       const originalY = o.userData.animation["click"].originalY;
       gsap.to(obj.position, {
-        y: originalY - 0.02,
+        y: originalY - offset,
         duration: 0.1,
         ease: "power1.out",
         onComplete: () => {

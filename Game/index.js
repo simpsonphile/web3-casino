@@ -182,6 +182,8 @@ class Game {
 
     this.actorCamera.target = this.player.model;
     window.player = this.player;
+
+    this.actorCamera.initUpdate();
   }
 
   initScene() {
@@ -311,30 +313,15 @@ class Game {
         window.commandManager.executeUp(key);
       },
       onMouseMove: (event) => {
-        this.player.rotateBy(event.movementX, event.movementY);
+        window.hideTooltip();
+        this.actorCamera.updateCameraRotation(event.movementX, event.movementY);
 
         const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        const obj = intersect?.object;
-        if (this.interactionHandler.isObjectInteractive(obj)) {
-          this.interactionHandler.runObjectInteraction(
-            obj,
-            "mouseOver",
-            intersect
-          );
-        } else {
-          window.hideTooltip();
-        }
+        this.interactionHandler.handleHover(intersect);
       },
       onMouseClick: () => {
         const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        const obj = intersect?.object;
-        if (!obj) return;
-        this.interactionHandler.runObjectInteraction(
-          obj,
-          "mouseClick",
-          intersect
-        );
-        window.hideTooltip();
+        this.interactionHandler.handleClick(intersect);
       },
       onWheel: (dir) => {
         if (dir === "up") {

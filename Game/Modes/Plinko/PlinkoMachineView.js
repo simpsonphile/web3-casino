@@ -6,7 +6,7 @@ import {
   setEmissionPower,
 } from "@Game/animations";
 
-const names = [
+const ELEMENT_NAMES = [
   "screen",
   "bet_increase",
   "bet_decrease",
@@ -26,7 +26,7 @@ class PlinkoMachineView {
 
   getElements(object3d) {
     object3d.traverse((children) => {
-      if (names.includes(children.userData.name)) {
+      if (ELEMENT_NAMES.includes(children.userData.name)) {
         this.elements[children.userData.name] = children;
       }
     });

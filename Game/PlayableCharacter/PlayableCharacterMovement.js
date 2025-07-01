@@ -59,7 +59,6 @@ class PlayableCharacterMovement {
     this._onBeforeMovmentIDK();
     this.rotate(direction);
     this.moveBy(direction.multiplyScalar(this.getSpeed()));
-    this._camera.positionCamera();
   }
 
   goForward() {
@@ -102,13 +101,11 @@ class PlayableCharacterMovement {
     const newVec = beforeMovementData.vec || vec;
     this.model.position.add(newVec);
     this._onAfterMovement(this.model.position);
-    this._camera.positionCamera();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
     this._onAfterMovement(this.model.position);
-    this._camera.positionCamera();
   }
 
   updateDrop(delta) {
@@ -128,8 +125,6 @@ class PlayableCharacterMovement {
     } else {
       this.model.position.y = newPosY;
     }
-
-    this._camera.positionCamera();
   }
 
   updateRotation(delta) {
@@ -158,7 +153,6 @@ class PlayableCharacterMovement {
     // make sure its always on the same height
     dir.y = 2;
     this.targetRotation = Math.atan2(dir.x, dir.z);
-    this._camera.positionCamera();
     this._onRotation(this.model.rotation);
   }
 
