@@ -24,7 +24,7 @@ import ZoomCommands from "./Modes/Zoom/ZoomCommands";
 import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
 import DeltaUpdater from "./DeltaUpdater";
-import ActorCamera from "./ActorCamera";
+import ActorCamera from "./Cameras/ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
@@ -180,10 +180,9 @@ class Game {
       },
     });
 
-    this.actorCamera.target = this.player.model;
+    this.actorCamera.setTarget(this.player.model);
+    this.actorCamera.startUpdating();
     window.player = this.player;
-
-    this.actorCamera.initUpdate();
   }
 
   initScene() {
