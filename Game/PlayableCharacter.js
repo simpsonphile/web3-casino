@@ -32,7 +32,6 @@ class PlayableCharacter {
 
   switchCameraMode(mode) {
     this._camera.switchMode(mode);
-    this._camera.positionCamera();
   }
 
   update(delta) {
@@ -74,30 +73,23 @@ class PlayableCharacter {
     } else {
       this.model.position.y = newPosY;
     }
-
-    this._camera.positionCamera();
   }
 
   rotateBy(x, y) {
     // first update camera rotation
     this._camera.updateCameraRotation(x, y);
 
-    // get camera direction
-    const dir = new THREE.Vector3();
-    this._camera.getWorldDirection(dir);
-    dir.multiplyScalar(10000);
-    // make sure its always on the same height
-    dir.y = 2;
-    this.targetRotation = Math.atan2(dir.x, dir.z);
-    this._camera.positionCamera();
     this._onRotation(this.model.rotation);
   }
 
   setRun() {
     this._isRunning = true;
+    this._camera.setSprinting(true);
   }
+
   setWalk() {
     this._isRunning = false;
+    this._camera.setSprinting(false);
   }
 
   rotate(dir) {
@@ -167,28 +159,24 @@ class PlayableCharacter {
 
     this.moveBy(this.getForwardVector().multiplyScalar(this.getSpeed()));
     this.rotateForward();
-    this._camera.positionCamera();
   }
 
   goBackward() {
     this.runGoAnimation();
     this.moveBy(this.getBackwardVector().multiplyScalar(this.getSpeed()));
     this.rotateBackward();
-    this._camera.positionCamera();
   }
 
   goLeft() {
     this.runGoAnimation();
     this.moveBy(this.getLeftVector().multiplyScalar(this.getSpeed()));
     this.rotateLeft();
-    this._camera.positionCamera();
   }
 
   goRight() {
     this.runGoAnimation();
     this.moveBy(this.getRightVector().multiplyScalar(this.getSpeed()));
     this.rotateRight();
-    this._camera.positionCamera();
   }
 
   moveBy(vec) {
@@ -211,13 +199,11 @@ class PlayableCharacter {
     const newVec = beforeMovementData.vec || vec;
     this.model.position.add(newVec);
     this._onAfterMovement(this.model.position);
-    this._camera.positionCamera();
   }
 
   moveTo(vec) {
     this.model.position.copy(vec);
     this._onAfterMovement(this.model.position);
-    this._camera.positionCamera();
   }
 
   beIdle() {

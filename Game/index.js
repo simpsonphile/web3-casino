@@ -24,7 +24,7 @@ import ZoomCommands from "./Modes/Zoom/ZoomCommands";
 import BlackjackMode from "./Modes/Blackjack/BlackjackMode";
 import ATMMode from "./Modes/ATM/ATMMode";
 import DeltaUpdater from "./DeltaUpdater";
-import ActorCamera from "./ActorCamera";
+import ActorCamera from "./Cameras/ActorCamera";
 import StairManager from "./StairManager";
 import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
@@ -180,7 +180,8 @@ class Game {
       },
     });
 
-    this.actorCamera.target = this.player.model;
+    this.actorCamera.setTarget(this.player.model);
+    this.actorCamera.startUpdating();
     window.player = this.player;
   }
 
@@ -311,30 +312,15 @@ class Game {
         window.commandManager.executeUp(key);
       },
       onMouseMove: (event) => {
-        this.player.rotateBy(event.movementX, event.movementY);
+        window.hideTooltip();
+        this.actorCamera.updateCameraRotation(event.movementX, event.movementY);
 
         const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        const obj = intersect?.object;
-        if (this.interactionHandler.isObjectInteractive(obj)) {
-          this.interactionHandler.runObjectInteraction(
-            obj,
-            "mouseOver",
-            intersect
-          );
-        } else {
-          window.hideTooltip();
-        }
+        this.interactionHandler.handleHover(intersect);
       },
       onMouseClick: () => {
         const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        const obj = intersect?.object;
-        if (!obj) return;
-        this.interactionHandler.runObjectInteraction(
-          obj,
-          "mouseClick",
-          intersect
-        );
-        window.hideTooltip();
+        this.interactionHandler.handleClick(intersect);
       },
       onWheel: (dir) => {
         if (dir === "up") {

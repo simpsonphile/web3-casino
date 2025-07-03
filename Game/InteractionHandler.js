@@ -3,8 +3,10 @@ class InteractionHandler {
     this._handlers = {
       mouseOver: {},
       mouseClick: {},
+      mouseLeave: {},
     };
     this._isEnabled = true;
+    this._lastIntersect = null;
   }
 
   setState(state) {
@@ -16,11 +18,21 @@ class InteractionHandler {
   }
 
   checkIfProperType(type) {
-    return ["mouseOver", "mouseClick"].includes(type);
+    return Object.hasOwn(this._handlers, type);
   }
 
   checkIfInteractionExists(type, name) {
     return Object.hasOwn(this._handlers[type], name);
+  }
+
+  hasInteractionForIntersect(intersect, type) {
+    const object = intersect?.object;
+    if (!this.isObjectInteractive(object)) return false;
+
+    const interactionName = this.getObjectInteractionType(object);
+    return (
+      interactionName && this.checkIfInteractionExists(type, interactionName)
+    );
   }
 
   isObjectInteractive(object) {
@@ -48,19 +60,42 @@ class InteractionHandler {
     return this._handlers[type][name](data);
   }
 
-  runObjectInteraction(object, type, data) {
+  runObjectInteraction(intersect, type) {
+    const object = intersect?.object;
     if (!this.isObjectInteractive(object)) {
       return;
     }
 
     const interactionName = this.getObjectInteractionType(object);
     if (this.checkIfInteractionExists(type, interactionName)) {
-      return this.runInteraction(interactionName, type, data);
+      return this.runInteraction(interactionName, type, intersect);
     }
 
     console.warn(
-      `interaction ${interactionName} does'nt exist in ${object.name}`
+      `interaction ${interactionName} of type ${type} does'nt exist in ${object.name}`
     );
+  }
+
+  handleHover(intersect) {
+    const obj = intersect?.object;
+    const lastObj = this._lastIntersect?.object;
+
+    if (
+      this._lastIntersect &&
+      lastObj !== obj &&
+      this.hasInteractionForIntersect(this._lastIntersect, "mouseLeave")
+    ) {
+      this.runObjectInteraction(this._lastIntersect, "mouseLeave");
+    }
+
+    this.runObjectInteraction(intersect, "mouseOver");
+    this._lastIntersect = intersect;
+  }
+
+  handleClick(intersect) {
+    const obj = intersect?.object;
+    if (!obj) return;
+    this.runObjectInteraction(intersect, "mouseClick");
   }
 }
 

@@ -37,7 +37,6 @@ class PlayableCharacter {
 
   switchCameraMode(mode) {
     this._camera.switchMode(mode);
-    this._camera.positionCamera();
   }
 
   update(delta) {

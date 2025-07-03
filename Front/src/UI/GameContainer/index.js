@@ -16,6 +16,7 @@ import styles from "./index.module.scss";
 import { useMessagesStore } from "../../stores/messagesStore";
 import { useUserStore } from "../../stores/userStore";
 import TokenBalance from "../TokenBalance";
+import useKeyboardKeyPressAnimation from "../KeyboardKey/useKeyboardKeyPressAnimation";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -85,6 +86,8 @@ const GameContainer = () => {
 
     return () => window.removeEventListener("keydown", handleOnKeyDown);
   }, [isGameInit, isMenuVisible, keyConfig]);
+
+  useKeyboardKeyPressAnimation();
 
   return (
     <div className={styles.GameContainer}>
