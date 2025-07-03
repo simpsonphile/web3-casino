@@ -6,6 +6,8 @@ const POSSIBLE_MODES = ["third-person", "first-person", "top-down"];
 const CAMERA_ROTATION_LAG_SPEED = 7.5;
 const FOV_LAG_SPEED = 10;
 const OFFSET_LERP_SPEED = 10;
+const MAX_LERP_SPEED_MULTIPLIER = 10;
+const LERP_RAMP_SPEED = 1.0;
 
 const CAMERA_CONFIG = {
   modes: {
@@ -140,10 +142,24 @@ class ActorCamera extends THREE.PerspectiveCamera {
 
   updateCameraPosition(deltaTime) {
     const desired = this.getBasePosition().add(this.getOffset());
-    const adjusted =
+    const { position: adjusted, isColliding } =
       this.collisionController.getAdjustedCameraPosition(desired);
 
-    this.position.lerp(adjusted, 1 - Math.exp(-OFFSET_LERP_SPEED * deltaTime));
+    if (isColliding) {
+      this.notCollidingTime = 0;
+    } else {
+      this.notCollidingTime = (this.notCollidingTime || 0) + deltaTime;
+    }
+
+    const multiplier = Math.min(
+      MAX_LERP_SPEED_MULTIPLIER,
+      1 +
+        (this.notCollidingTime / LERP_RAMP_SPEED) *
+          (MAX_LERP_SPEED_MULTIPLIER - 1)
+    );
+    const lerpSpeed = OFFSET_LERP_SPEED * multiplier;
+
+    this.position.lerp(adjusted, 1 - Math.exp(-lerpSpeed * deltaTime));
   }
 
   update(deltaTime) {

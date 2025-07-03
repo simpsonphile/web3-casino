@@ -25,17 +25,19 @@ class CameraCollisionController {
     const hits = this.raycaster.intersectObjects(this.scene.children, true);
 
     for (const hit of hits) {
-      console.log(hit);
       if (hit.object === this.player || hit.object.userData.ignoreCameraClip)
         continue;
 
-      return new THREE.Vector3().addVectors(
-        playerHead,
-        direction.multiplyScalar(hit.distance - this.safetyOffset)
-      );
+      return {
+        position: new THREE.Vector3().addVectors(
+          playerHead,
+          direction.multiplyScalar(hit.distance - this.safetyOffset)
+        ),
+        isColliding: true,
+      };
     }
 
-    return desiredCameraPos;
+    return { isColliding: false, position: desiredCameraPos };
   }
 }
 

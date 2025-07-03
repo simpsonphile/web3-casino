@@ -25,7 +25,6 @@ class CollisionManager {
       }
     });
   }
-  }
 
   check(model, vec) {
     let detectedBox = this._collisions.check(model, vec);
