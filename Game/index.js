@@ -304,23 +304,26 @@ class Game {
   }
 
   initControls() {
+    const handleIntersect = (handlerMethod) => {
+      window.hideTooltip();
+      const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
+      this.interactionHandler[handlerMethod](intersect);
+    };
+
     this.controls = new Controls({
       onKeyDown: (keys) => {
         window.commandManager.executeDown(keys);
+        handleIntersect("handleHover");
       },
       onKeyUp: (key) => {
         window.commandManager.executeUp(key);
       },
       onMouseMove: (event) => {
-        window.hideTooltip();
         this.actorCamera.updateCameraRotation(event.movementX, event.movementY);
-
-        const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        this.interactionHandler.handleHover(intersect);
+        handleIntersect("handleHover");
       },
       onMouseClick: () => {
-        const intersect = this.raycaster.getIntersectsFromRaycaster()[0];
-        this.interactionHandler.handleClick(intersect);
+        handleIntersect("handleClick");
       },
       onWheel: (dir) => {
         if (dir === "up") {

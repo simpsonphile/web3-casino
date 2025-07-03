@@ -1,5 +1,13 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
+import { animateButtonClick, setEmissionPower } from "@Game/animations";
+
+const ELEMENT_NAMES = [
+  "button_auto_spin",
+  "button_decrease",
+  "button_raise",
+  "button_spin",
+];
 
 class SlotMachineView {
   constructor({ object3d, onReelStart, onReelStop, onSpinStop }) {
@@ -7,15 +15,18 @@ class SlotMachineView {
     this._onReelStart = onReelStart;
     this._onReelStop = onReelStop;
     this._onSpinStop = onSpinStop;
-    this.getReels();
+
+    this.getElements();
   }
 
-  getReels() {
+  getElements() {
+    this.elements = {};
     this.reels = [];
     this.object3d.traverse((child) => {
       if (child.name.includes("slot_reel")) {
         this.reels.push({ el: child, spinTarget: 0 });
-      }
+      } else if (ELEMENT_NAMES.includes(child.userData.name))
+        this.elements[child.userData.name] = child;
     });
   }
 
@@ -63,6 +74,29 @@ class SlotMachineView {
 
       this.reels[i].isSpinning = true;
     });
+  }
+
+  autoSpinClick(state) {
+    const el = this.elements.button_auto_spin;
+
+    animateButtonClick(el, 0.01);
+    if (state) {
+      setEmissionPower(el, 10);
+    } else {
+      restoreEmissionPower(el);
+    }
+  }
+
+  spinClick() {
+    animateButtonClick(this.elements.button_spin, 0.01);
+  }
+
+  raiseClick() {
+    animateButtonClick(this.elements.button_raise, 0.01);
+  }
+
+  decreaseClick() {
+    animateButtonClick(this.elements.button_decrease, 0.01);
   }
 }
 export default SlotMachineView;

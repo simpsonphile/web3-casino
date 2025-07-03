@@ -32,6 +32,11 @@ class SlotMachineController {
     this.slotsStore.setVisible(true);
   }
 
+  spinOnce() {
+    this.view.spinClick();
+    this.spinRand();
+  }
+
   spin(combination) {
     this.view.spin(combination);
   }
@@ -55,6 +60,8 @@ class SlotMachineController {
   toggleAutoSpin() {
     this.isAutoSpinToggled = !this.isAutoSpinToggled;
 
+    this.view.autoSpinClick(this.isAutoSpinToggled);
+
     if (this.isAutoSpinToggled) {
       this.spinRand();
     }
@@ -71,12 +78,14 @@ class SlotMachineController {
 
   increaseBet() {
     this.slotsStore.increaseBet();
+    this.view.raiseClick();
   }
 
   decreaseBet() {
     if (this.getSlotStoreState().bet > 0) {
       this.slotsStore.decreaseBet();
     }
+    this.view.decreaseClick();
   }
 
   goBack() {

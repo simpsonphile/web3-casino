@@ -25,8 +25,8 @@ const CAMERA_CONFIG = {
       fov: 60,
       sprintFov: 90,
       pitchLimits: {
-        min: THREE.MathUtils.degToRad(-60),
-        max: THREE.MathUtils.degToRad(15),
+        min: THREE.MathUtils.degToRad(-90),
+        max: THREE.MathUtils.degToRad(30),
       },
     },
     "top-down": {

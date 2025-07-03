@@ -43,7 +43,7 @@ class SlotMachineInteraction {
 
   onClickSpin() {
     if (!window.commandManager.checkIfModeEnabled("slotMachine")) return;
-    this.controller.spinRand();
+    this.controller.spinOnce();
   }
 
   onMouseOverAutoSpin() {

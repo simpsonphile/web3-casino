@@ -13,7 +13,7 @@ class SlotMachineCommands {
       this.keys.slotMachine.spin,
       null,
       () => {
-        this.slotMachineController.spinRand();
+        this.slotMachineController.spinOnce();
       }
     );
 
