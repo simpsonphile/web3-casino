@@ -40,7 +40,7 @@ class InteractionHandler {
   }
 
   getObjectInteractionType(object) {
-    return object.userData.interactionType;
+    return object?.userData?.interactionType;
   }
 
   registerInteraction(name, type, handler) {

@@ -1,5 +1,6 @@
 import PlayableCharacterAnimation from "./PlayableCharacterAnimation";
 import PlayableCharacterMovement from "./PlayableCharacterMovement";
+import * as THREE from "three";
 
 class PlayableCharacter {
   constructor({
@@ -11,7 +12,7 @@ class PlayableCharacter {
     onAfterMovement,
   }) {
     this.model = model;
-    this.model.traverse((child) => child.layers.set(2));
+    this.model.traverse((child) => child.layers.set(1));
     this._animation = new PlayableCharacterAnimation({
       model,
       onAnimation,
@@ -28,7 +29,9 @@ class PlayableCharacter {
           y: rotation.y,
           z: rotation.z,
         }),
-      onBeforeMovmentIDK: this._animation.runGoAnimation.bind(this._animation),
+      onBeforeMovementAnimation: this._animation.runGoAnimation.bind(
+        this._animation
+      ),
       animationManager: this._animation,
     });
 
@@ -74,6 +77,29 @@ class PlayableCharacter {
 
   moveTo(vec) {
     this._movement.moveTo(vec);
+  }
+
+  updateMovementState({ up, down, left, right }) {
+    const dir = new THREE.Vector3();
+
+    if (up) dir.add(this._movement.getForwardVector());
+    if (down) dir.add(this._movement.getBackwardVector());
+    if (left) dir.add(this._movement.getLeftVector());
+    if (right) dir.add(this._movement.getRightVector());
+
+    if (dir.lengthSq() > 0) {
+      this.moveInDirection(dir.normalize());
+    } else {
+      this.beIdle();
+    }
+  }
+
+  moveInDirection(dir) {
+    this._animation.runGoAnimation();
+    this._movement.rotate(dir);
+    this._movement.moveBy(
+      dir.clone().normalize().multiplyScalar(this._movement.getSpeed())
+    );
   }
 
   beIdle() {

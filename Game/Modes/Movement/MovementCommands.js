@@ -3,6 +3,24 @@ class MovementCommands {
     this.keys = window.keyConfigStore.getState().keyConfig.keyConfig;
 
     this.addCommands();
+
+    // move these to sep class
+    this.activeKeys = {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+    };
+
+    window.deltaUpdater.add(() => {
+      window.player.updateMovementState({ ...this.activeKeys });
+    });
+  }
+
+  setKey(key, state) {
+    if (key in this.activeKeys) {
+      this.activeKeys[key] = !!state;
+    }
   }
 
   addCommands() {
@@ -10,29 +28,29 @@ class MovementCommands {
       "movement",
       "up",
       this.keys.movement.up,
-      window.player.goForward.bind(window.player),
-      window.player.beIdle.bind(window.player)
+      () => this.setKey("up", true),
+      () => this.setKey("up", false)
     );
     window.commandManager.addCommand(
       "movement",
       "left",
       this.keys.movement.left,
-      window.player.goLeft.bind(window.player),
-      window.player.beIdle.bind(window.player)
+      () => this.setKey("left", true),
+      () => this.setKey("left", false)
     );
     window.commandManager.addCommand(
       "movement",
       "right",
       this.keys.movement.right,
-      window.player.goRight.bind(window.player),
-      window.player.beIdle.bind(window.player)
+      () => this.setKey("right", true),
+      () => this.setKey("right", false)
     );
     window.commandManager.addCommand(
       "movement",
       "down",
       this.keys.movement.down,
-      window.player.goBackward.bind(window.player),
-      window.player.beIdle.bind(window.player)
+      () => this.setKey("down", true),
+      () => this.setKey("down", false)
     );
     window.commandManager.addCommand(
       "movement",

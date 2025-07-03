@@ -6,7 +6,7 @@ class PlayableCharacterMovement {
     camera,
     onBeforeMovement,
     onAfterMovement,
-    onBeforeMovmentIDK,
+    onBeforeMovementAnimation,
     onRotation,
     animationManager,
   }) {
@@ -14,7 +14,7 @@ class PlayableCharacterMovement {
     this._camera = camera;
     this._onBeforeMovement = onBeforeMovement;
     this._onAfterMovement = onAfterMovement;
-    this._onBeforeMovmentIDK = onBeforeMovmentIDK;
+    this._onBeforeMovementAnimation = onBeforeMovementAnimation;
     this._onRotation = onRotation;
 
     this._isDropping = false;
@@ -56,7 +56,7 @@ class PlayableCharacterMovement {
 
   // --- High-Level Movement Commands ---
   go(direction) {
-    this._onBeforeMovmentIDK();
+    this._onBeforeMovementAnimation();
     this.rotate(direction);
     this.moveBy(direction.multiplyScalar(this.getSpeed()));
   }
