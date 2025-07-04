@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
-import { animateButtonClick, setEmissionPower } from "@Game/animations";
+import {
+  animateButtonClick,
+  setEmissionPower,
+  restoreEmissionPower,
+} from "@Game/animations";
 
 const ELEMENT_NAMES = [
   "button_auto_spin",
