@@ -88,4 +88,12 @@ export default defineConfig([
       },
     },
   },
+  {
+    files: ["**/*.test.js"],
+    env: {
+      jest: true,
+    },
+    plugins: ["jest"],
+    extends: ["plugin:jest/recommended"],
+  },
 ]);

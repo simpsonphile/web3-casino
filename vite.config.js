@@ -23,6 +23,13 @@ export default defineConfig(() => {
       },
       react(),
     ],
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./setupTests.js",
+      include: ["**/*.test.js", "**/*.spec.js"],
+      root: ".",
+    },
     resolve: {
       alias: {
         "@Game": path.resolve(__dirname, "./Game"),

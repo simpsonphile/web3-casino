@@ -50,6 +50,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
     "server:dev": "node Server",
     "contracts:deploy": "npm --prefix ./Contracts run deploy",
     "contracts:deploy:testnet": "npm --prefix ./Contracts run deploy:testnet",
@@ -89,7 +91,9 @@
     "eslint-plugin-prettier": "^5.4.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.2.0",
+    "jsdom": "^26.1.0",
     "prettier": "^3.5.3",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.4"
   }
 }
