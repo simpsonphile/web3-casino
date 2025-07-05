@@ -17,7 +17,7 @@ export async function addToAddressBalance(account, amount) {
   try {
     const tx = await getCasinoContract().addToAddressBalance(
       account,
-      parseEther(amount.toString)
+      parseEther(amount.toString())
     );
     await tx.wait();
     return { success: true, txHash: tx.hash };
