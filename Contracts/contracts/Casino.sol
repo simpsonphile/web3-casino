@@ -25,6 +25,8 @@ contract Casino {
     event Deposit(address indexed account, uint256 amount);
     event Withdraw(address indexed account, uint256 amount);
     event GameAdded(address indexed gameAddress);
+    event BalanceAdded(address indexed account, uint256 amount);
+    event BalanceRemoved(address indexed account, uint256 amount);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner");
@@ -105,6 +107,7 @@ contract Casino {
             "Insufficient user balance"
         );
         casinoToken.burn(_account, _amount);
+        emit BalanceRemoved(_account, _amount);
     }
 
     function addToAddressBalance(
@@ -112,5 +115,6 @@ contract Casino {
         uint256 _amount
     ) public onlySubOwners {
         casinoToken.mint(_account, _amount);
+        emit BalanceAdded(_account, _amount);
     }
 }
