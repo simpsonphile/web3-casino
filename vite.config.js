@@ -37,6 +37,7 @@ export default defineConfig(() => {
         "@Front": path.resolve(__dirname, "./Front/src"),
         "@Assets": path.resolve(__dirname, "./Front/assets"),
         "@MiniGames": path.resolve(__dirname, "./Mini-games"),
+        "@Contract-hooks": path.resolve(__dirname, "./Contract-hooks"),
       },
     },
     optimizeDeps: {

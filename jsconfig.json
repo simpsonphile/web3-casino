@@ -5,7 +5,8 @@
       "@Common/*": ["./Common/*"],
       "@Front/*": ["./Front/src/*"],
       "@Assets/*": ["./Front/assets/*"],
-      "@MiniGames/*": ["./Mini-games/*"]
+      "@MiniGames/*": ["./Mini-games/*"],
+      "@Contract-hooks/*": ["./Contract-hooks/*"]
     }
   }
 }
