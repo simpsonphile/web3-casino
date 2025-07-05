@@ -1,33 +1,26 @@
-import AuthRoom from "./AuthRoom.js";
-import { CLIENT_MESSAGES } from "../messageTypes.js";
-import SlotMachineState from "../states/SlotMachineState.js";
+import AuthRoom from "../../rooms/AuthRoom.js";
+import { CLIENT_MESSAGES } from "./SlotMachineMessages.js";
+import SlotMachineState from "./SlotMachineState.js";
 
 import { Dispatcher } from "@colyseus/command";
 import { SpinCommand } from "./commands/SpinCommand.js";
-import User from "../../database/models/User.js";
+import { JoinCommand } from "./commands/JoinCommand.js";
 
 class SlotMachineRoom extends AuthRoom {
   onCreate() {
     this.dispatcher = new Dispatcher(this);
     this.setState(new SlotMachineState());
 
-    this.onMessage(CLIENT_MESSAGES.SPIN, (bet) => {
+    this.onMessage(CLIENT_MESSAGES.SPIN, (client, bet) => {
       this.dispatcher.dispatch(new SpinCommand(), {
         bet,
+        client,
       });
     });
   }
 
   async onJoin(client, options) {
-    if (this.state.player) {
-      client.leave();
-    }
-
-    const { address, asGuest, nickname } = options;
-    const user = asGuest ? { nickname } : await User.findOne({ address });
-
-    this.state.player = client.sessionId;
-    this.state.balance = user.balance;
+    this.dispatcher.dispatch(new JoinCommand(), { client, options });
   }
 
   onLeave() {

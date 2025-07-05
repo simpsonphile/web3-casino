@@ -1,3 +1,4 @@
+import { formatEther, parseEther } from "ethers";
 import { Casino__factory } from "../../Contracts/typechain-js/index.js";
 import { getSigner } from "../utilis/blockchainProvider.js";
 
@@ -9,25 +10,66 @@ const getCasinoContract = () => {
 };
 
 export async function addToAddressBalance(account, amount) {
-  const tx = await getCasinoContract().addToAddressBalance(account, amount);
-  await tx.wait();
-  console.log(`Minted ${amount} tokens to ${account}`);
+  if (typeof amount !== "number") {
+    return { success: false };
+  }
+
+  try {
+    const tx = await getCasinoContract().addToAddressBalance(
+      account,
+      parseEther(amount.toString)
+    );
+    await tx.wait();
+    return { success: true, txHash: tx.hash };
+  } catch (err) {
+    return { success: false, error: err.message || err };
+  }
 }
 
 export async function getFromAddressBalance(account, amount) {
-  const tx = await getCasinoContract().getFromAddressBalance(account, amount);
-  await tx.wait();
-  console.log(`Burned ${amount} tokens from ${account}`);
+  if (typeof amount !== "number") {
+    return { success: false };
+  }
+
+  try {
+    const tx = await getCasinoContract().getFromAddressBalance(
+      account,
+      parseEther(amount.toString())
+    );
+    await tx.wait();
+    return { success: true, txHash: tx.hash };
+  } catch (err) {
+    return { success: false, error: err.message || err };
+  }
 }
 
 export async function checkAddressBalance(account) {
-  const balance = await getCasinoContract().getBalanceOf(account);
+  try {
+    const balance = await getCasinoContract().getBalanceOf(account);
 
-  return balance;
+    return balance;
+  } catch (err) {
+    return null;
+  }
 }
 
 export async function checkCasinoBalance() {
-  const balance = await getCasinoContract().getCasinoBalance();
+  try {
+    const balance = await getCasinoContract().getCasinoBalance();
 
-  return balance;
+    return balance;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function getParsedAddressBalance(account) {
+  try {
+    const balance = await checkAddressBalance(account);
+
+    if (balance) return Number(formatEther(balance));
+    return 0;
+  } catch (err) {
+    return null;
+  }
 }

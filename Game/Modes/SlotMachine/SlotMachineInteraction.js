@@ -33,7 +33,7 @@ class SlotMachineInteraction {
     seatPos.y = 0;
     this.game.player.moveTo(seatPos);
     this.game.interactionHandler.setState(false);
-    this.controller.join({ object3d: obj });
+    this.controller.join({ object3d: obj, roomId: "todo" });
   }
 
   onMouseOverSpin() {

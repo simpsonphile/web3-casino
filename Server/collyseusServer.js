@@ -1,8 +1,11 @@
+import colyseus from "colyseus";
+
 import GameRoom from "./features/game/GameRoom.js";
 import ChatRoom from "./features/chat/ChatRoom.js";
 import BlackjackRoom from "./features/blackjack/BlackjackRoom.js";
+import SlotMachineRoom from "./features/slotMachine/SlotMachineRoom.js";
+
 import { monitor } from "@colyseus/monitor";
-import colyseus from "colyseus";
 
 const createCollyseusServer = (app, server) => {
   const port = 2567;
@@ -18,6 +21,7 @@ const createCollyseusServer = (app, server) => {
   gameServer.define("game_room", GameRoom);
   gameServer.define("chat_room", ChatRoom);
   gameServer.define("blackjack", BlackjackRoom).filterBy(["id"]);
+  gameServer.define("slots", SlotMachineRoom).filterBy(["id"]);
 
   // Start the server
   gameServer.listen(port);

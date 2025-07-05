@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 interface ICasinoCoin is IERC20 {
     function mint(address to, uint256 amount) external;
 
-    function burnFrom(address account, uint256 amount) external;
+    function burn(address account, uint256 amount) external;
 }
 
 contract CasinoCoin is ERC20, ERC20Burnable, Ownable {

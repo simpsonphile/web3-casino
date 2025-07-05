@@ -1,5 +1,5 @@
 import { useAccount, useBalance } from "wagmi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useReadCasinoNativeToChipRate,
   useWriteCasinoDeposit,
@@ -10,6 +10,7 @@ import InputWithCurrency from "../InputWithCurrency";
 import InputToken from "../InputToken";
 import useKeyPress from "./useKeyPress";
 import Footer from "./Footer";
+import { toaster } from "../toaster";
 
 const Deposit = () => {
   const [value, setValue] = useState("0");
@@ -21,7 +22,7 @@ const Deposit = () => {
   const isLoaded =
     typeof balance.value === "bigint" && typeof rate === "bigint";
 
-  const { writeContract } = useWriteCasinoDeposit();
+  const { writeContract, isSuccess } = useWriteCasinoDeposit();
 
   const send = () => {
     console.log("we should send", parseEther(value));
@@ -29,6 +30,17 @@ const Deposit = () => {
   };
 
   useKeyPress({ value, onChange: setValue, onEnter: send, max });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toaster.create({
+        type: "success",
+        title: "Success",
+        description: "funds deposited to your casino account",
+      });
+      setValue("0");
+    }
+  }, [isSuccess]);
 
   if (!isLoaded) return null;
 
@@ -50,7 +62,7 @@ const Deposit = () => {
       <GridItem>
         <Field.Root>
           <Field.Label>You get</Field.Label>
-          <InputToken value={value / formatEther(rate)} readOnly />
+          <InputToken value={value * Number(rate)} readOnly />
         </Field.Root>
       </GridItem>
 

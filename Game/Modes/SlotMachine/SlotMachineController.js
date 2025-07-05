@@ -16,12 +16,26 @@ class SlotMachineController {
     window.soundPlayer.playSound("reelStop");
   }
   _onSpinStop() {
+    if (this.hasWon) {
+      window.soundPlayer.playSound("slotWin");
+    }
     if (this.isAutoSpinToggled) {
-      this.spinRand();
+      setTimeout(
+        () => {
+          if (this.isAutoSpinToggled) {
+            this.spin();
+          }
+        },
+        this.hasWon ? 2000 : 0
+      );
     }
   }
 
-  join({ object3d }) {
+  getRemote() {
+    return window.repo.get("slots");
+  }
+
+  join({ object3d, roomId }) {
     this.view = new SlotMachineView({
       object3d,
       onReelStart: this._onReelStart.bind(this),
@@ -29,32 +43,32 @@ class SlotMachineController {
       onSpinStop: this._onSpinStop.bind(this),
     });
 
+    this.getRemote().connect({
+      id: roomId,
+      onJoin: () => {},
+      onRoomFull: () => {},
+      onNotEnoughFounds: () => console.log("not enough founds"),
+      onSpinResult: this.onSpinResult.bind(this),
+    });
+
     this.slotsStore.setVisible(true);
   }
 
   spinOnce() {
     this.view.spinClick();
-    this.spinRand();
+    this.spin();
   }
 
-  spin(combination) {
-    this.view.spin(combination);
+  spin() {
+    if (!this.view.isSpinning()) {
+      this.getRemote().spin(this.getSlotStoreState().bet);
+    }
   }
 
-  spinRand() {
-    const getRandomBetween = (min, max) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
+  onSpinResult({ combo, payout }) {
+    this.view.spin(combo);
 
-    const slots = [
-      getRandomBetween(0, 14),
-      getRandomBetween(0, 14),
-      getRandomBetween(0, 14),
-      getRandomBetween(0, 14),
-      getRandomBetween(0, 14),
-    ];
-
-    this.spin(slots.join(","));
+    this.hasWon = payout > 0;
   }
 
   toggleAutoSpin() {
@@ -63,11 +77,12 @@ class SlotMachineController {
     this.view.autoSpinClick(this.isAutoSpinToggled);
 
     if (this.isAutoSpinToggled) {
-      this.spinRand();
+      this.spin();
     }
   }
 
   leave() {
+    this.getRemote().disconnect();
     this.slotsStore.setVisible(false);
     this.isAutoSpinToggled = false;
   }

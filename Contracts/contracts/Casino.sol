@@ -75,7 +75,7 @@ contract Casino {
             "Insufficient contract balance"
         );
 
-        casinoToken.burnFrom(msg.sender, amount);
+        casinoToken.burn(msg.sender, amount);
 
         payable(msg.sender).transfer(nativeAmount);
 
@@ -104,7 +104,7 @@ contract Casino {
             casinoToken.balanceOf(_account) >= _amount,
             "Insufficient user balance"
         );
-        casinoToken.burnFrom(_account, _amount);
+        casinoToken.burn(_account, _amount);
     }
 
     function addToAddressBalance(

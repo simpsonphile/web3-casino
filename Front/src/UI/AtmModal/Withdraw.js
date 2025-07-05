@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   useReadCasinoGetBalance,
   useReadCasinoNativeToChipRate,
+  useReadCasinoOwner,
   useWriteCasinoWithdraw,
 } from "../../../../Contract-hooks/generated";
 import { parseEther, formatEther } from "viem";
@@ -17,6 +18,7 @@ const Withdraw = () => {
   const [value, setValue] = useState("0");
   const { data: balance } = useReadCasinoGetBalance();
   const { data: rate } = useReadCasinoNativeToChipRate();
+  const data = useReadCasinoOwner();
   const isLoaded = typeof balance === "bigint" && typeof rate === "bigint";
 
   const { writeContract, isSuccess } = useWriteCasinoWithdraw();
@@ -29,6 +31,7 @@ const Withdraw = () => {
         title: "Success",
         description: "funds withdrawn to your wallet",
       });
+      setValue("0");
     }
   }, [isSuccess]);
 
@@ -41,7 +44,7 @@ const Withdraw = () => {
   });
 
   if (!isLoaded) return null;
-  const valueInCurrency = value * Number(formatEther(rate));
+  const valueInCurrency = value * Number(rate);
 
   return (
     <Grid gap={2}>
