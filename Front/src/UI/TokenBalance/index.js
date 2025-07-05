@@ -3,9 +3,13 @@ import { useReadCasinoGetBalance } from "../../../../Contract-hooks/generated";
 import CasinoChip from "../CasinoChip";
 import style from "./index.module.scss";
 
+import useBalanceUpdater from "./useBalanceUpdater";
+
 // make guest having tokens too
 const TokenBalance = () => {
-  const { data } = useReadCasinoGetBalance();
+  const { data, refetch } = useReadCasinoGetBalance();
+
+  useBalanceUpdater(refetch);
 
   if (typeof data !== "bigint") return null;
   return (

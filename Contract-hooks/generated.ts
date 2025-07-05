@@ -192,6 +192,44 @@ export const casinoAbi = [
         indexed: false,
       },
     ],
+    name: 'BalanceAdded',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'BalanceRemoved',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
     name: 'Deposit',
   },
   {
@@ -1066,7 +1104,7 @@ export const iCasinoCoinAbi = [
       { name: 'account', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
     ],
-    name: 'burnFrom',
+    name: 'burn',
     outputs: [],
     stateMutability: 'nonpayable',
   },
@@ -2201,6 +2239,30 @@ export const useWatchCasinoEvent = /*#__PURE__*/ createUseWatchContractEvent({
 })
 
 /**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link casinoAbi}__ and `eventName` set to `"BalanceAdded"`
+ *
+ *
+ */
+export const useWatchCasinoBalanceAddedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: casinoAbi,
+    address: casinoAddress,
+    eventName: 'BalanceAdded',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link casinoAbi}__ and `eventName` set to `"BalanceRemoved"`
+ *
+ *
+ */
+export const useWatchCasinoBalanceRemovedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: casinoAbi,
+    address: casinoAddress,
+    eventName: 'BalanceRemoved',
+  })
+
+/**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link casinoAbi}__ and `eventName` set to `"Deposit"`
  *
  *
@@ -3036,11 +3098,12 @@ export const useWriteICasinoCoinApprove = /*#__PURE__*/ createUseWriteContract({
 })
 
 /**
- * Wraps __{@link useWriteContract}__ with `abi` set to __{@link iCasinoCoinAbi}__ and `functionName` set to `"burnFrom"`
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link iCasinoCoinAbi}__ and `functionName` set to `"burn"`
  */
-export const useWriteICasinoCoinBurnFrom = /*#__PURE__*/ createUseWriteContract(
-  { abi: iCasinoCoinAbi, functionName: 'burnFrom' },
-)
+export const useWriteICasinoCoinBurn = /*#__PURE__*/ createUseWriteContract({
+  abi: iCasinoCoinAbi,
+  functionName: 'burn',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link iCasinoCoinAbi}__ and `functionName` set to `"mint"`
@@ -3083,12 +3146,12 @@ export const useSimulateICasinoCoinApprove =
   })
 
 /**
- * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link iCasinoCoinAbi}__ and `functionName` set to `"burnFrom"`
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link iCasinoCoinAbi}__ and `functionName` set to `"burn"`
  */
-export const useSimulateICasinoCoinBurnFrom =
+export const useSimulateICasinoCoinBurn =
   /*#__PURE__*/ createUseSimulateContract({
     abi: iCasinoCoinAbi,
-    functionName: 'burnFrom',
+    functionName: 'burn',
   })
 
 /**

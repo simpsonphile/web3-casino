@@ -49,6 +49,7 @@ const getDefaultKeyConfig = () => ({
     exit: ["KeyE"],
     withdraw: ["KeyQ"],
     deposit: ["KeyR"],
+    history: ["KeyH"],
     delete: ["Backspace"],
     accept: ["Enter"],
   },

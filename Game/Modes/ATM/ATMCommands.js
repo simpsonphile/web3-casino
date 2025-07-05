@@ -35,6 +35,15 @@ class ATMCommands {
         this.controller.setStep("withdraw");
       }
     );
+    window.commandManager.addCommand(
+      "atm",
+      "history",
+      this.keys.atm.history,
+      null,
+      () => {
+        this.controller.setStep("history");
+      }
+    );
   }
 }
 

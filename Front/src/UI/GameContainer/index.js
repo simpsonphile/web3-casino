@@ -6,7 +6,7 @@ import RemoteChat from "@Common/Remote/Chat";
 import Remote from "@Common/Remote";
 import Footer from "../Footer";
 import { useAccount } from "wagmi";
-import AtmModal from "../AtmModal";
+import CasinoKiosk from "@Front/UI/CasinoKiosk";
 import GameTooltip from "../GameTooltip";
 import BlackjackUI from "../../BlackjackUI";
 import SlotsUI from "../../SlotsUI";
@@ -116,7 +116,7 @@ const GameContainer = () => {
         )}
       </Footer>
 
-      <AtmModal />
+      <CasinoKiosk />
 
       <GameTooltip />
 

@@ -14,6 +14,7 @@
     "start": "npx hardhat node",
     "deploy": "rimraf ./ignition/deployments && npx hardhat run ./ignition/scripts/deploy.js --network localhost",
     "deploy:testnet": "rimraf ./ignition/deployments && npx hardhat run ./ignition/scripts/deploy.js --network sepolia",
+    "build-typechain": "tsc",
     "test": "npx hardhat test",
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol"
   },
