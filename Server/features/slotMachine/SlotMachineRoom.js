@@ -19,6 +19,11 @@ class SlotMachineRoom extends AuthRoom {
     });
   }
 
+  onAuth() {
+    if (this.state.player) return false;
+    return true;
+  }
+
   async onJoin(client, options) {
     this.dispatcher.dispatch(new JoinCommand(), { client, options });
   }

@@ -6,29 +6,48 @@ class RemoteSlots {
     this.options = options;
   }
 
-  async connect({ id, onJoin, onRoomFull, onNotEnoughFounds, onSpinResult }) {
-    this._room = await this._client.joinOrCreate("slots", {
-      ...this.options,
-      id,
-    });
+  async connect({
+    id,
+    onJoin,
+    onRoomFull,
+    onNotEnoughFounds,
+    onSpinResult,
+    balance,
+  }) {
+    try {
+      this._room = await this._client.joinOrCreate("slots", {
+        ...this.options,
+        balance,
+        id,
+      });
+    } catch {
+      return false;
+    }
 
     this.sessionId = this._room.sessionId;
 
-    this._room.onMessage(SERVER_MESSAGES.slots.ON_SUCCESSFUL_JOIN, (data) =>
-      onJoin(data)
-    );
+    this._registerMessageHandlers({
+      onJoin,
+      onRoomFull,
+      onNotEnoughFounds,
+      onSpinResult,
+    });
 
-    this._room.onMessage(SERVER_MESSAGES.slots.ROOM_FULL, (data) =>
-      onRoomFull(data)
-    );
+    return true;
+  }
 
-    this._room.onMessage(SERVER_MESSAGES.slots.NOT_ENOUGH_FOUNDS, (data) =>
-      onNotEnoughFounds(data)
-    );
+  _registerMessageHandlers({
+    onJoin,
+    onRoomFull,
+    onNotEnoughFounds,
+    onSpinResult,
+  }) {
+    const { slots } = SERVER_MESSAGES;
 
-    this._room.onMessage(SERVER_MESSAGES.slots.SPIN_RESULT, (data) =>
-      onSpinResult(data)
-    );
+    this._room.onMessage(slots.ON_SUCCESSFUL_JOIN, onJoin);
+    this._room.onMessage(slots.ROOM_FULL, onRoomFull);
+    this._room.onMessage(slots.NOT_ENOUGH_FOUNDS, onNotEnoughFounds);
+    this._room.onMessage(slots.SPIN_RESULT, onSpinResult);
   }
 
   disconnect() {

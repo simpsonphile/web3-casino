@@ -5,7 +5,7 @@ import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import { useAtmStore } from "../../stores/atmStore";
 import { Heading } from "@chakra-ui/react";
-import DepositHistory from "./DepositHistory";
+import History from "./History";
 
 const AtmModal = () => {
   const { isVisible, step } = useAtmStore();
@@ -34,7 +34,7 @@ const AtmModal = () => {
       case "withdraw":
         return <Withdraw />;
       case "history":
-        return <DepositHistory />;
+        return <History />;
     }
   };
 

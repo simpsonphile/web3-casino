@@ -10,6 +10,7 @@ const Welcome = ({ onGuestPlaySelection }) => {
 
   const setupGuest = () => {
     setGuestUser();
+
     onGuestPlaySelection();
   };
 

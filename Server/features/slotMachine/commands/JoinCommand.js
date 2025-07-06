@@ -5,12 +5,12 @@ import { getParsedAddressBalance } from "../../../contracts/casino.js";
 
 export class JoinCommand extends Command {
   async execute({ client, options }) {
-    if (this.state.player) {
-      client.send(SERVER_MESSAGES.ROOM_FULL);
-      return;
-    }
-
-    const { address, asGuest, nickname } = options;
+    const {
+      address,
+      asGuest,
+      balance: guestStartingBalance,
+      nickname,
+    } = options;
     const user = asGuest ? { nickname } : await User.findOne({ address });
 
     this.state.player = client.sessionId;
@@ -20,10 +20,8 @@ export class JoinCommand extends Command {
     if (address) {
       balance = await getParsedAddressBalance(user.address);
     } else {
-      balance = 10000;
+      balance = guestStartingBalance;
     }
-
-    console.log(balance);
 
     this.state.setBalance(balance);
     this.state.asGuest = !!asGuest;

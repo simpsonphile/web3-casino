@@ -3,6 +3,7 @@ import SlotMachineView from "./SlotMachineView";
 class SlotMachineController {
   constructor() {
     this.slotsStore = window.slotsStore.getState();
+    this.userStore = window.userStore.getState();
   }
 
   getSlotStoreState() {
@@ -29,13 +30,27 @@ class SlotMachineController {
         this.hasWon ? 2000 : 0
       );
     }
+    this.userStore.refreshBalance();
   }
 
   getRemote() {
     return window.repo.get("slots");
   }
 
-  join({ object3d, roomId }) {
+  async join({ object3d, roomId }) {
+    const success = await this.getRemote().connect({
+      id: roomId,
+      balance: window.userStore.getState().guestBalance,
+      onJoin: () => {},
+      onRoomFull: () => console.log("room full"),
+      onNotEnoughFounds: () => console.log("not enough founds"),
+      onSpinResult: this.onSpinResult.bind(this),
+    });
+
+    if (!success) {
+      return false;
+    }
+
     this.view = new SlotMachineView({
       object3d,
       onReelStart: this._onReelStart.bind(this),
@@ -43,15 +58,8 @@ class SlotMachineController {
       onSpinStop: this._onSpinStop.bind(this),
     });
 
-    this.getRemote().connect({
-      id: roomId,
-      onJoin: () => {},
-      onRoomFull: () => {},
-      onNotEnoughFounds: () => console.log("not enough founds"),
-      onSpinResult: this.onSpinResult.bind(this),
-    });
-
     this.slotsStore.setVisible(true);
+    return true;
   }
 
   spinOnce() {
@@ -61,7 +69,9 @@ class SlotMachineController {
 
   spin() {
     if (!this.view.isSpinning()) {
-      this.getRemote().spin(this.getSlotStoreState().bet);
+      const bet = this.getSlotStoreState().bet;
+      this.getRemote().spin(bet);
+      this.userStore.addToGuestBalance(-bet);
     }
   }
 
@@ -69,6 +79,7 @@ class SlotMachineController {
     this.view.spin(combo);
 
     this.hasWon = payout > 0;
+    this.userStore.addToGuestBalance(payout);
   }
 
   toggleAutoSpin() {

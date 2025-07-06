@@ -19,21 +19,26 @@ class SlotMachineInteraction {
     return this.getObj(obj.parent);
   }
 
-  onClick(data) {
+  async onClick(data) {
     if (data.distance > 6) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
     const obj = this.getObj(data.object);
-    const seatPos = new THREE.Vector3(0, 0, -0.5);
-    seatPos.applyMatrix4(obj.matrixWorld);
+    const roomId = obj.parent.userData.slot_machine_id;
 
-    window.commandManager.setMode(["slotMachine"]);
-
-    this.game.player.switchCameraMode("first-person");
-    seatPos.y = 0;
-    this.game.player.moveTo(seatPos);
     this.game.interactionHandler.setState(false);
-    this.controller.join({ object3d: obj, roomId: "todo" });
+    const hasJoined = await this.controller.join({ object3d: obj, roomId });
+
+    if (hasJoined) {
+      const seatPos = new THREE.Vector3(0, 0, -0.5);
+      seatPos.applyMatrix4(obj.matrixWorld);
+
+      window.commandManager.setMode(["slotMachine"]);
+
+      this.game.player.switchCameraMode("first-person");
+      seatPos.y = 0;
+      this.game.player.moveTo(seatPos);
+    }
   }
 
   onMouseOverSpin() {
