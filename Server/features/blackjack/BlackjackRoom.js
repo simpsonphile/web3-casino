@@ -72,6 +72,11 @@ class BlackjackRoom extends AuthRoom {
     }, 1000);
   }
 
+  onAuth() {
+    if (this.state.order.length >= 5) return false;
+    return true;
+  }
+
   async onJoin(client, options) {
     this.dispatcher.dispatch(new JoinCommand(), { client, options });
   }

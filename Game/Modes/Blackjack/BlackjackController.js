@@ -27,22 +27,11 @@ class BlackjackController {
     return this.views[name];
   }
 
-  canJoinTable(name) {
-    const view = this.getView(name);
-
-    if (!view) {
-      console.error(`no such table name: ${name}`);
-      return;
-    }
-
-    return view.canJoinTable();
-  }
-
-  join({ objectName, roomId, afterJoin }) {
+  async join({ objectName, roomId, afterJoin }) {
     this.currentViewName = objectName;
     this._afterJoin = afterJoin;
     this.roomId = roomId;
-    this.getRemote().connect({
+    const success = await this.getRemote().connect({
       id: roomId,
       onJoin: this.onJoin.bind(this),
       onNewPlayer: this.onNewPlayer.bind(this),
@@ -60,8 +49,12 @@ class BlackjackController {
       onDeletePlayer: this.onDeletePlayer.bind(this),
     });
 
+    if (!success) return false;
+
     this.blackjackStore.setVisible(true);
     this.blackjackStore.setStep("wait");
+
+    return true;
   }
 
   buildCurrentTable(data) {

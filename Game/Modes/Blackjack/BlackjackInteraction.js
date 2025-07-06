@@ -14,29 +14,20 @@ class BlackjackInteraction {
     if (data.distance > 6) return;
     if (!window.commandManager.checkIfModeEnabled("movement")) return;
 
-    const obj = this.getObj(data.object);
-    const canJoin = this.controller.canJoinTable(obj.name);
-
-    window.showTooltip(
-      canJoin ? t("blackjackTableHover") : t("blackjackTableHoverFull")
-    );
+    window.showTooltip(t("blackjackTableHover"));
   }
 
-  onClick(data) {
+  async onClick(data) {
     if (window.commandManager.checkIfModeEnabled("blackjack")) return;
     if (data.distance > 6) return;
 
     const obj = this.getObj(data.object);
-    const canJoin = this.controller.canJoinTable(obj.name);
 
-    if (!canJoin) return;
-
-    const roomId = obj.userData.blackjack_table_id;
-    window.commandManager.setMode(["blackjack"]);
-    this.game.interactionHandler.setState(false);
+    const roomId = obj.parent.userData.blackjack_table_id;
 
     const sessionId = window.repo.get("blackjack").sessionId;
-    this.controller.join({
+
+    const success = await this.controller.join({
       objectName: obj.name,
       roomId: roomId,
       playerId: sessionId,
@@ -45,6 +36,11 @@ class BlackjackInteraction {
         this.game.player.moveTo(seatPosition);
       },
     });
+
+    if (!success) return;
+
+    window.commandManager.setMode(["blackjack"]);
+    this.game.interactionHandler.setState(false);
   }
 
   registerInteractions() {

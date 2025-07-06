@@ -33,10 +33,6 @@ class BlackjackView {
     return worldPosition;
   }
 
-  canJoinTable() {
-    return this.playerSeats.map(Boolean).some((val) => val === false);
-  }
-
   preparePlayer(id) {
     const meshGroup = new THREE.Group();
     this.players[id] = {
@@ -62,11 +58,6 @@ class BlackjackView {
   }
 
   createPlayer(id) {
-    if (!this.canJoinTable()) {
-      console.error("attempt to create player while table is full");
-      return;
-    }
-
     if (this.playerSeats.includes(id)) {
       console.error("attempt to create player that already exist in table");
       return;

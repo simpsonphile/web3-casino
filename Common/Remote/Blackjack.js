@@ -23,10 +23,15 @@ class RemoteBlackjack {
     onStandAccepted,
     onDeletePlayer,
   }) {
-    this._room = await this._client.joinOrCreate("blackjack", {
-      ...this.options,
-      id,
-    });
+    try {
+      this._room = await this._client.joinOrCreate("blackjack", {
+        ...this.options,
+        id,
+      });
+    } catch {
+      return false;
+    }
+
     this.sessionId = this._room.sessionId;
     this._room.onMessage(SERVER_MESSAGES.blackjack.BLACKJACK_STATE, (data) =>
       onJoin(data)
@@ -92,6 +97,8 @@ class RemoteBlackjack {
         onDeletePlayer(data);
       }
     );
+
+    return true;
   }
 
   disconnect() {
