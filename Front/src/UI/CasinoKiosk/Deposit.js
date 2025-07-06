@@ -22,7 +22,7 @@ const Deposit = () => {
     typeof balance.value === "bigint" && typeof rate === "bigint";
   const max = isLoaded ? formatEther(balance.value * rate) : 0;
 
-  const { writeContract, isSuccess } = useWriteCasinoDeposit();
+  const { writeContract, isSuccess, isError, error } = useWriteCasinoDeposit();
 
   const send = () => {
     if (isLoaded) {
@@ -42,6 +42,15 @@ const Deposit = () => {
       setValue("0");
     }
   }, [isSuccess]);
+  useEffect(() => {
+    if (isError) {
+      toaster.create({
+        type: "error",
+        title: "Error",
+        description: error,
+      });
+    }
+  }, [isError]);
 
   if (!isLoaded) return null;
 
