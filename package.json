@@ -52,16 +52,22 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "server:dev": "node Server",
+    "server:dev": "nodemon Server",
+    "server:start": "node Server",
     "contracts:deploy": "npm --prefix ./Contracts run deploy",
     "contracts:deploy:testnet": "npm --prefix ./Contracts run deploy:testnet",
     "contracts:start": "npm --prefix ./Contracts run start",
+    "contracts:generate-typechain": "npm --prefix ./Contracts run build-typechain",
     "contract-hooks:generate": "npm --prefix ./Contract-hooks run generate",
     "optimize-model": "gltf-transform optimize Front/public/game-assets/models/world.glb Front/public/game-assets/models/world-geometry-optimized.glb",
     "optimize-textures-size": "gltf-transform resize Front/public/game-assets/models/world-geometry-optimized.glb Front/public/game-assets/models/world-geometry-optimized-size.glb --width 1024 --height 1024",
     "optimize-textures": "gltf-transform etc1s Front/public/game-assets/models/world.glb Front/public/game-assets/models/world-optimized.glb --quality 80 --effort 1 --no-mipmaps",
     "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
+    "contracts:build": "npm run contracts:deploy && npm run contracts:generate-typechain || true && npm run contract-hooks:generate",
+    "wait-and-build": "wait-on http://localhost:8545 && npm run contracts:build && npm run start-apps",
+    "start-apps": "concurrently -n BACKEND,FRONTEND -k \"npm run server:dev\" \"npm run dev\"",
+    "dev:full": "concurrently -k -s first -n CONTRACTS, 'npm run contracts:start' 'npm run wait-and-build'"
   },
   "eslintConfig": {
     "extends": [
@@ -85,6 +91,7 @@
     "@gltf-transform/cli": "^4.1.3",
     "@gltf-transform/core": "^4.1.3",
     "@gltf-transform/functions": "^4.1.3",
+    "concurrently": "^9.2.0",
     "dotenv": "^16.5.0",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
@@ -92,8 +99,10 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.2.0",
     "jsdom": "^26.1.0",
+    "nodemon": "^3.1.10",
     "prettier": "^3.5.3",
     "typescript": "^5.6.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "wait-on": "^8.0.3"
   }
 }
