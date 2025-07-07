@@ -52,7 +52,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "server:dev": "nodemon Server",
+    "server:dev": "npx kill-port 2567 && nodemon Server",
     "server:start": "node Server",
     "contracts:deploy": "npm --prefix ./Contracts run deploy",
     "contracts:deploy:testnet": "npm --prefix ./Contracts run deploy:testnet",
