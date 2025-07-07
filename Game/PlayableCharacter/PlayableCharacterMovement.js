@@ -110,7 +110,7 @@ class PlayableCharacterMovement {
 
   updateDrop(delta) {
     // todo maybe move logic to some helper as it can be reused
-    if (!this.isDropping) return;
+    if (!this._isDropping) return;
 
     const gravity = -9.8;
 
@@ -121,7 +121,7 @@ class PlayableCharacterMovement {
     if (newPosY <= this.targetPosition.y) {
       this.model.position.y = this.targetPosition.y;
       this.velocity = 0;
-      this.isDropping = false;
+      this._isDropping = false;
     } else {
       this.model.position.y = newPosY;
     }
