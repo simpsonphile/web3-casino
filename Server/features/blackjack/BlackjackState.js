@@ -20,6 +20,30 @@ class BlackjackState extends Schema {
     this.step = step;
   }
 
+  getBalance(id) {
+    const player = this.players[id];
+
+    if (typeof player.balance === "number") return player.balance;
+
+    console.error(`no player or player with id ${id} has no balance`);
+  }
+
+  getAddress(id) {
+    const player = this.players[id];
+
+    if (player.address) return player.address;
+
+    console.error(`no player or player with id ${id} has no address`);
+  }
+
+  checkIfGuest(id) {
+    const player = this.players[id];
+
+    if (player.asGuest) return player.asGuest;
+
+    console.error(`no player or player with id ${id} has no asGuest`);
+  }
+
   getNickname(id) {
     const player = this.players[id];
 
@@ -28,8 +52,8 @@ class BlackjackState extends Schema {
     console.error(`no player or player with id ${id} has no nickname`);
   }
 
-  addPlayer(id, nickname) {
-    this.players[id] = new BlackjackPlayer(nickname);
+  addPlayer(id, options) {
+    this.players[id] = new BlackjackPlayer(options);
     this.order.push(id);
   }
 
@@ -83,6 +107,7 @@ class BlackjackState extends Schema {
   doubleBet(id) {
     if (!this.currentGame.has(id)) return;
     this.currentGame[id].bet *= 2;
+    this.currentGame[id].isDouble = true;
   }
 
   getBet(id) {
@@ -90,9 +115,25 @@ class BlackjackState extends Schema {
     return this.currentGame[id].bet;
   }
 
+  getPlayerDouble(id) {
+    if (!this.currentGame.has(id)) return;
+    return this.currentGame[id].isDouble;
+  }
+
   getPlayerState(id) {
     if (!this.currentGame.has(id)) return;
     return this.currentGame[id].state;
+  }
+
+  addToBalance(id, payout) {
+    const player = this.players[id];
+
+    if (typeof player.balance === "number") {
+      player.addToBalance(payout);
+      return;
+    }
+
+    console.error(`no player or player with id ${id} has no balance`);
   }
 
   isAllBet() {

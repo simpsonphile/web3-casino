@@ -33,6 +33,7 @@ class BlackjackController {
     this.roomId = roomId;
     const success = await this.getRemote().connect({
       id: roomId,
+      balance: window.userStore.getState().guestBalance,
       onJoin: this.onJoin.bind(this),
       onNewPlayer: this.onNewPlayer.bind(this),
       onNewGame: this.onNewGame.bind(this),
@@ -47,6 +48,8 @@ class BlackjackController {
       onHitAccepted: this.onHitAccepted.bind(this),
       onStandAccepted: this.onStandAccepted.bind(this),
       onDeletePlayer: this.onDeletePlayer.bind(this),
+      onBalanceUpdated: this.onBalanceUpdated.bind(this),
+      onGuestBalanceUpdated: this.onGuestBalanceUpdated.bind(this),
     });
 
     if (!success) return false;
@@ -138,7 +141,7 @@ class BlackjackController {
     this.blackjackStore.setStep("result");
     this.blackjackStore.setResult(currentGame[this.sessionId].state);
 
-    if (["win", "win-early"].includes(currentGame[this.sessionId].state)) {
+    if (["win", "blackjack"].includes(currentGame[this.sessionId].state)) {
       playSound("winSound");
     }
   }
@@ -160,6 +163,14 @@ class BlackjackController {
 
   onDeletePlayer(id) {
     this.getCurrentView().deletePlayer(id);
+  }
+
+  onBalanceUpdated() {
+    window.userStore.getState().refreshBalance();
+  }
+
+  onGuestBalanceUpdated({ change }) {
+    window.userStore.getState().addToGuestBalance(change);
   }
 
   setPendingBet(bet) {

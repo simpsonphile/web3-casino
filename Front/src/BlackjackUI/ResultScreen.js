@@ -8,7 +8,7 @@ const ResultScreen = () => {
 
   const getMessage = () => {
     if (result === "win") return "You won";
-    if (result === "win-early") return "You won early";
+    if (result === "blackjack") return "You have blackjack!";
     if (result === "lose") return "You lost";
 
     return "";

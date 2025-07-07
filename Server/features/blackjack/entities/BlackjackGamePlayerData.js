@@ -6,6 +6,7 @@ class BlackjackGamePlayerData extends Schema {
     this.cards = new ArraySchema();
     this.bet = 0;
     this.state = "hit";
+    this.isDouble = false;
   }
 }
 
@@ -13,6 +14,7 @@ defineTypes(BlackjackGamePlayerData, {
   cards: ["string"],
   bet: "number",
   state: "string",
+  isDouble: "boolean",
 });
 
 export default BlackjackGamePlayerData;

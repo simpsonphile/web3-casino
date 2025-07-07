@@ -8,6 +8,7 @@ class RemoteBlackjack {
 
   async connect({
     id,
+    balance,
     onJoin,
     onNewPlayer,
     onNewGame,
@@ -22,10 +23,13 @@ class RemoteBlackjack {
     onHitAccepted,
     onStandAccepted,
     onDeletePlayer,
+    onBalanceUpdated,
+    onGuestBalanceUpdated,
   }) {
     try {
       this._room = await this._client.joinOrCreate("blackjack", {
         ...this.options,
+        balance,
         id,
       });
     } catch {
@@ -95,6 +99,15 @@ class RemoteBlackjack {
       SERVER_MESSAGES.blackjack.BLACKJACK_DELETE_PLAYER,
       (data) => {
         onDeletePlayer(data);
+      }
+    );
+    this._room.onMessage(SERVER_MESSAGES.blackjack.BALANCE_UPDATED, (data) => {
+      onBalanceUpdated(data);
+    });
+    this._room.onMessage(
+      SERVER_MESSAGES.blackjack.GUEST_BALANCE_UPDATED,
+      (data) => {
+        onGuestBalanceUpdated(data);
       }
     );
 

@@ -49,8 +49,8 @@ const HitScreen = () => {
     title = "You lost";
   } else if (playerState === "win") {
     title = "You win";
-  } else if (playerState === "win-early") {
-    title = "You win early";
+  } else if (playerState === "blackjack") {
+    title = "You have blackjack!";
   } else if (hasStand || playerState === "stand") {
     title = "You stay";
   } else {

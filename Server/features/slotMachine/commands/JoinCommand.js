@@ -1,5 +1,4 @@
 import { Command } from "@colyseus/command";
-import { SERVER_MESSAGES } from "../SlotMachineMessages.js";
 import User from "../../../database/models/User.js";
 import { getParsedAddressBalance } from "../../../contracts/casino.js";
 

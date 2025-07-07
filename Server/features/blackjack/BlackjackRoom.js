@@ -16,7 +16,7 @@ import {
 } from "./commands/index.js";
 
 class BlackjackRoom extends AuthRoom {
-  onCreate() {
+  async onCreate() {
     this.dispatcher = new Dispatcher(this);
     this.setState(new BlackjackState());
 
@@ -27,17 +27,19 @@ class BlackjackRoom extends AuthRoom {
       });
     });
 
+    this.onMessage(CLIENT_MESSAGES.BLACKJACK_DOUBLE, (client) => {
+      this.dispatcher.dispatch(new BetCommand(), {
+        client: client,
+        isDouble: true,
+      });
+    });
+
     this.onMessage(CLIENT_MESSAGES.BLACKJACK_HIT, (client) => {
       this.dispatcher.dispatch(new HitCommand(), {
         client: client,
       });
     });
-    this.onMessage(CLIENT_MESSAGES.BLACKJACK_DOUBLE, (client) => {
-      this.dispatcher.dispatch(new HitCommand(), {
-        client: client,
-        isDouble: true,
-      });
-    });
+
     this.onMessage(CLIENT_MESSAGES.BLACKJACK_STAND, (client) => {
       this.dispatcher.dispatch(new StandCommand(), {
         client: client,

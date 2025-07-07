@@ -6,9 +6,13 @@ export const getProvider = () => {
   return new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 };
 
+let signer;
+
 export const getSigner = () => {
-  const provider = getProvider();
-  const privateKey = process.env.CONTRACT_OWNER_PRIVATE_KEY;
-  const signer = new ethers.Wallet(privateKey, provider);
+  if (!signer) {
+    const provider = getProvider();
+    const privateKey = process.env.CONTRACT_OWNER_PRIVATE_KEY;
+    signer = new ethers.Wallet(privateKey, provider);
+  }
   return signer;
 };

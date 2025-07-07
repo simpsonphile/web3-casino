@@ -1,7 +1,10 @@
 import { Command } from "@colyseus/command";
 import { SERVER_MESSAGES } from "../BlackjackMessages.js";
-import { countCardPoints } from "../../../../Common/utilis/countCardPoints.js";
-import { getRandomCard } from "../../../../Common/utilis/getRandomCard.js";
+import {
+  countCardPoints,
+  getRandomCard,
+} from "../../../../Common/utilis/cards.js";
+import payPlayer from "../utilis/payLogic.js";
 
 export class DealerCommand extends Command {
   dealCard() {
@@ -11,7 +14,7 @@ export class DealerCommand extends Command {
     this.room.broadcast(SERVER_MESSAGES.BLACKJACK_DEALER_HAND_UPDATE, card);
   }
 
-  loopStandPlayers(type) {
+  resolveStandingPlayers(type) {
     for (let [id] of this.state.currentGame) {
       const playerState = this.state.getPlayerState(id);
 
@@ -19,6 +22,7 @@ export class DealerCommand extends Command {
 
       if (type === "win") {
         this.state.setPlayerState(id, "win");
+        payPlayer(this.room, id);
       } else if (type === "lose") {
         this.state.setPlayerState(id, "lose");
       } else if (type === "check") {
@@ -28,6 +32,7 @@ export class DealerCommand extends Command {
             ? "win"
             : "lose";
         this.state.setPlayerState(id, state);
+        payPlayer(this.room, id);
       }
     }
   }
@@ -40,13 +45,13 @@ export class DealerCommand extends Command {
       this.pickCard = true;
     } else if (points > 21) {
       this.pickCard = false;
-      this.loopStandPlayers("win");
+      this.resolveStandingPlayers("win");
     } else if (points === 21) {
       this.pickCard = false;
-      this.loopStandPlayers("lose");
+      this.resolveStandingPlayers("lose");
     } else if (points >= 17 && points < 21) {
       this.pickCard = false;
-      this.loopStandPlayers("check");
+      this.resolveStandingPlayers("check");
     }
   }
 

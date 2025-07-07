@@ -1,5 +1,5 @@
 import { Heading } from "@chakra-ui/react";
-import { countCardPoints } from "../../../Common/utilis/countCardPoints";
+import { countCardPoints } from "@Common/utilis/cards";
 import { useBlackjackStore } from "../stores/blackjackStore";
 
 const Points = () => {

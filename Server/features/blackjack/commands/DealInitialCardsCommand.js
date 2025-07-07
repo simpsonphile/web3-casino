@@ -1,7 +1,10 @@
 import { Command } from "@colyseus/command";
-import { getRandomCard } from "../../../../Common/utilis/getRandomCard.js";
-import { countCardPoints } from "../../../../Common/utilis/countCardPoints.js";
+import {
+  countCardPoints,
+  getRandomCard,
+} from "../../../../Common/utilis/cards.js";
 import { SERVER_MESSAGES } from "../BlackjackMessages.js";
+import payPlayer from "../utilis/payLogic.js";
 
 export class DealInitialCardsCommand extends Command {
   dealCardToEachPlayer() {
@@ -18,7 +21,9 @@ export class DealInitialCardsCommand extends Command {
         const points = countCardPoints(cards);
 
         if (points === 21) {
-          this.state.currentGame[id].state = "win-early";
+          this.state.setPlayerState(id, "blackjack");
+          payPlayer(this.room, id);
+
           this.room.broadcast(SERVER_MESSAGES.BLACKJACK_PLAYER_STATE_UPDATE, {
             id,
             state: this.state.currentGame[id].state,
