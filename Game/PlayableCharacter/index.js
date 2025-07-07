@@ -49,10 +49,12 @@ class PlayableCharacter {
 
   setRun() {
     this._animation.setRun();
+    this._camera.setSprinting(true);
   }
 
   setWalk() {
     this._animation.setWalk();
+    this._camera.setSprinting(false);
   }
 
   goForward() {
