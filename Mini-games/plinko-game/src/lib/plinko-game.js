@@ -7,7 +7,7 @@ import { generateBucketColors } from "./helpers";
 import Balance from "./Balance";
 import GameLoop from "./GameLoop";
 import History from "./History";
-
+import Physics from "./Physics";
 import CONFIG from "./Config";
 
 export class PlinkoGame extends GameLoop {
@@ -27,8 +27,9 @@ export class PlinkoGame extends GameLoop {
 
   updateCanvasSize = () => {
     const BOTTOM_PEG_COUNT = this.rows + CONFIG.PEG_START_FROM - 1;
-    const width = BOTTOM_PEG_COUNT * this.getSpacing();
-    const height = (this.rows + 1) * this.getSpacing() + CONFIG.BUCKET_HEIGHT;
+    const width = BOTTOM_PEG_COUNT * this.getSpacingHorizontal();
+    const height =
+      (this.rows + 1) * this.getSpacingVertical() + CONFIG.BUCKET_HEIGHT;
     this.canvas.width = width;
     this.canvas.height = height;
   };
@@ -55,8 +56,9 @@ export class PlinkoGame extends GameLoop {
     this.updateCanvasSize();
     this.createBalance();
     this.createHistory();
-
     this.pegs = this.generatePegs();
+    this.physics = new Physics({ pegs: this.pegs, canvas: this.canvas });
+
     this.buckets = this.generateBuckets();
     this.balls = [];
     this.money = [];
@@ -72,11 +74,10 @@ export class PlinkoGame extends GameLoop {
 
   getCenter = () => parseInt(this.canvas.width / 2);
 
-  getSpacing = () =>
-    CONFIG.BALL_RADIUS * 2 +
-    CONFIG.PEG_RADIUS +
-    Math.round(CONFIG.BALL_RADIUS / 2);
-
+  getSpacingHorizontal = () =>
+    CONFIG.BALL_RADIUS * 2 + CONFIG.PEG_RADIUS + CONFIG.PEG_SPACING_BUFFER;
+  getSpacingVertical = () =>
+    CONFIG.BALL_RADIUS * 2 + CONFIG.PEG_RADIUS + CONFIG.PEG_SPACING_BUFFER_Y;
   getTargetBucket(multiplier) {
     const matchingBuckets = this.buckets.filter((bucket) => {
       return bucket.text.toString() === multiplier.toString();
@@ -99,7 +100,7 @@ export class PlinkoGame extends GameLoop {
       x: center,
       r: CONFIG.BALL_RADIUS,
       y: 0,
-      vx: (0.001 + Math.random() * 0.001) * (targetX > center ? 1 : -1),
+      vx: 0,
       targetX,
       targetY,
       payout,
@@ -121,59 +122,16 @@ export class PlinkoGame extends GameLoop {
     this.balls.push(ball);
   };
 
-  nudgeBall(ball) {
-    if (typeof ball.targetX === "number") {
-      const heightFactor = Math.min(ball.y / this.canvas.height, 1);
-      const minNudge = 0.001;
-      const maxNudge = 0.02;
-      const nudgeStrength = minNudge + (maxNudge - minNudge) * heightFactor;
-      const diffX = ball.targetX - ball.x;
-      ball.vx += diffX * nudgeStrength;
-    }
-  }
-
   onBallUpdate(ball) {
-    ball.vy += 0.4;
-    this.checkPegCollisions(ball);
-
-    // Apply friction
-    const friction = 0.98;
-    ball.vx *= friction;
-  }
-
-  checkPegCollisions(ball) {
-    for (const peg of this.pegs) {
-      const dx = ball.x - peg.x;
-      const dy = ball.y - peg.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < ball.r + peg.r) {
-        // Calculate normal vector
-        const normalX = dx / dist;
-        const normalY = dy / dist;
-
-        // Reflect velocity about normal vector (perfect reflection)
-        const dot = ball.vx * normalX + ball.vy * normalY;
-        ball.vx = ball.vx - 2 * dot * normalX;
-        ball.vy = ball.vy - 2 * dot * normalY;
-        ball.vx *= 0.8;
-        ball.vy *= 0.8;
-
-        this.nudgeBall(ball);
-
-        const overlap = ball.r + peg.r - dist;
-
-        ball.x += normalX * overlap;
-        ball.y += normalY * overlap;
-
-        peg.setHit();
-      }
-    }
+    this.physics.applyGravity(ball);
+    this.physics.checkPegCollisions(ball);
+    this.physics.applyFriction(ball);
   }
 
   generatePegs = () => {
     const pegs = [];
-    const spacing = this.getSpacing();
+    const spacingHorizontal = this.getSpacingHorizontal();
+    const spacingVertical = this.getSpacingVertical();
     const center = this.getCenter();
 
     for (let i = 0; i < this.rows; i++) {
@@ -181,8 +139,8 @@ export class PlinkoGame extends GameLoop {
       const grayValue = 255 - Math.round((i / this.rows) * 50);
       const c = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
       for (let j = 0; j < plinkoInRow; j++) {
-        const x = center + spacing * (0.5 + j - plinkoInRow / 2);
-        const y = spacing * (i + 1);
+        const x = center + spacingHorizontal * (0.5 + j - plinkoInRow / 2);
+        const y = spacingVertical * (i + 1);
         pegs.push(new Peg({ x, y, r: CONFIG.PEG_RADIUS, c }));
       }
     }
@@ -202,8 +160,9 @@ export class PlinkoGame extends GameLoop {
     const buckets = [];
     const bucketCount = this.rows + CONFIG.PEG_START_FROM - 2;
     const bucketSpacing = 4;
-    const spacing = this.getSpacing();
-    const w = spacing - bucketSpacing;
+    const spacingHorizontal = this.getSpacingHorizontal();
+    const spacingVertical = this.getSpacingVertical();
+    const w = spacingVertical - bucketSpacing;
 
     const getIndex = (n, i) => {
       const length = 2 * n + 1;
@@ -215,8 +174,9 @@ export class PlinkoGame extends GameLoop {
       const index = getIndex(Math.floor(bucketCount / 2), i);
       const text = textRows[index];
       const h = CONFIG.BUCKET_HEIGHT;
-      const y = spacing * (this.rows + 0.5);
-      const x = spacing * i + spacing / 2 + bucketSpacing / 2;
+      const y = spacingVertical * (this.rows + 0.5);
+      const x =
+        spacingHorizontal * i + spacingHorizontal / 2 + bucketSpacing / 2;
       const c = this.getBucketColor(this.multipliers[this.difficulty], text);
       const bucket = new Bucket({ x, y, w, h, c, text });
       buckets.push(bucket);
