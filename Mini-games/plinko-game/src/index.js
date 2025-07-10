@@ -1,1 +1,1 @@
-export * from './lib/plinko-game';
+export * from "./lib/PlinkoGame";
