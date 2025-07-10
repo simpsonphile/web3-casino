@@ -114,7 +114,7 @@ export class PlinkoGame extends GameLoop {
         );
         this.balance.addToBalance(finishedBall.payout);
         this.balls = this.balls.filter((b) => b !== finishedBall);
-        targetBucket.setHit();
+        targetBucket.animateHit();
         this.history.addMultiplier(targetBucket.text);
       },
       onStep: (currentBall) => this.onBallUpdate(currentBall),

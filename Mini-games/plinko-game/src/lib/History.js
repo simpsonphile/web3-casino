@@ -21,22 +21,31 @@ class History {
 
   addMultiplier(multiplier) {
     this.history.unshift(multiplier);
-    this.history = this.history.slice(0, 5);
-    this.createBuckets();
-  }
+    if (this.history.length > 5) this.history.length = 5;
 
-  createBuckets() {
-    this.buckets = this.history.map(
-      (v, i) =>
-        new Bucket({
-          x: this.x - 40,
-          y: this.y + i * 40 + i * 4,
-          w: 40,
-          h: 40,
-          c: this.getBucketColor(v),
-          text: v,
-        })
-    );
+    const newBucket = new Bucket({
+      x: this.x - (CONFIG.HISTORY_BUCKET_SIZE * 2 + 10),
+      y: this.y,
+      w: CONFIG.HISTORY_BUCKET_SIZE,
+      h: CONFIG.HISTORY_BUCKET_SIZE,
+      c: this.getBucketColor(multiplier),
+      text: multiplier,
+    });
+    newBucket.moveIn();
+    this.buckets.unshift(newBucket);
+
+    this.buckets.forEach((bucket, i) => {
+      if (i === 0) return;
+      bucket.animateNewY(
+        this.y +
+          i * CONFIG.HISTORY_BUCKET_SIZE +
+          i * CONFIG.HISTORY_BUCKET_SPACING
+      );
+    });
+
+    if (this.buckets.length > 5) {
+      this.buckets.pop();
+    }
   }
 
   draw(ctx) {

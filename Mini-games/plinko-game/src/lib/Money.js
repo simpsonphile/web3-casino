@@ -22,7 +22,7 @@ class Money {
   draw(ctx) {
     ctx.beginPath();
     ctx.fillStyle = `rgba(0,255,0, ${(1 / 40) * this.framesLeft})`;
-    ctx.font = "14px Arial";
+    ctx.font = "14px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(`+${this.value}`, this.x, this.y);

@@ -6,13 +6,14 @@ class Bucket {
     this.y = y;
     this.baseY = y;
     this.dropY = y + 10;
+    this.moveInX = x + w + 10;
     this.w = w;
     this.h = h;
     this.c = c;
     this.text = text;
   }
 
-  setHit() {
+  animateHit() {
     if (this.hit) return;
     this.hit = true;
     gsap.fromTo(
@@ -32,13 +33,39 @@ class Bucket {
     );
   }
 
+  moveIn() {
+    gsap.fromTo(
+      this,
+      { x: this.x },
+      {
+        x: this.moveInX,
+        duration: 0.1,
+        ease: "power1.inOut",
+        onComplete: () => {
+          this.moveIn = false;
+        },
+      }
+    );
+  }
+
+  animateNewY(y) {
+    gsap.to(this, {
+      y: y,
+      duration: 0.1,
+      delay: 0.05,
+      ease: "power1.inOut",
+      onComplete: () => {
+        this.y = y;
+      },
+    });
+  }
+
   draw(ctx) {
     ctx.beginPath();
     ctx.strokeStyle = this.c;
     ctx.fillStyle = this.c;
     ctx.rect(this.x, this.y, this.w, this.h);
     ctx.stroke();
-    // ctx.closePath();
     ctx.font = "12px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

@@ -12,7 +12,7 @@ class Peg extends Particle {
     });
   }
 
-  setHit() {
+  animateHit() {
     this.hit = true;
 
     gsap.killTweensOf(this.shadow);

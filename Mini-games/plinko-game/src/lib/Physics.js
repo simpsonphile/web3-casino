@@ -86,7 +86,7 @@ class Physics {
         ball.x += 1.2 * normalX * maxOverlap;
         ball.y += 1.2 * normalY * maxOverlap;
 
-        closestPeg?.setHit();
+        closestPeg?.animateHit();
       }
     }
   }
