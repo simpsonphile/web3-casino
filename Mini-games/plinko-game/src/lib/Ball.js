@@ -1,34 +1,27 @@
 import Particle from "./Particle";
 
-class Ball {
-  constructor({ x, y, dxs, dxy, payout }) {
-    this.dxs = dxs;
-    this.movesLeft = this.dxs.length;
-    this.dxy = dxy;
+class Ball extends Particle {
+  constructor({ x, y, r, targetX, targetY, payout, onFinish, onStep }) {
+    super({ x, y, r, hasGradient: true, c1: "#E56399", c2: "#ea116c" });
+    this.vx = 0;
+    this.vy = 0;
+    this.targetX = targetX;
+    this.targetY = targetY;
     this.payout = payout;
-
-    this.particle = new Particle({
-      x,
-      y,
-      r: 10,
-      hasGradient: true,
-      c1: "#E56399",
-      c2: "#ea116c",
-    });
+    this.onFinish = onFinish;
+    this.onStep = onStep;
   }
 
   move() {
-    if (this.movesLeft <= 0) {
-      this.dead = true;
+    if (this.y >= this.targetY) {
+      this.onFinish(this);
       return;
     }
-    this.particle.updateX(this.dxs.shift());
-    this.particle.updateY(this.dxy.shift());
-    this.movesLeft -= 1;
-  }
 
-  draw(ctx) {
-    this.particle.draw(ctx);
+    this.x += this.vx;
+    this.y += this.vy;
+
+    this.onStep(this);
   }
 }
 
