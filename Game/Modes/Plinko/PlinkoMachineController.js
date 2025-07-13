@@ -43,9 +43,6 @@ class PlinkoMachineController {
 
   dropBalls(count) {
     this.view?.dropBalls({
-      multiplier: 11,
-      difficulty: "easy",
-      payout: 100,
       bet: 10,
     });
   }

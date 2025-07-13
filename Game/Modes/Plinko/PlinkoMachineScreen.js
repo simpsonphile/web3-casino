@@ -5,7 +5,7 @@ class PlinkoMachineScreen extends CSS3DObject {
   constructor(canvas) {
     super(canvas);
 
-    this.scale.set(0.0012, 0.0012, 0.0012);
+    this.scale.set(-0.0008, 0.0008, 0.0008);
   }
 }
 

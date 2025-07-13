@@ -3,19 +3,24 @@ import Ball from "./Ball";
 import Peg from "./Peg";
 import Money from "./Money";
 
-import { generateBucketColors } from "./helpers";
+import { generateBucketColors, generateBucketSoundRates } from "./helpers";
 import Balance from "./Balance";
 import GameLoop from "./GameLoop";
 import History from "./History";
 import Physics from "./Physics";
 import CONFIG from "./Config";
+import { pickInverseWeighted } from "./helpers";
 
 export class PlinkoGame extends GameLoop {
-  constructor({ multipliers, difficulty }) {
+  constructor({ multipliers, difficulty, onBallFinish }) {
     super();
     this.rows = multipliers[difficulty].length * 2 - 2;
     this.multipliers = multipliers;
     this.difficulty = difficulty;
+
+    this.soundRates = generateBucketSoundRates(multipliers[difficulty].length);
+
+    this.onBallFinish = onBallFinish;
   }
 
   createCanvas = () => {
@@ -47,7 +52,7 @@ export class PlinkoGame extends GameLoop {
       x: this.canvas.width - 10,
       y: 100,
       rows: this.rows,
-      multipliers: this.multipliers[this.difficulty],
+      multipliers: this.multipliers,
     });
   };
 
@@ -69,15 +74,23 @@ export class PlinkoGame extends GameLoop {
   setDifficulty = (difficulty) => {
     this.difficulty = difficulty;
     this.buckets = this.generateBuckets();
-    this.history.multipliers = this.multipliers[difficulty];
+    this.pegs = this.generatePegs();
+    this.physics.pegs = this.pegs;
+    this.soundRates = generateBucketSoundRates(
+      this.multipliers[difficulty].length
+    );
+    this.rows = this.multipliers[difficulty].length * 2 - 2;
+    this.updateCanvasSize();
   };
 
   getCenter = () => parseInt(this.canvas.width / 2);
 
   getSpacingHorizontal = () =>
     CONFIG.BALL_RADIUS * 2 + CONFIG.PEG_RADIUS + CONFIG.PEG_SPACING_BUFFER;
+
   getSpacingVertical = () =>
     CONFIG.BALL_RADIUS * 2 + CONFIG.PEG_RADIUS + CONFIG.PEG_SPACING_BUFFER_Y;
+
   getTargetBucket(multiplier) {
     const matchingBuckets = this.buckets.filter((bucket) => {
       return bucket.text.toString() === multiplier.toString();
@@ -87,7 +100,7 @@ export class PlinkoGame extends GameLoop {
     return randomBucket;
   }
 
-  dropBall = ({ multiplier, payout, bet }) => {
+  dropBall = ({ multiplier, difficulty, bet }) => {
     this.balance.addToBalance(-bet);
 
     const center = this.getCenter();
@@ -103,7 +116,7 @@ export class PlinkoGame extends GameLoop {
       vx: 0,
       targetX,
       targetY,
-      payout,
+      payout: bet * multiplier,
       onFinish: (finishedBall) => {
         this.money.push(
           new Money({
@@ -115,11 +128,22 @@ export class PlinkoGame extends GameLoop {
         this.balance.addToBalance(finishedBall.payout);
         this.balls = this.balls.filter((b) => b !== finishedBall);
         targetBucket.animateHit();
-        this.history.addMultiplier(targetBucket.text);
+        this.history.addMultiplier(targetBucket.text, difficulty);
+
+        this.onBallFinish(
+          this.soundRates[this.multipliers[this.difficulty].indexOf(multiplier)]
+        );
       },
       onStep: (currentBall) => this.onBallUpdate(currentBall),
     });
     this.balls.push(ball);
+  };
+
+  dropFairRandomBall = ({ bet }) => {
+    console.log("dropFairRandomBall", bet);
+    const multiplier = pickInverseWeighted(this.multipliers[this.difficulty]);
+    console.log(multiplier, this.difficulty, bet);
+    this.dropBall({ multiplier, difficulty: this.difficulty, bet });
   };
 
   onBallUpdate(ball) {

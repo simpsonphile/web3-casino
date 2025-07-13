@@ -7,6 +7,7 @@ import {
 } from "@Game/animations";
 
 const ELEMENT_NAMES = [
+  "back",
   "screen",
   "bet_increase",
   "bet_decrease",
@@ -36,35 +37,34 @@ class PlinkoMachineView {
     this.getElements(object3d);
 
     this.game = new PlinkoGame({
-      w: 400,
-      h: 450,
       difficulty: "easy",
       multipliers: {
         easy: [11, 3.2, 1.6, 1.2, 1.1, 1, 0.5].reverse(),
         medium: [25, 8, 3.1, 1.7, 1.2, 0.7, 0.3].reverse(),
         hard: [141, 25, 8.1, 2.3, 0.7, 0.2, 0].reverse(),
       },
+      onBallFinish: (rate) => {
+        window.soundPlayer.playSound("plinkoHit", rate);
+      },
     });
 
     this.game.init();
 
-    this.screen = new PlinkoScreen(this.game.canvas);
-    this.elements.screen.getWorldPosition(this.screen.position);
-    this.elements.screen.getWorldQuaternion(this.screen.quaternion);
-    this.screen.rotateY(Math.PI);
-    this.screen.position.y += 0.25;
-
-    window.cssScene.add(this.screen);
+    this.canvas = new PlinkoScreen(this.game.canvas);
+    this.elements.screen.getWorldPosition(this.canvas.position);
+    this.elements.screen.getWorldQuaternion(this.canvas.quaternion);
+    this.canvas.translateY(-this.elements.screen.position.y / 2);
+    window.cssScene.add(this.canvas);
   }
 
   stop() {
     this.game.stop();
-    window.cssScene.remove(this.screen);
+    window.cssScene.remove(this.canvas);
   }
 
   dropBalls(a) {
     animateButtonClick(this.elements.play);
-    this.game.dropBall(a);
+    this.game.dropFairRandomBall(a);
   }
 
   increaseBetClick() {

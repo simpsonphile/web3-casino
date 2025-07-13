@@ -9,6 +9,8 @@ const soundPaths = {
   reelStop: "game-assets/sounds/reel-stop.mp3",
   slotWin: "game-assets/sounds/slot-machine-win.mp3",
   menuSelect: "game-assets/sounds/menu-select.mp3",
+
+  plinkoHit: "game-assets/sounds/plinko-hit.wav",
 };
 
 export default soundPaths;

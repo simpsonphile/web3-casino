@@ -25,9 +25,9 @@ class Particle {
       const gradient = ctx.createRadialGradient(
         this.x,
         this.y,
-        2,
-        this.x,
-        this.y,
+        Math.random() * 2,
+        this.x + Math.random() * 2,
+        this.y + Math.random() * 2,
         this.r
       );
       gradient.addColorStop(0, this.c1);

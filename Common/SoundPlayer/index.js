@@ -37,14 +37,15 @@ class SoundPlayer {
     });
   }
 
-  playSound(name) {
+  playSound(name, rate = 1) {
     const sound = this.sounds[name];
     if (!sound) {
       console.error(`Sound "${name}" not found!`);
       return;
     }
 
-    sound.play();
+    const id = sound.play();
+    sound.rate(rate, id);
   }
 }
 
