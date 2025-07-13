@@ -13,6 +13,7 @@ const getEmptyCommands = () => ({
   cameraTransition: {},
   zoom: {},
   chat: {},
+  billiard: {},
 });
 
 class CommandManager {

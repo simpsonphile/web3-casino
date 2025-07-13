@@ -59,6 +59,9 @@ const getDefaultKeyConfig = () => ({
   zoom: {
     exit: ["KeyE"],
   },
+  billiard: {
+    hit: ["KeyH"],
+  },
 });
 
 class KeyConfig {
