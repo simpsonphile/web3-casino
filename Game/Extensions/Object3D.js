@@ -16,3 +16,11 @@ THREE.Object3D.prototype.getHeight = function () {
   const box = new THREE.Box3().setFromObject(this);
   return box.max.y - box.min.y;
 };
+
+THREE.Object3D.prototype.traverseUp = function (callback) {
+  let current = this;
+  while (current) {
+    callback(current);
+    current = current.parent;
+  }
+};
