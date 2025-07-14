@@ -7,9 +7,15 @@ class DeltaUpdater {
   }
 
   add(func, isDelta = true) {
-    this.funcs.push((delta, elapsedTime) =>
-      func(isDelta ? delta : elapsedTime)
-    );
+    const wrapped = (delta, elapsedTime) => func(isDelta ? delta : elapsedTime);
+
+    wrapped._original = func;
+
+    this.funcs.push(wrapped);
+  }
+
+  remove(func) {
+    this.funcs = this.funcs.filter((wrapped) => wrapped._original !== func);
   }
 
   update() {
