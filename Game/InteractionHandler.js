@@ -3,6 +3,7 @@ class InteractionHandler {
     this._handlers = {
       mouseOver: {},
       mouseClick: {},
+      mouseDown: {},
       mouseLeave: {},
     };
     this._isEnabled = true;
@@ -96,6 +97,12 @@ class InteractionHandler {
     const obj = intersect?.object;
     if (!obj) return;
     this.runObjectInteraction(intersect, "mouseClick");
+  }
+
+  handleMouseDown(intersect) {
+    const obj = intersect?.object;
+    if (!obj) return;
+    this.runObjectInteraction(intersect, "mouseDown");
   }
 }
 

@@ -3,6 +3,7 @@ class Controls {
     onKeyDown,
     onMouseMove,
     onMouseClick,
+    onMouseDown,
     onRightMouseClick,
     onKeyUp,
     onWheel,
@@ -10,6 +11,7 @@ class Controls {
     this.onKeyDownProps = onKeyDown;
     this.onMouseMoveProps = onMouseMove;
     this.onMouseClickProps = onMouseClick;
+    this.onMouseDownProps = onMouseDown;
     this.onRightMouseClickProps = onRightMouseClick;
     this.onKeyUpProps = onKeyUp;
     this.onWheelProps = onWheel;
@@ -47,6 +49,14 @@ class Controls {
 
       if (event.button === 0) {
         this.onMouseClickProps?.(event, this.getKeyMap());
+      }
+    });
+
+    document.addEventListener("mousedown", (event) => {
+      if (!this.controlsEnabled) return;
+
+      if (event.button === 0) {
+        this.onMouseDownProps?.(event, this.getKeyMap());
       }
     });
 
