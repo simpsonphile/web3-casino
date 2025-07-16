@@ -25,6 +25,21 @@ const gameTexts = {
       riskHigh: "set to high risk",
     },
 
+    billiard: {
+      hover: "Join Billiard Table",
+      hoverFull: "Table is full",
+      joinError: "Failed to join billiard table",
+
+      playerTurn: "Your turn",
+      opponentTurn: "Waiting for other player",
+      opponentCueBallPlacement: "Opponent is placing cue ball",
+      playerCueBallPlacement: "You are placing cue ball",
+      gameOver: "Game Over",
+      playerWin: "You win!",
+      playerLost: "You lost",
+      playAgain: "To start a new game, press",
+    },
+
     menu: {
       play: "Play",
       resume: "Resume",

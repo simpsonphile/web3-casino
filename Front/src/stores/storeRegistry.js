@@ -7,6 +7,7 @@ import { useMessagesStore } from "./messagesStore";
 import { useSoundStore } from "./soundStore";
 import { useUserStore } from "./userStore";
 import { usePlinkoStore } from "./plinkoStore";
+import { useBilliardStore } from "./billiardStore";
 
 export function initStoreRegistry() {
   if (typeof window !== "undefined") {
@@ -19,5 +20,6 @@ export function initStoreRegistry() {
     window.soundStore = window.soundStore || useSoundStore;
     window.userStore = window.userStore || useUserStore;
     window.plinkoStore = window.plinkoStore || usePlinkoStore;
+    window.billiardStore = window.billiardStore || useBilliardStore;
   }
 }

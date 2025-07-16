@@ -17,6 +17,7 @@ import { useMessagesStore } from "../../stores/messagesStore";
 import { useUserStore } from "../../stores/userStore";
 import TokenBalance from "../TokenBalance";
 import useKeyboardKeyPressAnimation from "../KeyboardKey/useKeyboardKeyPressAnimation";
+import BilliardUI from "@Front/BilliardUI";
 
 const GameContainer = () => {
   const { address, isConnected } = useAccount();
@@ -116,10 +117,11 @@ const GameContainer = () => {
         )}
       </Footer>
 
-      <CasinoKiosk />
-
       <GameTooltip />
 
+      {/* we need some UI manager */}
+      <BilliardUI />
+      <CasinoKiosk />
       <BlackjackUI />
       <SlotsUI />
 

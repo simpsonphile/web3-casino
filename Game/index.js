@@ -30,6 +30,7 @@ import CollisionManager from "./CollisionManager";
 import SlotMachineMode from "./Modes/SlotMachine/SlotMachineMode";
 import ProgressLoader from "./ProgressLoader";
 import PlinkoMachineMode from "./Modes/Plinko/PlinkoMachineMode";
+import BilliardMode from "./Modes/Billiard/BilliardMode";
 
 class Game {
   constructor({ onPause, onResume }) {
@@ -280,6 +281,10 @@ class Game {
     new PlinkoMachineMode({ game: this }).init();
   }
 
+  initBilliard() {
+    new BilliardMode({ game: this }).init();
+  }
+
   initInteractionHandler() {
     this.interactionHandler = new InteractionHandler();
     window.interactionHandler = this.interactionHandler;
@@ -324,6 +329,9 @@ class Game {
       },
       onMouseClick: () => {
         handleIntersect("handleClick");
+      },
+      onMouseDown: () => {
+        handleIntersect("handleMouseDown");
       },
       onWheel: (dir) => {
         if (dir === "up") {
@@ -388,6 +396,7 @@ class Game {
     this.initBlackjack();
     this.initSlotMachine();
     this.initPlinkoMachine();
+    this.initBilliard();
 
     this.initOnScreenResize();
     this.initControls();

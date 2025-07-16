@@ -1,5 +1,9 @@
 const LOCAL_STORAGE_KEY = "keyConfig";
 
+// add check if keyconfig keys count is equal to default keys count
+// if not, reset to default keys
+// add check if keyconfig keys are valid, if not, reset to default keys
+
 const getDefaultKeyConfig = () => ({
   movement: {
     up: ["KeyW", "ArrowUp"],
@@ -60,7 +64,8 @@ const getDefaultKeyConfig = () => ({
     exit: ["KeyE"],
   },
   billiard: {
-    hit: ["KeyH"],
+    newGame: ["KeyN"],
+    exit: ["KeyE"],
   },
 });
 

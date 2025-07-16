@@ -20,13 +20,13 @@ const billiardBalls = {
   solid: Object.fromEntries(
     Object.entries(solidColors).map(([name, color]) => [
       name,
-      () => new BilliardBall({ type: "solid", color }),
+      () => new BilliardBall({ type: "solid", color, name }),
     ])
   ),
   half: Object.fromEntries(
     Object.entries(billiardBallColors).map(([name, color]) => [
       name,
-      () => new BilliardBall({ type: "half", color }),
+      () => new BilliardBall({ type: "half", color, name }),
     ])
   ),
 };

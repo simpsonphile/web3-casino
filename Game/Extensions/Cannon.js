@@ -56,7 +56,6 @@ CANNON.World.prototype.updateDebugVisuals = function () {
 };
 
 function createShapeFromMesh(mesh) {
-  console.log(mesh);
   const geometry = mesh.geometry;
 
   geometry.computeBoundingBox();
